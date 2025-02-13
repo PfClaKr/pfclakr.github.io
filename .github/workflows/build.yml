@@ -33,3 +33,12 @@ jobs:
 
       - name: Build project
         run: cargo build --release
+
+      - name: Deploy to GitHub Pages
+        if: success()
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add pkg
+          git commit -m 'Deploy to GitHub Pages'
+          git push origin `git subtree split --prefix pkg main`:gh-pages --force
