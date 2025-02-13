@@ -15,6 +15,11 @@ fn main() {
         std::process::exit(1);
     }
 
+    // Ensure the destination directory exists
+    if let Some(parent) = dest_path.parent() {
+        fs::create_dir_all(parent).expect("Failed to create pkg directory");
+    }
+
     fs::copy(&src_path, &dest_path).expect("Failed to copy index.html to pkg folder");
     println!("cargo:rerun-if-changed=src/index.html");
 }
