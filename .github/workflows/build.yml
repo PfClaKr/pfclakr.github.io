@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Verify src/index.html exists
+        run: |
+          if [ ! -f src/index.html ]; then
+            echo "Error: src/index.html does not exist"
+            exit 1
+          else
+            echo "src/index.html exists at $(pwd)/src/index.html"
+          fi
+
+      - name: Build project
+        run: cargo build --release
