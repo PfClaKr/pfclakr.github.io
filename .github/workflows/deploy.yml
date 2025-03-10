@@ -9,6 +9,9 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write  # GitHub Pages에 푸시 가능하도록 설정
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,6 +26,12 @@ jobs:
 
       - name: Build WASM package
         run: wasm-pack build --target web
+
+      - name: Copy static files (index.html)
+        run: cp src/static/index.html pkg/
+
+      - name: Copy static files (style.css)
+        run: cp src/static/style.css pkg/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
