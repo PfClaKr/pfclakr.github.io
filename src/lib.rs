@@ -1,21 +1,28 @@
-use yew::prelude::*;
-use wasm_bindgen::prelude::wasm_bindgen;
-
-#[function_component(App)]
-fn app() -> Html {
-    html! {
-        <div class="container mx-auto p-4">
-            <h1 class="text-4xl font-bold mb-4">{"Very First Homa Page"}</h1>
-            <p class="text-lg mb-4">{"Can i say \"Hello world\" to world?"}</p>
-            <div class="mt-4">
-                <a href="/blog" class="text-blue-500 hover:underline">{"View Blog Posts"}</a>
-            </div>
-        </div>
-    }
-}
+use wasm_bindgen::prelude::*;
+use web_sys::{Document, Element};
 
 #[wasm_bindgen(start)]
-fn main() {
-    wasm_logger::init(wasm_logger::Config::default());
-    yew::Renderer::<App>::new().render();
+pub fn main() {
+    let window = web_sys::window().expect("No global `window` exists");
+    let document = window.document().expect("Should have a document on window");
+
+    // HTML 직접 생성
+    document.body().unwrap().set_inner_html(
+        r#"
+        <style>
+            body { font-family: Arial, sans-serif; text-align: center; }
+            h1 { color: #0077cc; }
+            p { color: #333; }
+        </style>
+        <h1>My Rust WASM Blog</h1>
+        <p>이 페이지는 Rust + WASM으로 생성되었습니다!</p>
+        "#,
+    );
+}
+
+/// DOM 요소를 생성하는 유틸리티 함수
+fn create_element(document: &Document, tag: &str, text: &str) -> Element {
+    let element = document.create_element(tag).unwrap();
+    element.set_inner_html(text);
+    element
 }
