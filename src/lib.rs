@@ -1,5 +1,5 @@
 use wasm_bindgen::prelude::*;
-use web_sys::{Document, Element, Window};
+use web_sys::{Document, Element};
 
 #[wasm_bindgen(start)]
 pub fn main() {
