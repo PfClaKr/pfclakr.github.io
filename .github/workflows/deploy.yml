@@ -37,3 +37,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./www
           publish_branch: gh-pages
+      - name: Debug pkg output
+        run: ls -R www/pkg
