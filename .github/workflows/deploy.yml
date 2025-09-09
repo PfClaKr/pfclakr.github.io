@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   build-deploy:
@@ -24,12 +23,14 @@ jobs:
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
       - name: Build WASM
-        working-directory: ./blog
-        run: wasm-pack build --target web --out-dir ../www/pkg --release
+        run: wasm-pack build --target web --out-dir ./www/pkg --release
+
+      - name: Debug pkg output
+        run: ls -R www/pkg
 
       - name: Build Posts
         run: |
-          npm install gray-matter marked
+          npm install gray-matter
           node tools/build_posts.js
 
       - name: Deploy 🚀
@@ -38,5 +39,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./www
           publish_branch: gh-pages
-      - name: Debug pkg output
-        run: ls -R www/pkg
