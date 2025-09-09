@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import { marked } from "marked";
 
 const postsDir = "./www/posts";
 const files = fs.readdirSync(postsDir).filter(f => f.endsWith(".md"));
@@ -13,7 +12,7 @@ for (let file of files) {
   posts.push({
     title: file.replace(".md", ""),
     date: new Date().toISOString().split("T")[0],
-    content: marked(content)
+    content // Markdown 원문 그대로 저장
   });
 }
 
