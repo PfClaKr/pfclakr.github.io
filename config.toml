@@ -1,0 +1,43 @@
+# ─────────────────────────────────────────────────────────────
+#  Site configuration
+# ─────────────────────────────────────────────────────────────
+base_url = "https://pfclakr.github.io"
+# The default language is served at the site root ("/").
+# Other languages live under "/<code>/" (e.g. /fr/, /ko/).
+default_language = "en"
+# Order matters: it is the order of the language switcher and
+# the fallback order used when a post is not translated.
+languages = ["en", "fr", "ko"]
+# Show posts that only exist in another language in each listing,
+# tagged with their original language.
+show_untranslated = true
+# Words per minute used for the "reading time" estimate.
+words_per_minute = 220
+
+[author]
+name = "PfClaKr"
+# Shown on the home page "business card".
+avatar = "/img/avatar.svg"
+github = "PfClaKr"
+# Leave empty to hide.
+linkedin = ""
+email = ""
+twitter = ""   # without "@", used for twitter:creator
+
+[seo]
+# Default social preview image (1200×630 recommended).
+og_image = "/img/og-default.png"
+# Optional: Google Search Console / Naver Search Advisor verification codes.
+google_site_verification = ""
+naver_site_verification = ""
+
+# Comments are powered by giscus (GitHub Discussions).
+# 1. Enable Discussions on the repository.
+# 2. Install the giscus app: https://github.com/apps/giscus
+# 3. Fill repo_id / category_id from https://giscus.app
+# Comments stay hidden while repo_id is empty.
+[comments]
+repo = "PfClaKr/pfclakr.github.io"
+repo_id = ""
+category = "Comments"
+category_id = ""

@@ -1,0 +1,38 @@
+language_name = "English"
+# Used in <meta property="og:locale">
+locale = "en_US"
+
+site_title = "PfClaKr · Tech Blog"
+site_description = "Notes on Rust, systems and software engineering."
+tagline = "Software engineer · Rust enthusiast"
+
+nav_home = "Home"
+nav_posts = "Posts"
+nav_tags = "Tags"
+nav_about = "About"
+
+recent_posts = "Recent posts"
+all_posts = "All posts"
+see_all_posts = "See all posts →"
+no_posts = "No posts yet."
+tags = "Tags"
+tagged = "Posts tagged"
+toc = "Contents"
+# {n} = minutes
+reading_time = "{n} min read"
+published = "Published"
+updated = "Updated"
+comments = "Comments"
+also_available_in = "Also available in"
+original_language = "Original language"
+toggle_theme = "Toggle dark mode"
+skip_to_content = "Skip to content"
+language = "Language"
+not_found_title = "Page not found"
+not_found_body = "The page you are looking for does not exist or has moved."
+back_home = "Back to home"
+feed = "RSS feed"
+
+# Date rendering: {day} {month} {year}
+date_format = "{month} {day}, {year}"
+months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+<article class="post" itemscope itemtype="https://schema.org/BlogPosting">
+  <header class="post-header">
+    <h1 itemprop="headline">{{ post.title }}</h1>
+    <p class="post-meta">
+      <span class="sr-only">{{ t.published }}</span>
+      <time datetime="{{ post.date_iso }}" itemprop="datePublished">{{ post.date_display }}</time>
+      {%- if post.updated_display %}
+      <span aria-hidden="true">·</span> {{ t.updated }} <time datetime="{{ post.updated_iso }}" itemprop="dateModified">{{ post.updated_display }}</time>
+      {%- endif %}
+      <span aria-hidden="true">·</span> {{ post.reading_time }}
+    </p>
+    {%- if post.tags %}
+    <ul class="tag-list">
+      {%- for tag in post.tags %}<li><a class="tag" href="{{ tag.url }}">#{{ tag.name }}</a></li>{% endfor %}
+    </ul>
+    {%- endif %}
+    {%- if translations %}
+    <p class="translations">{{ t.also_available_in }}:
+      {%- for tr in translations %}
+      <a href="{{ tr.url }}" hreflang="{{ tr.lang }}" lang="{{ tr.lang }}">{{ tr.lang_name }}</a>{% if not loop.last %},{% endif %}
+      {%- endfor %}
+    </p>
+    {%- endif %}
+  </header>
+
+  <div class="post-layout{% if toc %} has-toc{% endif %}">
+    {%- if toc %}
+    <nav class="toc" aria-label="{{ t.toc }}">
+      <details open>
+        <summary>{{ t.toc }}</summary>
+        <ol>
+          {%- for h in toc %}
+          <li class="toc-l{{ h.level }}"><a href="#{{ h.id }}">{{ h.title }}</a></li>
+          {%- endfor %}
+        </ol>
+      </details>
+    </nav>
+    {%- endif %}
+    <div class="prose" itemprop="articleBody">
+      {{ content | safe }}
+    </div>
+  </div>
+
+  {%- if newer or older %}
+  <nav class="post-nav" aria-label="Posts">
+    {%- if newer %}<a class="newer" href="{{ newer.url }}"><span>←</span> {{ newer.title }}</a>{% else %}<span></span>{% endif %}
+    {%- if older %}<a class="older" href="{{ older.url }}">{{ older.title }} <span>→</span></a>{% endif %}
+  </nav>
+  {%- endif %}
+
+  {%- if show_comments %}
+  <section class="comments" aria-labelledby="comments-h">
+    <h2 id="comments-h">{{ t.comments }}</h2>
+    <div id="giscus"
+         data-repo="{{ site.comments.repo }}"
+         data-repo-id="{{ site.comments.repo_id }}"
+         data-category="{{ site.comments.category }}"
+         data-category-id="{{ site.comments.category_id }}"
+         data-mapping="specific"
+         data-term="{{ comment_term }}"
+         data-strict="1"
+         data-reactions-enabled="1"
+         data-emit-metadata="0"
+         data-input-position="top"
+         data-lang="{{ lang }}"
+         data-loading="lazy"></div>
+  </section>
+  {%- endif %}
+</article>
+{% endblock content %}

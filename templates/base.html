@@ -1,0 +1,131 @@
+{% import "macros.html" as m -%}
+<!doctype html>
+<html lang="{{ lang }}" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title }}</title>
+  <meta name="description" content="{{ page.description }}">
+  <meta name="author" content="{{ site.author.name }}">
+  {%- if page.noindex %}
+  <meta name="robots" content="noindex, follow">
+  {%- endif %}
+  <link rel="canonical" href="{{ page.canonical }}">
+  {%- for alt in alternates %}
+  <link rel="alternate" hreflang="{{ alt.hreflang }}" href="{{ alt.href }}">
+  {%- endfor %}
+  <link rel="alternate" type="application/atom+xml" title="{{ t.site_title }}" href="{{ feed_url }}">
+
+  {# Open Graph / Twitter -#}
+  <meta property="og:site_name" content="{{ t.site_title }}">
+  <meta property="og:type" content="{{ page.og_type }}">
+  <meta property="og:title" content="{{ page.og_title }}">
+  <meta property="og:description" content="{{ page.description }}">
+  <meta property="og:url" content="{{ page.canonical }}">
+  <meta property="og:image" content="{{ page.og_image }}">
+  <meta property="og:locale" content="{{ og_locale }}">
+  {%- for l in og_locale_alternates %}
+  <meta property="og:locale:alternate" content="{{ l }}">
+  {%- endfor %}
+  {%- if post %}
+  <meta property="article:published_time" content="{{ post.date_iso }}">
+  {%- if post.updated_iso %}
+  <meta property="article:modified_time" content="{{ post.updated_iso }}">
+  {%- endif %}
+  {%- for tag in post.tags %}
+  <meta property="article:tag" content="{{ tag.name }}">
+  {%- endfor %}
+  {%- endif %}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page.og_title }}">
+  <meta name="twitter:description" content="{{ page.description }}">
+  <meta name="twitter:image" content="{{ page.og_image }}">
+  {%- if site.author.twitter %}
+  <meta name="twitter:creator" content="@{{ site.author.twitter }}">
+  {%- endif %}
+  {%- if site.seo.google_site_verification %}
+  <meta name="google-site-verification" content="{{ site.seo.google_site_verification }}">
+  {%- endif %}
+  {%- if site.seo.naver_site_verification %}
+  <meta name="naver-site-verification" content="{{ site.seo.naver_site_verification }}">
+  {%- endif %}
+  {%- if page.json_ld %}
+  <script type="application/ld+json">{{ page.json_ld | safe }}</script>
+  {%- endif %}
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
+  <script>
+    (function () {
+      var t; try { t = localStorage.getItem("theme"); } catch (e) {}
+      if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/syntax.css">
+  <script src="/js/main.js" defer></script>
+  {%- if page.has_mermaid %}
+  <script type="module" src="/js/mermaid-init.js"></script>
+  {%- endif %}
+</head>
+<body>
+  <a class="skip-link" href="#main">{{ t.skip_to_content }}</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="{{ home_url }}">{{ site.author.name }}</a>
+      <nav class="main-nav" aria-label="Main">
+        {%- for item in nav %}
+        <a href="{{ item.url }}"{% if item.key == section %} aria-current="page"{% endif %}>{{ item.title }}</a>
+        {%- endfor %}
+      </nav>
+      <div class="header-tools">
+        <details class="lang-menu">
+          <summary aria-label="{{ t.language }}">{{ m::icon(name="globe") }}<span>{{ lang | upper }}</span></summary>
+          <ul>
+            {%- for l in languages %}
+            <li><a href="{{ l.url }}" hreflang="{{ l.code }}" lang="{{ l.code }}"
+                   {%- if l.active %} aria-current="true"{% endif %}
+                   {%- if not l.exists %} class="missing"{% endif %}>{{ l.name }}</a></li>
+            {%- endfor %}
+          </ul>
+        </details>
+        <button class="theme-toggle" type="button" aria-label="{{ t.toggle_theme }}" title="{{ t.toggle_theme }}">
+          {{ m::icon(name="sun") }}{{ m::icon(name="moon") }}
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    {% block content %}{% endblock content %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© {{ year }} {{ site.author.name }}</p>
+      <p class="footer-links">
+        <a href="{{ feed_url }}">{{ m::icon(name="rss") }} {{ t.feed }}</a>
+        {%- if site.author.github %}
+        <a href="https://github.com/{{ site.author.github }}" rel="me noopener">{{ m::icon(name="github") }} GitHub</a>
+        {%- endif %}
+        <span class="built-with">Built with 🦀 Rust</span>
+      </p>
+    </div>
+  </footer>
+  {%- if dev %}
+  <script>
+    (function () {
+      var v = null;
+      setInterval(function () {
+        fetch("/__livereload").then(function (r) { return r.text(); }).then(function (n) {
+          if (v !== null && n !== v) location.reload();
+          v = n;
+        }).catch(function () {});
+      }, 700);
+    })();
+  </script>
+  {%- endif %}
+</body>
+</html>
