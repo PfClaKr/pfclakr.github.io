@@ -1,0 +1,36 @@
+language_name = "Français"
+locale = "fr_FR"
+
+site_title = "PfClaKr · Blog Tech"
+site_description = "Notes sur Rust, les systèmes et le génie logiciel."
+tagline = "Ingénieur logiciel · Passionné de Rust"
+
+nav_home = "Accueil"
+nav_posts = "Articles"
+nav_tags = "Étiquettes"
+nav_about = "À propos"
+
+recent_posts = "Articles récents"
+all_posts = "Tous les articles"
+see_all_posts = "Voir tous les articles →"
+no_posts = "Aucun article pour le moment."
+tags = "Étiquettes"
+tagged = "Articles avec l’étiquette"
+toc = "Sommaire"
+# {n} = minutes
+reading_time = "{n} min de lecture"
+published = "Publié le"
+updated = "Mis à jour le"
+comments = "Commentaires"
+also_available_in = "Également disponible en"
+original_language = "Langue d’origine"
+toggle_theme = "Basculer le mode sombre"
+skip_to_content = "Aller au contenu"
+language = "Langue"
+not_found_title = "Page introuvable"
+not_found_body = "La page que vous cherchez n’existe pas ou a été déplacée."
+back_home = "Retour à l’accueil"
+feed = "Flux RSS"
+
+date_format = "{day} {month} {year}"
+months = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="page-header">
+  <h1>{{ t.tags }}</h1>
+</header>
+{%- if tags %}
+<ul class="tag-list tag-cloud">
+  {%- for tag in tags %}<li><a class="tag" href="{{ tag.url }}">#{{ tag.name }} <span class="count">{{ tag.count }}</span></a></li>{% endfor %}
+</ul>
+{%- else %}
+<p class="muted">{{ t.no_posts }}</p>
+{%- endif %}
+{% endblock content %}

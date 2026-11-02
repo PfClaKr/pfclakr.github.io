@@ -1,0 +1,36 @@
+language_name = "한국어"
+locale = "ko_KR"
+
+site_title = "PfClaKr · 기술 블로그"
+site_description = "Rust, 시스템, 소프트웨어 엔지니어링에 대한 기록."
+tagline = "소프트웨어 엔지니어 · Rust 애호가"
+
+nav_home = "홈"
+nav_posts = "글"
+nav_tags = "태그"
+nav_about = "소개"
+
+recent_posts = "최근 글"
+all_posts = "전체 글"
+see_all_posts = "전체 글 보기 →"
+no_posts = "아직 글이 없습니다."
+tags = "태그"
+tagged = "태그"
+toc = "목차"
+# {n} = minutes
+reading_time = "{n}분 읽기"
+published = "작성일"
+updated = "수정일"
+comments = "댓글"
+also_available_in = "다른 언어로 읽기"
+original_language = "원문 언어"
+toggle_theme = "다크 모드 전환"
+skip_to_content = "본문으로 건너뛰기"
+language = "언어"
+not_found_title = "페이지를 찾을 수 없습니다"
+not_found_body = "찾으시는 페이지가 없거나 이동되었습니다."
+back_home = "홈으로 돌아가기"
+feed = "RSS 피드"
+
+date_format = "{year}년 {month} {day}일"
+months = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"]
