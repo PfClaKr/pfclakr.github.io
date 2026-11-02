@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% import "macros.html" as m %}
+{% block content %}
+<header class="page-header">
+  <h1>{{ heading }}</h1>
+</header>
+{%- if posts %}
+<div class="post-list">
+  {%- for post in posts %}
+  {{ m::post_card(post=post, t=t) }}
+  {%- endfor %}
+</div>
+{%- else %}
+<p class="muted">{{ t.no_posts }}</p>
+{%- endif %}
+{% endblock content %}

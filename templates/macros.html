@@ -1,0 +1,42 @@
+{% macro icon(name) -%}
+<svg class="icon" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+{%- if name == "github" -%}
+<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+{%- elif name == "linkedin" -%}
+<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+{%- elif name == "mail" -%}
+<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>
+{%- elif name == "x" -%}
+<path d="M4 4l16 16M20 4 4 20"/>
+{%- elif name == "rss" -%}
+<path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/>
+{%- elif name == "globe" -%}
+<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+{%- elif name == "sun" -%}
+<g class="i-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g>
+{%- elif name == "moon" -%}
+<path class="i-moon" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+{%- endif -%}
+</svg>
+{%- endmacro icon %}
+
+{% macro post_card(post, t) -%}
+<article class="post-card"{% if post.is_fallback %} lang="{{ post.lang }}"{% endif %}>
+  <h3 class="post-card-title"><a href="{{ post.url }}">{{ post.title }}</a></h3>
+  <p class="post-meta">
+    <time datetime="{{ post.date_iso }}">{{ post.date_display }}</time>
+    <span aria-hidden="true">·</span> {{ post.reading_time }}
+    {%- if post.is_fallback %}
+    <span class="badge" title="{{ t.original_language }}">{{ post.lang_name }}</span>
+    {%- endif %}
+  </p>
+  {%- if post.description %}
+  <p class="post-card-desc">{{ post.description }}</p>
+  {%- endif %}
+  {%- if post.tags %}
+  <ul class="tag-list">
+    {%- for tag in post.tags %}<li><a class="tag" href="{{ tag.url }}">#{{ tag.name }}</a></li>{% endfor %}
+  </ul>
+  {%- endif %}
+</article>
+{%- endmacro post_card %}
