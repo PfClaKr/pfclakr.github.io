@@ -84,5 +84,5 @@ zero. Then it redraws the grid with five 32×32 XPM sprites.
   maps: an empty file, a missing newline, a map that is one tile wide.
 - **Every exit path must free.** The window can close from ESC, the red cross, a win, or a parse
   error halfway through loading, and each one has to release the map and the images.
-- **Graph search shows up in the most unexpected places.** A "game" project turned out to be my
-  first real use of DFS.
+- **Graph search shows up in unexpected places.** Under the sprites, this "game" project is really
+  an exercise in depth-first search.

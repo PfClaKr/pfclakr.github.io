@@ -87,5 +87,5 @@ est à zéro. Puis il redessine la grille avec cinq sprites XPM de 32×32.
   sur les mauvaises cartes : fichier vide, saut de ligne manquant, carte d'une seule tuile de large.
 - **Chaque chemin de sortie doit libérer.** La fenêtre peut se fermer par ESC, par la croix, par une
   victoire ou par une erreur au milieu du chargement, et chacun doit libérer la carte et les images.
-- **La recherche dans un graphe surgit là où on ne l'attend pas.** Un projet de « jeu » a été ma
-  première vraie utilisation d'un DFS.
+- **La recherche dans un graphe surgit là où on ne l'attend pas.** Sous les sprites, ce projet de
+  « jeu » est surtout un exercice de parcours en profondeur.

@@ -89,8 +89,9 @@ mauvais et il s'arrête là.
 
 - Le drapeau partagé avec le handler devrait être un `volatile sig_atomic_t`, pas un simple `int`.
   Sans `volatile`, le compilateur peut sortir la lecture de la boucle et tourner à l'infini.
-- `write()` est async-signal-safe ; `printf` et `malloc` ne le sont pas. Se limiter à `write` et
-  `kill` dans le handler était le bon choix, même si je ne connaissais pas encore le terme.
+- `write()` et `kill()` sont async-signal-safe ; `printf` et `malloc` ne le sont pas. C'est parce
+  que le handler se limite à ces deux appels qu'il est correct, et ça mérite d'être écrit en
+  commentaire.
 
 minitalk est un jouet, mais c'est une bonne introduction aux événements asynchrones, et au fait que
 « je l'ai envoyé » et « il a été reçu » sont deux choses différentes. La leçon revient avec chaque

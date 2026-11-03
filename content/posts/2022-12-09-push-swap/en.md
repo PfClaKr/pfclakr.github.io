@@ -89,6 +89,5 @@ evenly spread inputs that's close enough, but a skewed input like `1 2 3 … 99 
 everything in one group and the recursion degrades. Normalizing the input first (replace each value by
 its rank, 0 to *n*−1) fixes this for free: the range midpoint becomes the true median.
 
-push_swap is the first 42 project where "it works" isn't enough and you have to measure. Writing a
-script that ran random inputs of 100 and 500 numbers and plotted the operation count taught me more
-than any single optimization.
+push_swap is the first 42 project where "it works" isn't enough: the evaluation runs random inputs
+of 100 and 500 numbers and counts the operations, so every idea has to be measured, not guessed.
