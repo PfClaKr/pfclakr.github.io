@@ -58,13 +58,16 @@ while (is_up)
 
 ```mermaid
 stateDiagram-v2
-    [*] --> 리스닝
-    리스닝 --> 읽기: accept() + O_NONBLOCK, EPOLLIN 감시
-    읽기 --> 읽기: 본문 미완성 (Content-Length)
-    읽기 --> 쓰기: 요청 완성, EPOLLOUT으로 전환
-    쓰기 --> 읽기: Connection keep-alive
-    쓰기 --> [*]: 닫기
-    읽기 --> [*]: EPOLLRDHUP (클라이언트가 끊음)
+    state "리스닝" as Listening
+    state "읽기" as Reading
+    state "쓰기" as Writing
+    [*] --> Listening
+    Listening --> Reading: accept() + O_NONBLOCK, EPOLLIN 감시
+    Reading --> Reading: 본문 미완성 (Content-Length)
+    Reading --> Writing: 요청 완성, EPOLLOUT으로 전환
+    Writing --> Reading: Connection keep-alive
+    Writing --> [*]: 닫기
+    Reading --> [*]: EPOLLRDHUP (클라이언트가 끊음)
 ```
 
 핵심은 `EPOLL_CTL_MOD`로 연결을 `EPOLLIN`과 `EPOLLOUT` 사이에서 전환하는 것입니다. 요청을 다 파싱하고

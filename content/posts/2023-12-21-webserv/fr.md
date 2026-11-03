@@ -60,13 +60,16 @@ Chaque descripteur est dans l'un de quelques états, et l'événement dit quoi f
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Écoute
-    Écoute --> Lecture: accept() + O_NONBLOCK, surveiller EPOLLIN
-    Lecture --> Lecture: corps incomplet (Content-Length)
-    Lecture --> Écriture: requête complète, passer en EPOLLOUT
-    Écriture --> Lecture: Connection keep-alive
-    Écriture --> [*]: fermeture
-    Lecture --> [*]: EPOLLRDHUP (le client a raccroché)
+    state "Écoute" as Listening
+    state "Lecture" as Reading
+    state "Écriture" as Writing
+    [*] --> Listening
+    Listening --> Reading: accept() + O_NONBLOCK, surveiller EPOLLIN
+    Reading --> Reading: corps incomplet (Content-Length)
+    Reading --> Writing: requête complète, passer en EPOLLOUT
+    Writing --> Reading: Connection keep-alive
+    Writing --> [*]: fermeture
+    Reading --> [*]: EPOLLRDHUP (le client a raccroché)
 ```
 
 Le geste clé, c'est de basculer une connexion entre `EPOLLIN` et `EPOLLOUT` avec `EPOLL_CTL_MOD`. On ne
