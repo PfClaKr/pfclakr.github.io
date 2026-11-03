@@ -20,7 +20,7 @@ name = "PfClaKr"
 avatar = "/img/avatar.svg"
 github = "PfClaKr"
 # Leave empty to hide.
-linkedin = ""
+linkedin = "https://www.linkedin.com/in/pfclakr"
 email = ""
 twitter = ""   # without "@", used for twitter:creator
 
