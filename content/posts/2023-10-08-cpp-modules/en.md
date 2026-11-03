@@ -54,8 +54,9 @@ Fixed::Fixed(const float a) : raw(roundf(a * (1 << frac))) {}      // 1.5 → 38
 float Fixed::toFloat() const { return (float)raw / (1 << frac); }
 ```
 
-Addition is plain integer addition. Multiplication needs a shift back, `(a * b) >> 8`, because the
-scales multiply too. It's the first time operator overloading feels useful rather than clever: once
+Addition is plain integer addition. Multiplication is subtler, because the scales multiply too: the
+raw product has to be shifted back, `(a * b) >> 8`. My version takes the easy route and goes through
+`toFloat()` and back, which is correct but gives up the point of fixed-point arithmetic. It's the first time operator overloading feels useful rather than clever: once
 `+ - * / < ==` and `<<` are defined, `Fixed` reads like a built-in type.
 
 ## Virtual destructors
@@ -130,6 +131,7 @@ GroupIterator<Iterator>::operator*() const
 
 ## Looking back
 
-C++98 is verbose, and after these modules I appreciate what C++11 added much more than if I'd started
-with it. Every `std::unique_ptr` is a destructor I don't have to remember, and every `= default` is a
-canonical form I don't have to write. Knowing what they replace is the point.
+C++98 is verbose, and that's the point. After writing every copy constructor and destructor by hand,
+modern C++ reads differently: each `std::unique_ptr` is a destructor you no longer have to remember,
+and each `= default` is a canonical form you no longer have to write. Knowing what they replace is what
+these modules teach.

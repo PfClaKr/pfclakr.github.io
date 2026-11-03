@@ -55,8 +55,9 @@ Fixed::Fixed(const float a) : raw(roundf(a * (1 << frac))) {}      // 1.5 → 38
 float Fixed::toFloat() const { return (float)raw / (1 << frac); }
 ```
 
-L'addition est une addition entière. La multiplication demande un décalage retour, `(a * b) >> 8`,
-parce que les échelles se multiplient aussi. C'est la première fois que la surcharge d'opérateurs
+L'addition est une addition entière. La multiplication est plus subtile, parce que les échelles se
+multiplient aussi : il faut redécaler le produit brut, `(a * b) >> 8`. Ma version prend le chemin facile
+et passe par `toFloat()` aller-retour, ce qui est correct mais renonce à l'intérêt de la virgule fixe. C'est la première fois que la surcharge d'opérateurs
 paraît utile plutôt que maligne : une fois `+ - * / < ==` et `<<` définis, `Fixed` se lit comme un type
 natif.
 
@@ -133,7 +134,7 @@ GroupIterator<Iterator>::operator*() const
 
 ## Avec le recul
 
-Le C++98 est verbeux, et après ces modules j'apprécie bien plus ce que le C++11 a apporté que si j'avais
-commencé par lui. Chaque `std::unique_ptr` est un destructeur dont je n'ai pas à me souvenir, chaque
-`= default` une forme canonique que je n'ai pas à écrire. Savoir ce qu'ils remplacent, c'est tout
-l'intérêt.
+Le C++98 est verbeux, et c'est voulu. Après avoir écrit chaque constructeur de copie et chaque
+destructeur à la main, le C++ moderne se lit autrement : chaque `std::unique_ptr` est un destructeur
+dont on n'a plus à se souvenir, chaque `= default` une forme canonique qu'on n'a plus à écrire. Savoir
+ce qu'ils remplacent, c'est ce que ces modules enseignent.
