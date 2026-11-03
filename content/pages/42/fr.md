@@ -12,15 +12,19 @@ Chaque nom renvoie vers son dépôt ; l’index complet se trouve dans
 
 ## Articles détaillés
 
+- [libft — écrire ma propre bibliothèque standard C](/fr/posts/libft/)
+- [get_next_line — lire un fichier ligne par ligne](/fr/posts/get-next-line/)
 - [KFS — écrire un noyau x86 de zéro en Rust](/fr/posts/kfs-rust-kernel/)
+- [BADASS — du L2 au-dessus du L3 avec VXLAN et BGP-EVPN](/fr/posts/badass-bgp-evpn-vxlan/)
+- [ft_ping — recoder ping avec des sockets ICMP brutes](/fr/posts/ft-ping-raw-sockets/)
 
 ## Fondamentaux en C
 
 | Projet | Description | Technos |
 |---|---|---|
-| [libft](https://github.com/PfClaKr/Ecole42Paris_libft) | Ma propre bibliothèque standard C (chaînes, mémoire, listes chaînées), réutilisée dans les projets suivants | C |
+| [libft](https://github.com/PfClaKr/Ecole42Paris_libft) | Ma propre bibliothèque standard C (chaînes, mémoire, listes chaînées), réutilisée dans les projets suivants · [article](/fr/posts/libft/) | C |
 | [ft_printf](https://github.com/PfClaKr/Ecole42Paris_ftprintf) | `printf` recodé avec des arguments variadiques | C |
-| [get_next_line](https://github.com/PfClaKr/Ecole42Paris_GNL) | Lecture d’un descripteur ligne par ligne avec un buffer statique ; le bonus gère plusieurs fd à la fois | C |
+| [get_next_line](https://github.com/PfClaKr/Ecole42Paris_GNL) | Lecture d’un descripteur ligne par ligne avec un buffer statique ; le bonus gère plusieurs fd à la fois · [article](/fr/posts/get-next-line/) | C |
 | [push_swap](https://github.com/PfClaKr/Ecole42Paris_PushSwap) | Tri d’entiers sur deux piles avec un minimum d’opérations, par partitionnement autour de pivots, avec un `checker` | C |
 | [so_long](https://github.com/PfClaKr/Ecole42Paris_Solong) | Un petit jeu 2D affiché avec la MiniLibX | C, MiniLibX |
 
@@ -65,8 +69,8 @@ Chaque nom renvoie vers son dépôt ; l’index complet se trouve dans
 
 | Projet | Description | Technos |
 |---|---|---|
-| [ft_ping](https://github.com/PfClaKr/Ecole42Paris_ft_ping) | `ping` recodé avec des sockets ICMP brutes : checksum, TTL, délais et statistiques de RTT | C |
-| [BADASS](https://github.com/PfClaKr/Ecole42Paris_BADASS) | Des labos GNS3 avec FRRouting : VXLAN statique et multicast, puis une fabric spine-leaf BGP-EVPN avec route reflector | GNS3, FRR, Docker |
+| [ft_ping](https://github.com/PfClaKr/Ecole42Paris_ft_ping) | `ping` recodé avec des sockets ICMP brutes : checksum, TTL, délais et statistiques de RTT · [article](/fr/posts/ft-ping-raw-sockets/) | C |
+| [BADASS](https://github.com/PfClaKr/Ecole42Paris_BADASS) | Des labos GNS3 avec FRRouting : VXLAN statique et multicast, puis une fabric spine-leaf BGP-EVPN avec route reflector · [article](/fr/posts/badass-bgp-evpn-vxlan/) | GNS3, FRR, Docker |
 
 ## DevOps et web
 

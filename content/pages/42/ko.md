@@ -12,15 +12,19 @@ in_menu = true
 
 ## 상세 글
 
+- [libft — 나만의 C 표준 라이브러리 만들기](/ko/posts/libft/)
+- [get_next_line — 파일을 한 줄씩 읽기](/ko/posts/get-next-line/)
 - [KFS — Rust로 x86 커널을 처음부터 만들기](/ko/posts/kfs-rust-kernel/)
+- [BADASS — VXLAN과 BGP-EVPN으로 L3 위에 L2 얹기](/ko/posts/badass-bgp-evpn-vxlan/)
+- [ft_ping — raw ICMP 소켓으로 ping 다시 만들기](/ko/posts/ft-ping-raw-sockets/)
 
 ## C 기초
 
 | 프로젝트 | 내용 | 기술 |
 |---|---|---|
-| [libft](https://github.com/PfClaKr/Ecole42Paris_libft) | 문자열·메모리·연결 리스트 함수를 직접 구현한 C 표준 라이브러리. 이후 프로젝트에서 계속 재사용 | C |
+| [libft](https://github.com/PfClaKr/Ecole42Paris_libft) | 문자열·메모리·연결 리스트 함수를 직접 구현한 C 표준 라이브러리. 이후 프로젝트에서 계속 재사용 · [상세 글](/ko/posts/libft/) | C |
 | [ft_printf](https://github.com/PfClaKr/Ecole42Paris_ftprintf) | 가변 인자로 `printf` 재구현 | C |
-| [get_next_line](https://github.com/PfClaKr/Ecole42Paris_GNL) | static 버퍼로 파일 디스크립터를 한 줄씩 읽기. 보너스는 여러 fd 동시 처리 | C |
+| [get_next_line](https://github.com/PfClaKr/Ecole42Paris_GNL) | static 버퍼로 파일 디스크립터를 한 줄씩 읽기. 보너스는 여러 fd 동시 처리 · [상세 글](/ko/posts/get-next-line/) | C |
 | [push_swap](https://github.com/PfClaKr/Ecole42Paris_PushSwap) | 스택 두 개와 제한된 연산만으로 정수를 최소 횟수로 정렬. 피벗 기반 분할 + `checker` 구현 | C |
 | [so_long](https://github.com/PfClaKr/Ecole42Paris_Solong) | MiniLibX로 렌더링하는 작은 2D 게임 | C, MiniLibX |
 
@@ -65,8 +69,8 @@ in_menu = true
 
 | 프로젝트 | 내용 | 기술 |
 |---|---|---|
-| [ft_ping](https://github.com/PfClaKr/Ecole42Paris_ft_ping) | raw ICMP 소켓으로 `ping` 재구현: 체크섬, TTL, 타임아웃, RTT 통계 | C |
-| [BADASS](https://github.com/PfClaKr/Ecole42Paris_BADASS) | FRRouting을 쓴 GNS3 실습: 정적·멀티캐스트 VXLAN, 그리고 Route Reflector를 둔 BGP-EVPN 스파인-리프 구조 | GNS3, FRR, Docker |
+| [ft_ping](https://github.com/PfClaKr/Ecole42Paris_ft_ping) | raw ICMP 소켓으로 `ping` 재구현: 체크섬, TTL, 타임아웃, RTT 통계 · [상세 글](/ko/posts/ft-ping-raw-sockets/) | C |
+| [BADASS](https://github.com/PfClaKr/Ecole42Paris_BADASS) | FRRouting을 쓴 GNS3 실습: 정적·멀티캐스트 VXLAN, 그리고 Route Reflector를 둔 BGP-EVPN 스파인-리프 구조 · [상세 글](/ko/posts/badass-bgp-evpn-vxlan/) | GNS3, FRR, Docker |
 
 ## DevOps와 웹
 
