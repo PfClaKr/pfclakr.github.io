@@ -7,9 +7,9 @@
       <span class="sr-only">{{ t.published }}</span>
       <time datetime="{{ post.date_iso }}" itemprop="datePublished">{{ post.date_display }}</time>
       {%- if post.updated_display %}
-      <span aria-hidden="true">·</span> {{ t.updated }} <time datetime="{{ post.updated_iso }}" itemprop="dateModified">{{ post.updated_display }}</time>
+<span class="sep" aria-hidden="true">·</span>{{ t.updated }} <time datetime="{{ post.updated_iso }}" itemprop="dateModified">{{ post.updated_display }}</time>
       {%- endif %}
-      <span aria-hidden="true">·</span> {{ post.reading_time }}
+<span class="sep" aria-hidden="true">·</span>{{ post.reading_time }}
     </p>
     {%- if post.tags %}
     <ul class="tag-list">
@@ -17,9 +17,9 @@
     </ul>
     {%- endif %}
     {%- if translations %}
-    <p class="translations">{{ t.also_available_in }}:
+    <p class="translations"><span>{{ t.also_available_in }}</span>
       {%- for tr in translations %}
-      <a href="{{ tr.url }}" hreflang="{{ tr.lang }}" lang="{{ tr.lang }}">{{ tr.lang_name }}</a>{% if not loop.last %},{% endif %}
+      <a href="{{ tr.url }}" hreflang="{{ tr.lang }}" lang="{{ tr.lang }}">{{ tr.lang_name }}</a>
       {%- endfor %}
     </p>
     {%- endif %}
@@ -28,7 +28,7 @@
   <div class="post-layout{% if toc %} has-toc{% endif %}">
     {%- if toc %}
     <nav class="toc" aria-label="{{ t.toc }}">
-      <details open>
+      <details>
         <summary>{{ t.toc }}</summary>
         <ol>
           {%- for h in toc %}
@@ -45,8 +45,8 @@
 
   {%- if newer or older %}
   <nav class="post-nav" aria-label="Posts">
-    {%- if newer %}<a class="newer" href="{{ newer.url }}"><span>←</span> {{ newer.title }}</a>{% else %}<span></span>{% endif %}
-    {%- if older %}<a class="older" href="{{ older.url }}">{{ older.title }} <span>→</span></a>{% endif %}
+    {%- if newer %}<a class="newer" href="{{ newer.url }}" rel="prev"><span class="label">← {{ t.newer_post }}</span>{{ newer.title }}</a>{% endif %}
+    {%- if older %}<a class="older" href="{{ older.url }}" rel="next"><span class="label">{{ t.older_post }} →</span>{{ older.title }}</a>{% endif %}
   </nav>
   {%- endif %}
 

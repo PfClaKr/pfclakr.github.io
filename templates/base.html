@@ -55,7 +55,7 @@
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#0d0f13" media="(prefers-color-scheme: dark)">
   <script>
     (function () {
       var t; try { t = localStorage.getItem("theme"); } catch (e) {}
@@ -75,7 +75,7 @@
   {%- block site_header %}
   <header class="site-header">
     <div class="container header-inner">
-      <a class="brand" href="{{ home_url }}">{{ site.author.name }}</a>
+      <a class="brand" href="{{ home_url }}"><span class="sig" aria-hidden="true">~/</span>{{ site.author.name }}</a>
       <nav class="main-nav" aria-label="Main">
         {%- for item in nav %}
         <a href="{{ item.url }}"{% if item.key == section %} aria-current="page"{% endif %}>{{ item.title }}</a>
@@ -97,6 +97,9 @@
         </button>
       </div>
     </div>
+    {%- if post %}
+    <div class="read-progress" aria-hidden="true"></div>
+    {%- endif %}
   </header>
   {%- endblock site_header %}
 

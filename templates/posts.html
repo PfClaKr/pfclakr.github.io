@@ -2,14 +2,28 @@
 {% import "macros.html" as m %}
 {% block content %}
 <header class="page-header">
-  <h1>{{ heading }}</h1>
+  <h1>{{ heading }}{% if posts %}<span class="count">{{ posts | length }}</span>{% endif %}</h1>
 </header>
 {%- if posts %}
-<div class="post-list">
-  {%- for post in posts %}
-  {{ m::post_card(post=post, t=t) }}
-  {%- endfor %}
-</div>
+{%- set_global year = "" %}
+{%- for post in posts %}
+{%- set y = post.date_iso | truncate(length=4, end="") %}
+{%- if y != year %}
+{%- if not loop.first %}
+  </div>
+</section>
+{%- endif %}
+<section class="year-group" aria-labelledby="y-{{ y }}">
+  <h2 class="year-heading" id="y-{{ y }}">{{ y }}</h2>
+  <div class="post-list">
+{%- set_global year = y %}
+{%- endif %}
+    {{ m::post_card(post=post, t=t) }}
+{%- if loop.last %}
+  </div>
+</section>
+{%- endif %}
+{%- endfor %}
 {%- else %}
 <p class="muted">{{ t.no_posts }}</p>
 {%- endif %}

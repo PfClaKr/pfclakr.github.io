@@ -25,7 +25,7 @@
   <h3 class="post-card-title"><a href="{{ post.url }}">{{ post.title }}</a></h3>
   <p class="post-meta">
     <time datetime="{{ post.date_iso }}">{{ post.date_display }}</time>
-    <span aria-hidden="true">·</span> {{ post.reading_time }}
+<span class="sep" aria-hidden="true">·</span>{{ post.reading_time }}
     {%- if post.is_fallback %}
     <span class="badge" title="{{ t.original_language }}">{{ post.lang_name }}</span>
     {%- endif %}

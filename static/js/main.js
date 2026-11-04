@@ -1,4 +1,4 @@
-// Theme toggle, copy buttons, TOC highlighting and giscus comments.
+// Theme toggle, header behaviour, copy buttons, TOC, reading progress and giscus comments.
 (function () {
   "use strict";
   var root = document.documentElement;
@@ -35,12 +35,49 @@
     btn.textContent = "Copy";
     btn.addEventListener("click", function () {
       navigator.clipboard.writeText(pre.innerText).then(function () {
-        btn.textContent = "✓";
-        setTimeout(function () { btn.textContent = "Copy"; }, 1200);
+        btn.textContent = "Copied";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "Copy"; btn.classList.remove("done"); }, 1400);
       });
     });
     wrap.appendChild(btn);
   });
+
+  // ── TOC: expanded as a sidebar on wide screens, collapsed inline otherwise ──
+  var tocBox = document.querySelector(".toc details");
+  if (tocBox) {
+    var wide = matchMedia("(min-width: 1280px)");
+    var syncToc = function () { tocBox.open = wide.matches; };
+    syncToc();
+    if (wide.addEventListener) wide.addEventListener("change", syncToc);
+    tocBox.addEventListener("click", function (e) {
+      if (!wide.matches && e.target.closest("a")) tocBox.open = false;
+    });
+  }
+
+  // ── Header: hide while scrolling down on small screens; reading progress ──
+  var header = document.querySelector(".site-header");
+  var bar = document.querySelector(".read-progress");
+  var article = document.querySelector(".post .prose");
+  if (header) {
+    var lastY = window.scrollY, ticking = false;
+    var onScroll = function () {
+      ticking = false;
+      var y = window.scrollY;
+      var hide = y > lastY && y > header.offsetHeight + 40 && !header.contains(document.activeElement);
+      if (Math.abs(y - lastY) > 4) { header.classList.toggle("is-hidden", hide); lastY = y; }
+      if (bar && article) {
+        var r = article.getBoundingClientRect();
+        var total = r.height - window.innerHeight * 0.6;
+        var p = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 1;
+        bar.style.transform = "scaleX(" + p + ")";
+      }
+    };
+    window.addEventListener("scroll", function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+    }, { passive: true });
+    onScroll();
+  }
 
   // ── Highlight the current section in the TOC ──
   var tocLinks = document.querySelectorAll(".toc a");
