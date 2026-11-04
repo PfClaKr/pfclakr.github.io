@@ -6,7 +6,7 @@
   if (!box || !("WebAssembly" in window)) return;
   var pre = document.getElementById("hero-screen");
   var stat = document.getElementById("hero-stat");
-  var rootStyle = box.style;
+  var rootStyle = document.documentElement.style;
   var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   var mx = -1, my = -1, held = 0, clickEdge = 0;

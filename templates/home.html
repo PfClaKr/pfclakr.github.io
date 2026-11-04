@@ -1,62 +1,51 @@
 {% extends "base.html" %}
 {% import "macros.html" as m %}
-{% block content %}
-<section id="hero-fx" class="hero-fx" aria-labelledby="hero-name">
-  <pre id="hero-screen" class="hero-screen" aria-hidden="true"></pre>
-  <div class="hero-veil" aria-hidden="true"></div>
-  <div class="hero-body">
-    <p class="hero-prompt"><span class="sig">$</span> whoami</p>
-    <h1 id="hero-name">{{ site.author.name }}</h1>
-    <p class="tagline">{{ t.tagline }}</p>
-    <div class="bio">{{ bio | safe }}</div>
-    <ul class="social">
+{% block body_attrs %} class="landing"{% endblock body_attrs %}
+{% block site_header %}{% endblock site_header %}
+{% block site_footer %}{% endblock site_footer %}
+{% block main %}
+<pre id="hero-screen" class="ld-screen" aria-hidden="true"></pre>
+<div class="ld-veil" aria-hidden="true"></div>
+
+<div id="hero-fx" class="ld">
+  <div class="ld-top">
+    <span class="ld-where">{{ site.base_url | replace(from="https://", to="") }}</span>
+    <nav class="ld-langs" aria-label="{{ t.language }}">
+      {%- for l in languages %}
+      <a href="{{ l.url }}" hreflang="{{ l.code }}" lang="{{ l.code }}"{% if l.active %} aria-current="true"{% endif %}>{{ l.code | upper }}</a>
+      {%- endfor %}
+    </nav>
+  </div>
+
+  <main id="main" class="ld-main">
+    <p class="ld-prompt"><span class="sig">$</span> whoami</p>
+    <h1>{{ site.author.name }}</h1>
+    <div class="ld-bio">{{ bio | safe }}</div>
+    <nav class="ld-nav" aria-label="Main">
+      {%- for item in nav %}
+      {%- if item.key != "home" %}
+      <a href="{{ item.url }}"><span class="s">./</span>{{ item.key }}</a>
+      {%- endif %}
+      {%- endfor %}
       {%- if site.author.github %}
-      <li><a href="https://github.com/{{ site.author.github }}" rel="me noopener">{{ m::icon(name="github") }}<span>GitHub</span></a></li>
+      <a href="https://github.com/{{ site.author.github }}" rel="me noopener">github <span class="s">&#8599;</span></a>
       {%- endif %}
       {%- if site.author.linkedin %}
-      <li><a href="{{ site.author.linkedin }}" rel="me noopener">{{ m::icon(name="linkedin") }}<span>LinkedIn</span></a></li>
+      <a href="{{ site.author.linkedin }}" rel="me noopener">linkedin <span class="s">&#8599;</span></a>
       {%- endif %}
-      {%- if site.author.twitter %}
-      <li><a href="https://x.com/{{ site.author.twitter }}" rel="me noopener">{{ m::icon(name="x") }}<span>X</span></a></li>
-      {%- endif %}
-      {%- if site.author.email %}
-      <li><a href="mailto:{{ site.author.email }}">{{ m::icon(name="mail") }}<span>Email</span></a></li>
-      {%- endif %}
-      <li><a href="{{ feed_url }}">{{ m::icon(name="rss") }}<span>RSS</span></a></li>
-    </ul>
-  </div>
-  <div class="hero-status" aria-hidden="true">
-    <span id="hero-stat" class="hero-stat">loading simulation&hellip;</span>
-    <span class="fx-switch" role="group" aria-label="background simulation">
+    </nav>
+  </main>
+
+  <div class="ld-status">
+    <span class="ok" aria-hidden="true">&#9679;</span>
+    <span id="hero-stat" class="ld-stat">&hellip;</span>
+    <span class="fx-switch" role="group" aria-label="background">
       <span class="lbl">bg:</span>
       <button type="button" data-key="ripple" aria-pressed="true">ripple</button>
       <button type="button" data-key="life" aria-pressed="false">life</button>
       <button type="button" data-key="field" aria-pressed="false">field</button>
     </span>
   </div>
-</section>
-
-<section class="home-section" aria-labelledby="recent">
-  <h2 id="recent">{{ t.recent_posts }}</h2>
-  {%- if recent_posts %}
-  <div class="post-list">
-    {%- for post in recent_posts %}
-    {{ m::post_card(post=post, t=t) }}
-    {%- endfor %}
-  </div>
-  <p><a class="more" href="{{ posts_url }}">{{ t.see_all_posts }}</a></p>
-  {%- else %}
-  <p class="muted">{{ t.no_posts }}</p>
-  {%- endif %}
-</section>
-
-{%- if top_tags %}
-<section class="home-section" aria-labelledby="tags-h">
-  <h2 id="tags-h">{{ t.tags }}</h2>
-  <ul class="tag-list">
-    {%- for tag in top_tags %}<li><a class="tag" href="{{ tag.url }}">#{{ tag.name }} <span class="count">{{ tag.count }}</span></a></li>{% endfor %}
-  </ul>
-</section>
-{%- endif %}
+</div>
 <script src="/js/hero.js" defer></script>
-{% endblock content %}
+{% endblock main %}
