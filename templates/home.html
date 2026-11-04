@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% import "macros.html" as m %}
 {% block content %}
-<section class="card-hero" aria-labelledby="hero-name">
-  {%- if site.author.avatar %}
-  <img class="avatar" src="{{ site.author.avatar }}" alt="{{ site.author.name }}" width="112" height="112">
-  {%- endif %}
-  <div class="hero-text">
+<section id="hero-fx" class="hero-fx" aria-labelledby="hero-name">
+  <pre id="hero-screen" class="hero-screen" aria-hidden="true"></pre>
+  <div class="hero-veil" aria-hidden="true"></div>
+  <div class="hero-body">
+    <p class="hero-prompt"><span class="sig">$</span> whoami</p>
     <h1 id="hero-name">{{ site.author.name }}</h1>
     <p class="tagline">{{ t.tagline }}</p>
     <div class="bio">{{ bio | safe }}</div>
@@ -24,6 +24,15 @@
       {%- endif %}
       <li><a href="{{ feed_url }}">{{ m::icon(name="rss") }}<span>RSS</span></a></li>
     </ul>
+  </div>
+  <div class="hero-status" aria-hidden="true">
+    <span id="hero-stat" class="hero-stat">loading simulation&hellip;</span>
+    <span class="fx-switch" role="group" aria-label="background simulation">
+      <span class="lbl">bg:</span>
+      <button type="button" data-key="ripple" aria-pressed="true">ripple</button>
+      <button type="button" data-key="life" aria-pressed="false">life</button>
+      <button type="button" data-key="field" aria-pressed="false">field</button>
+    </span>
   </div>
 </section>
 
@@ -49,4 +58,5 @@
   </ul>
 </section>
 {%- endif %}
+<script src="/js/hero.js" defer></script>
 {% endblock content %}
