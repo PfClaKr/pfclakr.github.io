@@ -70,7 +70,7 @@
   <script type="module" src="/js/mermaid-init.js"></script>
   {%- endif %}
 </head>
-<body{% block body_attrs %}{% endblock body_attrs %}>
+<body{% block body_attrs %}{% endblock body_attrs %} data-copy="{{ t.copy }}" data-copied="{{ t.copied }}">
   <a class="skip-link" href="#main">{{ t.skip_to_content }}</a>
   {%- block site_header %}
   <header class="site-header">
@@ -109,6 +109,12 @@
   </main>
   {%- endblock main %}
 
+  {%- if post %}
+  <button class="to-top" type="button" aria-label="{{ t.back_to_top }}" title="{{ t.back_to_top }}" hidden>
+    <svg class="icon" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </button>
+  {%- endif %}
+
   {%- block site_footer %}
   <footer class="site-footer">
     <div class="container footer-inner">
@@ -117,6 +123,9 @@
         <a href="{{ feed_url }}">{{ m::icon(name="rss") }} {{ t.feed }}</a>
         {%- if site.author.github %}
         <a href="https://github.com/{{ site.author.github }}" rel="me noopener">{{ m::icon(name="github") }} GitHub</a>
+        {%- endif %}
+        {%- if site.author.linkedin %}
+        <a href="{{ site.author.linkedin }}" rel="me noopener">{{ m::icon(name="linkedin") }} LinkedIn</a>
         {%- endif %}
         <span class="built-with">Built with 🦀 Rust</span>
       </p>

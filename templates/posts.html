@@ -3,12 +3,19 @@
 {% block content %}
 <header class="page-header">
   <h1>{{ heading }}{% if posts %}<span class="count">{{ posts | length }}</span>{% endif %}</h1>
+  {%- if posts | length > 5 %}
+  <div class="post-filter" hidden>
+    <svg class="icon" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input type="search" placeholder="{{ t.filter_posts }}" aria-label="{{ t.filter_posts }}" autocomplete="off" spellcheck="false" enterkeyhint="search">
+    <kbd aria-hidden="true">/</kbd>
+  </div>
+  {%- endif %}
 </header>
 {%- if posts %}
-{%- set_global year = "" %}
+{%- set_global cur_year = "" %}
 {%- for post in posts %}
 {%- set y = post.date_iso | truncate(length=4, end="") %}
-{%- if y != year %}
+{%- if y != cur_year %}
 {%- if not loop.first %}
   </div>
 </section>
@@ -16,7 +23,7 @@
 <section class="year-group" aria-labelledby="y-{{ y }}">
   <h2 class="year-heading" id="y-{{ y }}">{{ y }}</h2>
   <div class="post-list">
-{%- set_global year = y %}
+{%- set_global cur_year = y %}
 {%- endif %}
     {{ m::post_card(post=post, t=t) }}
 {%- if loop.last %}
@@ -24,6 +31,7 @@
 </section>
 {%- endif %}
 {%- endfor %}
+<p class="muted filter-empty" hidden>{{ t.no_results }}</p>
 {%- else %}
 <p class="muted">{{ t.no_posts }}</p>
 {%- endif %}
