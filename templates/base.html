@@ -70,8 +70,9 @@
   <script type="module" src="/js/mermaid-init.js"></script>
   {%- endif %}
 </head>
-<body>
+<body{% block body_attrs %}{% endblock body_attrs %}>
   <a class="skip-link" href="#main">{{ t.skip_to_content }}</a>
+  {%- block site_header %}
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="{{ home_url }}">{{ site.author.name }}</a>
@@ -97,11 +98,15 @@
       </div>
     </div>
   </header>
+  {%- endblock site_header %}
 
+  {%- block main %}
   <main id="main" class="container">
     {% block content %}{% endblock content %}
   </main>
+  {%- endblock main %}
 
+  {%- block site_footer %}
   <footer class="site-footer">
     <div class="container footer-inner">
       <p>© {{ year }} {{ site.author.name }}</p>
@@ -114,6 +119,7 @@
       </p>
     </div>
   </footer>
+  {%- endblock site_footer %}
   {%- if dev %}
   <script>
     (function () {

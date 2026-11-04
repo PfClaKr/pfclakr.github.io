@@ -92,60 +92,66 @@ main.container { flex: 1; padding-top: 40px; padding-bottom: 64px; }
 .lang-menu li a.missing { color: var(--fg-muted); }
 
 /* ───────────── Home / business card ───────────── */
-/* ── interactive ASCII hero (dark terminal panel in both themes) ── */
-.hero-fx {
-  --fx-phosphor: #5f8378;
-  --fx-accent: #b7935a;
-  --fx-opacity: 0.55;
-  position: relative; overflow: hidden; isolation: isolate;
-  min-height: clamp(380px, 62vh, 560px);
-  margin-bottom: 48px; padding: 40px 32px 56px;
-  display: flex; flex-direction: column; justify-content: center;
-  border: 1px solid #1c2230; border-radius: calc(var(--radius) + 4px);
-  background: #0a0b0e; color: #cdd3cf; font-family: var(--mono);
-}
-.hero-screen {
-  position: absolute; inset: 0; margin: 0; z-index: 0; pointer-events: none;
+/* ── interactive ASCII landing (full-screen, dark terminal) ── */
+:root { --fx-phosphor: #5f8378; --fx-accent: #b7935a; --fx-opacity: 0.55; }
+body.landing { overflow: hidden; height: 100%; background: #0a0b0e; color: #cdd3cf; }
+body.landing .skip-link { z-index: 100; }
+.ld-screen {
+  position: fixed; inset: 0; margin: 0; z-index: 0; pointer-events: none;
   color: var(--fx-phosphor); opacity: var(--fx-opacity);
   white-space: pre; overflow: hidden; user-select: none;
   font-family: var(--mono); letter-spacing: 0;
   transition: color .5s ease, opacity .5s ease;
 }
-.hero-veil {
-  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+.ld-veil {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
   background:
-    radial-gradient(130% 100% at 18% 40%, rgba(10,11,14,.82) 0%, rgba(10,11,14,.38) 44%, transparent 74%),
-    linear-gradient(180deg, rgba(10,11,14,.5), transparent 24%, transparent 72%, rgba(10,11,14,.72));
+    radial-gradient(130% 100% at 18% 42%, rgba(10,11,14,.82) 0%, rgba(10,11,14,.36) 46%, transparent 76%),
+    linear-gradient(180deg, rgba(10,11,14,.55), transparent 20%, transparent 74%, rgba(10,11,14,.72));
 }
-.hero-body { position: relative; z-index: 2; max-width: 54ch; }
-.hero-prompt { margin: 0 0 14px; font-size: .82rem; color: #6a7a74; letter-spacing: .02em; }
-.hero-prompt .sig { color: var(--fx-accent); }
-.hero-fx h1 { margin: 0; font-size: clamp(1.9rem, 5.2vw, 3rem); line-height: 1.08; letter-spacing: -.02em; color: #eef0f2; font-weight: 700; }
-.hero-fx .tagline { margin: 10px 0 12px; color: var(--fx-accent); font-weight: 600; }
-.hero-fx .bio p { margin: 0 0 .5em; color: #aab2ad; }
-.hero-fx .social { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 18px 0 0; }
-.hero-fx .social a {
-  display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px;
-  border: 1px solid #262d3a; border-radius: 999px; background: rgba(12,14,18,.55);
-  color: #cdd3cf; font-size: 14px; font-weight: 500; backdrop-filter: blur(4px);
+.ld {
+  position: fixed; inset: 0; z-index: 2;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: clamp(22px, 5vh, 52px) max(28px, env(safe-area-inset-right, 0px)) clamp(18px, 4vh, 40px) max(28px, env(safe-area-inset-left, 0px));
+  font-family: var(--mono);
 }
-.hero-fx .social a:hover { border-color: var(--fx-phosphor); color: #fff; text-decoration: none; }
-.hero-status {
-  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
-  display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center;
-  padding: 10px 16px; font-size: .72rem; color: #6a7a74; font-family: var(--mono);
-  border-top: 1px solid #1c2230; background: linear-gradient(0deg, rgba(10,11,14,.78), transparent);
+.ld-top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; font-size: .8rem; color: #6a7a74; }
+.ld-where::before { content: "// "; color: #3c4a46; }
+.ld-langs { display: flex; gap: 12px; }
+.ld-langs a { color: #6a7a74; }
+.ld-langs a:hover { color: #cdd3cf; text-decoration: none; }
+.ld-langs a[aria-current] { color: var(--fx-accent); }
+.ld-main { max-width: 56ch; display: flex; flex-direction: column; gap: 18px; }
+.ld-prompt { margin: 0; font-size: .82rem; color: #6a7a74; letter-spacing: .02em; }
+.ld-prompt .sig { color: var(--fx-accent); }
+.ld h1 { margin: 0; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.05; letter-spacing: -.02em; color: #eef0f2; font-weight: 700; }
+.ld-bio { color: #aab2ad; max-width: 48ch; line-height: 1.55; }
+.ld-bio p { margin: 0 0 .5em; }
+.ld-bio a { color: var(--fx-accent); }
+.ld-nav { display: flex; flex-wrap: wrap; gap: 10px 12px; margin-top: 4px; }
+.ld-nav a {
+  color: #cdd3cf; font-size: .92rem; padding: 9px 14px;
+  border: 1px solid #262d3a; border-radius: 8px; background: rgba(12,14,18,.5);
 }
+.ld-nav a .s { color: #6a7a74; }
+.ld-nav a:hover { border-color: var(--fx-phosphor); color: #fff; text-decoration: none; transform: translateY(-1px); }
+.ld-nav a:hover .s { color: var(--fx-phosphor); }
+.ld-status {
+  display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center;
+  font-size: .72rem; color: #6a7a74; border-top: 1px solid #1c2230; padding-top: 14px;
+}
+.ld-status .ok { color: var(--fx-phosphor); transition: color .5s ease; }
 .fx-switch { margin-left: auto; display: flex; align-items: center; gap: 2px; }
 .fx-switch .lbl { color: #3c4a46; margin-right: 6px; }
 .fx-switch button {
-  font: inherit; font-size: .72rem; color: #6a7a74; background: none; border: 0;
-  padding: 3px 8px; cursor: pointer; border-radius: 5px;
+  font: inherit; font-family: var(--mono); font-size: .72rem; color: #6a7a74;
+  background: none; border: 0; padding: 3px 8px; cursor: pointer; border-radius: 5px;
 }
 .fx-switch button:hover { color: #cdd3cf; }
 .fx-switch button[aria-pressed="true"] { color: var(--fx-accent); }
 .fx-switch button[aria-pressed="true"]::before { content: "["; color: #3c4a46; }
 .fx-switch button[aria-pressed="true"]::after { content: "]"; color: #3c4a46; }
+
 .home-section { margin-bottom: 48px; }
 .home-section > h2 { font-size: 1.25rem; margin: 0 0 16px; }
 .more { font-weight: 600; }
@@ -273,10 +279,9 @@ main.container { flex: 1; padding-top: 40px; padding-bottom: 64px; }
   .brand { flex: 1; }
   .main-nav { order: 3; flex-basis: 100%; margin: 4px -8px 6px; }
   .main-nav a { padding: 6px 8px; }
-  .hero-fx { min-height: clamp(340px, 72vh, 520px); padding: 24px 18px 52px; }
-  .hero-screen { opacity: .42; }
-  .hero-fx .social a span { display: none; }
-  .hero-fx .social a { padding: 8px; }
+  .ld-screen { opacity: .42; }
+  .ld-main { gap: 14px; }
+  .ld-status .fx-switch { margin-left: 0; flex-basis: 100%; }
   .post-nav { flex-direction: column; }
   .post-nav a { max-width: none; }
 }
