@@ -31,7 +31,7 @@ content/
   home/{lang}.md          홈(명함) 자기소개
   pages/about/{lang}.md   고정 페이지 → /about/, /fr/about/, /ko/about/
   posts/
-    2026-11-01-hello-world/
+    2021-12-03-libft/
       en.md  fr.md  ko.md     같은 폴더 = 서로의 번역본
       diagram.png             글에 쓰는 이미지 (상대 경로로 참조)
 templates/                Tera 템플릿 (HTML 구조)
