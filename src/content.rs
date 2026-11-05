@@ -221,7 +221,7 @@ fn load_doc(
         date,
         time,
         updated,
-        rendered: markdown::render(&body, asset_base),
+        rendered: markdown::render_lang(&body, asset_base, lang),
         meta,
         source: path.to_path_buf(),
     })
@@ -356,7 +356,7 @@ pub fn load(root: &Path, cfg: &Config, drafts: bool) -> Result<Content> {
         let p = content.join("home").join(format!("{lang}.md"));
         if p.exists() {
             let raw = fs::read_to_string(&p)?;
-            home.insert(lang.clone(), markdown::render(&raw, None));
+            home.insert(lang.clone(), markdown::render_lang(&raw, None, lang));
         }
     }
 
