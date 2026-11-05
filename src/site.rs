@@ -177,6 +177,7 @@ impl Site {
             self.render_post_list(lang)?;
             self.render_tags(lang)?;
             self.render_feed(lang)?;
+            self.write_search_index(lang)?;
         }
         for gi in 0..self.content.posts.len() {
             for lang in self.content.posts[gi]
@@ -230,6 +231,9 @@ impl Site {
     }
     fn feed_url(&self, lang: &str) -> String {
         format!("{}/atom.xml", self.cfg.prefix(lang))
+    }
+    fn search_url(&self, lang: &str) -> String {
+        format!("{}/search.json", self.cfg.prefix(lang))
     }
     fn abs(&self, path: &str) -> String {
         if path.contains("://") {
@@ -324,6 +328,7 @@ impl Site {
         ctx.insert("comments_enabled", &self.cfg.comments.enabled());
         ctx.insert("home_url", &self.home_url(lang));
         ctx.insert("feed_url", &self.feed_url(lang));
+        ctx.insert("search_url", &self.search_url(lang));
         ctx.insert(
             "year",
             &chrono::Datelike::year(&chrono::Local::now().date_naive()),
@@ -777,6 +782,62 @@ impl Site {
             .context("rendering atom.xml")?;
         let path = self.feed_url(lang);
         self.write_file(path.trim_start_matches('/'), &xml)
+    }
+
+    /// Client-side search index for `lang`: every listed post plus the pages
+    /// written in that language. Loaded on demand by `static/js/main.js`.
+    fn write_search_index(&self, lang: &str) -> Result<()> {
+        #[derive(Serialize)]
+        struct Entry {
+            /// title
+            t: String,
+            /// url
+            u: String,
+            /// date (display), empty for pages
+            d: String,
+            /// tags
+            g: Vec<String>,
+            /// original language name when it differs from `lang`
+            l: Option<String>,
+            /// description
+            s: String,
+            /// plain body text
+            x: String,
+        }
+        let mut entries: Vec<Entry> = self
+            .listing(lang)
+            .into_iter()
+            .map(|doc| Entry {
+                t: doc.meta.title.clone(),
+                u: self.post_url(doc),
+                d: doc
+                    .date
+                    .map(|d| self.t(lang).format_date(d))
+                    .unwrap_or_default(),
+                g: doc.meta.tags.clone(),
+                l: (doc.lang != lang).then(|| self.t(&doc.lang).language_name.clone()),
+                s: doc.description().to_string(),
+                x: doc.rendered.text.clone(),
+            })
+            .collect();
+        entries.extend(
+            self.content
+                .pages
+                .iter()
+                .filter_map(|g| g.docs.get(lang))
+                .map(|doc| Entry {
+                    t: doc.meta.title.clone(),
+                    u: self.page_url(doc),
+                    d: String::new(),
+                    g: Vec::new(),
+                    l: None,
+                    s: doc.description().to_string(),
+                    x: doc.rendered.text.clone(),
+                }),
+        );
+        let json = serde_json::to_string(&entries)?;
+        let path = self.search_url(lang);
+        self.write_file(path.trim_start_matches('/'), &json)
     }
 
     fn add_sitemap(&self, url: &str, lastmod: Option<NaiveDate>, alternates: &Alternates) {

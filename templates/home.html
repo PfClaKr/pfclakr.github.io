@@ -27,6 +27,7 @@
       <a href="{{ item.url }}"><span class="s">./</span>{{ item.key }}</a>
       {%- endif %}
       {%- endfor %}
+      <button type="button" class="search-toggle">search <span class="s">/</span></button>
       {%- if site.author.github %}
       <a href="https://github.com/{{ site.author.github }}" rel="me noopener">github <span class="s">&#8599;</span></a>
       {%- endif %}
@@ -37,8 +38,7 @@
   </main>
 
   <div class="ld-status">
-    <span class="ok" aria-hidden="true">&#9679;</span>
-    <span id="hero-stat" class="ld-stat">&hellip;</span>
+    <span class="ld-stat-line"><span class="ok" aria-hidden="true">&#9679;</span><span id="hero-stat" class="ld-stat">&hellip;</span></span>
     <span class="fx-switch" role="group" aria-label="background">
       <span class="lbl">bg:</span>
       <button type="button" data-key="ripple" aria-pressed="true">ripple</button>

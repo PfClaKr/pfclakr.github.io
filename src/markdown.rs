@@ -38,6 +38,8 @@ pub struct Rendered {
     pub word_count: usize,
     /// Plain text of the first paragraph, used as a fallback meta description.
     pub summary: String,
+    /// Plain text of the whole document (code blocks excluded), for search.
+    pub text: String,
 }
 
 /// Renders markdown. `asset_base` (e.g. `/posts/hello/`) is prepended to relative image URLs.
@@ -112,6 +114,8 @@ pub fn render(markdown: &str, asset_base: Option<&str>) -> Rendered {
                     },
                     &mut used_ids,
                 );
+                out.text.push_str(&text);
+                out.text.push(' ');
                 let lvl = heading_level(level);
                 if (2..=3).contains(&lvl) {
                     out.toc.push(TocEntry {
@@ -187,6 +191,7 @@ pub fn render(markdown: &str, asset_base: Option<&str>) -> Rendered {
                 events.push(Event::Start(Tag::Paragraph));
             }
             Event::End(TagEnd::Paragraph) => {
+                out.text.push(' ');
                 if in_first_paragraph {
                     in_first_paragraph = false;
                     summary_done = !out.summary.trim().is_empty();
@@ -195,6 +200,7 @@ pub fn render(markdown: &str, asset_base: Option<&str>) -> Rendered {
             }
 
             Event::Text(t) => {
+                out.text.push_str(&t);
                 out.word_count += t.split_whitespace().count();
                 if in_first_paragraph {
                     out.summary.push_str(&t);
@@ -202,22 +208,39 @@ pub fn render(markdown: &str, asset_base: Option<&str>) -> Rendered {
                 events.push(Event::Text(t));
             }
             Event::Code(t) => {
+                out.text.push_str(&t);
                 out.word_count += t.split_whitespace().count();
                 if in_first_paragraph {
                     out.summary.push_str(&t);
                 }
                 events.push(Event::Code(t));
             }
-            Event::SoftBreak | Event::HardBreak if in_first_paragraph => {
-                out.summary.push(' ');
+            Event::SoftBreak | Event::HardBreak => {
+                out.text.push(' ');
+                if in_first_paragraph {
+                    out.summary.push(' ');
+                }
                 events.push(event);
             }
 
-            other => events.push(other),
+            other => {
+                // Block ends separate words; inline ends (links, emphasis) must not.
+                let inline_end = matches!(
+                    other,
+                    Event::End(
+                        TagEnd::Link | TagEnd::Emphasis | TagEnd::Strong | TagEnd::Strikethrough
+                    )
+                );
+                if matches!(other, Event::End(_)) && !inline_end {
+                    out.text.push(' ');
+                }
+                events.push(other)
+            }
         }
     }
 
     pulldown_cmark::html::push_html(&mut out.html, events.into_iter());
+    out.text = out.text.split_whitespace().collect::<Vec<_>>().join(" ");
     out.summary = truncate_chars(
         out.summary
             .split_whitespace()
@@ -386,6 +409,12 @@ mod tests {
         let r = render("![diagram](./arch.png)", Some("/posts/hello/"));
         assert!(r.html.contains("src=\"/posts/hello/arch.png\""));
         assert!(r.html.contains("loading=\"lazy\""));
+    }
+
+    #[test]
+    fn plain_text_skips_code_blocks() {
+        let r = render("# Title\n\nSome *text* and `code`, [링크](/x)의 뜻.\n\n```rust\nfn hidden() {}\n```\n\n- item one\n- item two\n", None);
+        assert_eq!(r.text, "Title Some text and code, 링크의 뜻. item one item two");
     }
 
     #[test]
