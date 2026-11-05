@@ -18,11 +18,9 @@ run in a 1 GB VM, which is the whole reason the project is approachable on a lap
 Part 1 provisions two VirtualBox VMs with Vagrant: a K3s **server** (control plane) and a K3s **agent**
 (worker), on a private network.
 
-```text
-┌─ ychunS 192.168.56.110 ─┐        ┌─ schaehunSW 192.168.56.111 ─┐
-│  K3s server             │◀──────│  K3s agent (joins via token)  │
-│  publishes node-token   │ :6443 │                               │
-└─────────────────────────┘        └───────────────────────────────┘
+```mermaid
+flowchart LR
+    A["schaehunSW · 192.168.56.111<br/>K3s agent<br/>joins with the token"] -->|"join :6443"| S["ychunS · 192.168.56.110<br/>K3s server<br/>publishes node-token"]
 ```
 
 The one real problem is the join token. An agent needs the server's node-token to join, but both VMs

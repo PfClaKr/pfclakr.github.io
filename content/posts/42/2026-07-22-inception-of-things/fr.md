@@ -18,11 +18,9 @@ portable.
 La partie 1 provisionne deux VMs VirtualBox avec Vagrant : un **serveur** K3s (plan de contrôle) et un
 **agent** K3s (worker), sur un réseau privé.
 
-```text
-┌─ ychunS 192.168.56.110 ─┐        ┌─ schaehunSW 192.168.56.111 ─┐
-│  serveur K3s            │◀──────│  agent K3s (rejoint via token)│
-│  publie le node-token   │ :6443 │                               │
-└─────────────────────────┘        └───────────────────────────────┘
+```mermaid
+flowchart LR
+    A["schaehunSW · 192.168.56.111<br/>agent K3s<br/>rejoint avec le token"] -->|"jonction :6443"| S["ychunS · 192.168.56.110<br/>serveur K3s<br/>publie le node-token"]
 ```
 
 Le seul vrai problème, c'est le token de jonction. Un agent a besoin du node-token du serveur pour
