@@ -53,7 +53,13 @@
 
 /* ───────────── Base ───────────── */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: calc(var(--header-h) + 20px); background: var(--bg); }
+html {
+  -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: calc(var(--header-h) + 20px); background: var(--bg);
+  /* Always reserve the scrollbar's width (Windows/Linux): otherwise pages that
+     scroll are 7–8px narrower than ones that don't, and the centred header,
+     content and footer jump sideways between the landing and the blog. */
+  scrollbar-gutter: stable;
+}
 body {
   margin: 0;
   background: var(--bg);
@@ -139,7 +145,7 @@ main, .site-footer, .to-top { position: relative; z-index: 2; }
 .main-nav a[aria-current="page"]::after {
   content: ""; position: absolute; left: 9px; right: 9px; bottom: 1px; height: 2px; border-radius: 2px; background: var(--accent);
 }
-.header-tools { display: flex; align-items: center; gap: 2px; margin-left: auto; }
+.header-tools { display: flex; align-items: center; gap: 2px; margin-left: auto; margin-right: -8px; } /* icon, not its padding, lines up with the content edge */
 .theme-toggle, .site-header .search-toggle {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; min-width: 36px;
   background: none; border: 0; color: var(--fg-muted); cursor: pointer;
@@ -193,7 +199,7 @@ main, .site-footer, .to-top { position: relative; z-index: 2; }
 .stat-line { display: flex; align-items: baseline; gap: 10px; min-width: 0; flex: 1 1 auto; }
 .stat-line .ok { color: var(--fx-phosphor); transition: color .5s ease; flex: none; }
 [data-fx="off"] .stat-line .ok { color: var(--fg-faint); }
-.fx-switch { margin-left: auto; display: flex; align-items: center; gap: 2px; flex: none; }
+.fx-switch { margin-left: auto; margin-right: -6px; display: flex; align-items: center; gap: 2px; flex: none; }
 .fx-switch .lbl { color: var(--fg-faint); margin-right: 2px; }
 .fx-switch button {
   font: inherit; color: var(--fg-muted); background: none; border: 0; padding: 4px 6px; cursor: pointer; border-radius: 5px;
@@ -224,8 +230,10 @@ main.ld-main {
 .ld-bio p:last-child { margin-bottom: 0; }
 .ld-bio strong { color: var(--fg-strong); }
 .ld-bio a { color: var(--fx-accent); }
-.ld-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
-.ld-nav a {
+/* Two rows: the site's sections, then the external profiles. */
+.ld-nav { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin-top: 6px; }
+.ld-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.ld-nav a, .not-found .homes a {
   color: var(--fg); font-size: .92rem; padding: 9px 14px; min-height: 42px;
   display: inline-flex; align-items: center; gap: 2px;
   border: 1px solid var(--border-strong); border-radius: var(--radius);
@@ -234,9 +242,10 @@ main.ld-main {
   transition: border-color .15s, color .15s, transform .15s;
 }
 .ld-nav a .s { color: var(--fg-faint); transition: color .15s; }
-.ld-nav a:hover { border-color: var(--fx-phosphor); color: var(--fg-strong); text-decoration: none; transform: translateY(-1px); }
+.ld-nav a:hover, .not-found .homes a:hover { border-color: var(--fx-phosphor); color: var(--fg-strong); text-decoration: none; transform: translateY(-1px); }
 .ld-nav a:hover .s { color: var(--fx-phosphor); }
-.ld-nav a:active { transform: none; }
+.ld-nav a:active, .not-found .homes a:active { transform: none; }
+.ld-ext a { color: var(--fg-muted); }
 
 /* Shared terminal prompt line ("$ whoami", "$ ls ./posts", …). */
 .prompt { margin: 0 0 10px; font: 500 .82rem/1.5 var(--mono); color: var(--fg-muted); letter-spacing: .01em; }
@@ -248,7 +257,7 @@ main.ld-main {
 .prompt a.path { color: inherit; }
 .prompt a.path:hover { color: var(--accent); text-decoration: none; }
 /* Folder tree (`tree -d`), rendered with real box-drawing characters. */
-.dir-tree { margin: 22px 0 4px; font: 13.5px/1.5 var(--mono); }
+.dir-tree { margin: 22px 0 4px; max-width: 420px; font: 13.5px/1.5 var(--mono); } /* keeps the counts near their names; same width as the filter */
 .dir-tree ul { list-style: none; margin: 0; padding: 0; }
 .dir-tree li { display: flex; align-items: baseline; white-space: pre; min-width: 0; }
 .dir-tree .branch { color: var(--fg-faint); }
@@ -505,12 +514,11 @@ html.search-open { overflow: hidden; }
 .not-found { text-align: center; padding: 56px 0; }
 .not-found .big { font: 800 5rem/1 var(--mono); margin: 0 0 8px; color: var(--accent); letter-spacing: -.04em; }
 .not-found .homes { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 28px; }
-.not-found .homes a { padding: 8px 16px; border: 1px solid var(--border-strong); border-radius: var(--radius); color: var(--fg); font-family: var(--mono); }
-.not-found .homes a:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+.not-found .homes a { font-family: var(--mono); line-height: 1.5; }
 
 /* ───────────── Touch devices ───────────── */
 @media (hover: none) {
-  .ld-nav a:hover, .post-nav a:hover { transform: none; }
+  .ld-nav a:hover, .not-found .homes a:hover, .post-nav a:hover { transform: none; }
   .search-hint, .site-header .search-toggle kbd { display: none; }
 }
 
@@ -554,7 +562,7 @@ html.search-open { overflow: hidden; }
   }
   .prose .code-wrap, .prose > pre.code, .prose pre.mermaid { border-radius: 0; border-left: 0; border-right: 0; }
   .code-bar { padding-left: var(--gutter); padding-right: calc(var(--gutter) - 8px); }
-  .post-filter { max-width: none; }
+  .post-filter, .dir-tree { max-width: none; }
   .to-top { width: 40px; height: 40px; }
   .prose pre.code { font-size: 12.5px; padding: 14px var(--gutter); }
   .prose table { font-size: 14px; }
@@ -568,7 +576,8 @@ html.search-open { overflow: hidden; }
   .fx-screen { opacity: calc(var(--fx-opacity) * .8); }
   main.ld-main { gap: 14px; padding-top: 28px; padding-bottom: 36px; }
   .ld-bio { font-size: .92rem; }
-  .ld-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .ld-nav { align-items: stretch; gap: 8px; }
+  .ld-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .ld-nav a { justify-content: center; padding: 8px 10px; font-size: .88rem; }
   .stat-line { flex-basis: 100%; }
   .fx-switch { margin-left: 0; }
