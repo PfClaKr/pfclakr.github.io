@@ -6,16 +6,22 @@
   <h1>{{ site.author.name }}</h1>
   <div class="ld-bio">{{ bio | safe }}</div>
   <nav class="ld-nav" aria-label="{{ t.nav_home }}">
-    {%- for item in nav %}
-    {%- if item.key != "home" %}
-    <a href="{{ item.url }}" title="{{ item.title }}"><span class="s">./</span>{{ item.key }}</a>
-    {%- endif %}
-    {%- endfor %}
-    {%- if site.author.github %}
-    <a href="https://github.com/{{ site.author.github }}" rel="me noopener">github <span class="s">&#8599;</span></a>
-    {%- endif %}
-    {%- if site.author.linkedin %}
-    <a href="{{ site.author.linkedin }}" rel="me noopener">linkedin <span class="s">&#8599;</span></a>
+    <div class="ld-row">
+      {%- for item in nav %}
+      {%- if item.key != "home" %}
+      <a href="{{ item.url }}" title="{{ item.title }}"><span class="s">./</span>{{ item.key }}</a>
+      {%- endif %}
+      {%- endfor %}
+    </div>
+    {%- if site.author.github or site.author.linkedin %}
+    <div class="ld-row ld-ext">
+      {%- if site.author.github %}
+      <a href="https://github.com/{{ site.author.github }}" rel="me noopener">github <span class="s">&#8599;</span></a>
+      {%- endif %}
+      {%- if site.author.linkedin %}
+      <a href="{{ site.author.linkedin }}" rel="me noopener">linkedin <span class="s">&#8599;</span></a>
+      {%- endif %}
+    </div>
     {%- endif %}
   </nav>
 </main>
