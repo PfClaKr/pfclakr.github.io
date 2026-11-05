@@ -24,13 +24,13 @@
   --header-h: 60px;
   /* Pretendard is self-hosted (static/fonts/pretendard, SIL OFL 1.1) so every
      device renders the same Korean/Latin glyphs. */
-  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+  --font: Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
           "Segoe UI", "Noto Sans KR", "Malgun Gothic", Roboto, "Helvetica Neue", Arial, sans-serif;
   /* Hangul has no glyphs in the mono fonts; fall back to Pretendard for it. */
   /* JetBrains Mono is self-hosted (Latin only) so phones without a mono font
      still get one; Hangul falls through to Pretendard. */
   --mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
-          "D2Coding", "Pretendard Variable", monospace;
+          "D2Coding", Pretendard, monospace;
   color-scheme: light;
 }
 [data-theme="dark"] {

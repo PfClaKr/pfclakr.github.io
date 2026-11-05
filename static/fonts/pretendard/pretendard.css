@@ -1,0 +1,44 @@
+/*
+Copyright (c) 2021 Kil Hyung-jin, with Reserved Font Name Pretendard.
+https://github.com/orioncactus/pretendard
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+Full license text: LICENSE.txt in this directory; FAQ at:
+http://scripts.sil.org/OFL
+*/
+
+/* Official Pretendard "subset" builds, unmodified (Latin + KS X 1001 Hangul
+   and more, ~2,780 syllables: every syllable used on this site). One file per
+   weight, long-cached and shared by every page, so moving between pages never
+   waits for new per-character chunks and text does not re-flow when they
+   arrive. `fallback`: ~100 ms invisible, then the fallback font; a cached font
+   is ready before that, so it is used from the first paint.
+   Only the weights the stylesheet uses are declared. */
+@font-face {
+  font-family: "Pretendard";
+  font-style: normal;
+  font-display: fallback;
+  font-weight: 400;
+  src: url(./Pretendard-Regular.subset.woff2) format("woff2");
+}
+@font-face {
+  font-family: "Pretendard";
+  font-style: normal;
+  font-display: fallback;
+  font-weight: 500;
+  src: url(./Pretendard-Medium.subset.woff2) format("woff2");
+}
+@font-face {
+  font-family: "Pretendard";
+  font-style: normal;
+  font-display: fallback;
+  font-weight: 600;
+  src: url(./Pretendard-SemiBold.subset.woff2) format("woff2");
+}
+@font-face {
+  font-family: "Pretendard";
+  font-style: normal;
+  font-display: fallback;
+  font-weight: 700;
+  src: url(./Pretendard-Bold.subset.woff2) format("woff2");
+}
