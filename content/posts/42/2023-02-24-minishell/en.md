@@ -112,4 +112,4 @@ exit status, the number of running children, and a PID.
 
 The repository includes a tester that runs hundreds of command lines in both bash and minishell and
 compares stdout, stderr and exit codes, with separate suites for syntax, pipes, redirections, builtins
-and signals. A shell is mostly a parser, and parsers are mostly edge cases.
+and signals.

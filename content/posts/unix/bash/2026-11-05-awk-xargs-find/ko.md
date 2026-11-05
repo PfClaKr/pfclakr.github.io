@@ -201,6 +201,3 @@ find src -type f -mtime -1 -print0 | xargs -0 grep -l TODO
 # /etc/passwd에는 있지만 허용 목록에는 없는 사용자
 comm -23 <(cut -d: -f1 /etc/passwd | sort) <(sort allowed-users.txt)
 ```
-
-패턴은 늘 같습니다. 하나는 고르고, 하나는 바꾸고, 하나는 모읍니다. 각 도구를 따로 이해하고 나면
-긴 파이프라인도 마법이 아니라 한 문장처럼 읽힙니다.

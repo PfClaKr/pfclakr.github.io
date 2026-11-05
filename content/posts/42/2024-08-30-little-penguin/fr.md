@@ -156,10 +156,3 @@ Deux réserves honnêtes : `struct mount` est privée (elle vient de `fs/mount.h
 donc le module ne compile qu'avec un arbre source complet du noyau. Et le parcours ne prend aucun verrou :
 un montage ou démontage simultané pourrait modifier l'arbre pendant la lecture. Le vrai `/proc/mounts`
 tient le verrou du namespace pendant l'itération.
-
-## Ce qui reste
-
-L'essentiel de little-penguin, c'est apprendre où vivent les choses : les logs dans `dmesg`, les
-périphériques dans `/dev` gérés par udev, les réglages de débogage dans debugfs, les vues des processus
-dans procfs. Une fois cette carte connue, le code noyau intimide beaucoup moins, et c'est ce qui a rendu
-abordable l'écriture d'un noyau de zéro dans [KFS](/fr/posts/42/kfs-rust-kernel/).

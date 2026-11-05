@@ -1,6 +1,1 @@
 title = { en = "OS", fr = "OS", ko = "OS" }
-
-[description]
-en = "Operating-system level design for embedded Linux devices."
-fr = "Conception au niveau du système d'exploitation pour les appareils Linux embarqués."
-ko = "임베디드 리눅스 장비의 운영체제 수준 설계."

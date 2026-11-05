@@ -176,7 +176,3 @@ et work sous `/run`.
   Dans un système A/B c'est naturellement le cas : le lower est le slot démarré, en lecture seule.
 - Le noyau a besoin de `CONFIG_OVERLAY_FS`, et `findmnt /etc` montre ce qui est réellement monté :
   c'est la première chose à vérifier quand un réglage « ne tient pas ».
-
-OverlayFS est le bon outil pour donner quelques coins modifiables à un système en lecture seule. Ce
-qu'il faut concevoir dès le départ, c'est ce qui arrive à ces coins quand le système en dessous change,
-parce que par défaut, la réponse est « ils l'emportent ».

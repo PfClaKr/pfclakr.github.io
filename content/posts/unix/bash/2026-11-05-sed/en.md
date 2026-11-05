@@ -210,6 +210,4 @@ POSIX subset and test it with `sed --posix` on GNU.
 sed is line-oriented and has no notion of fields or nesting. When the job is "the third column
 where the second is greater than 100", reach for awk. For JSON use `jq`, for CSV with quoted commas
 use a real parser, and if the multi-line script needs more than a couple of `N`/`G` tricks, a few
-lines of awk or Python will be easier to read in six months. The
-[next post](/posts/unix/bash/awk-xargs-find/) covers awk and the other tools that tend to show up
-next to sed in pipelines.
+lines of awk or Python will be easier to read in six months.

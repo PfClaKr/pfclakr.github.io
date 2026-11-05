@@ -218,8 +218,3 @@ de blocage, le bootloader finit par revenir tout seul au slot précédent.
   sur l'appareil et de ne télécharger que le reste, ce qui compte beaucoup sur une liaison cellulaire.
 - **Les hooks sont du code qui tourne en root pendant les mises à jour.** Gardez-les petits, idempotents,
   et couverts par les mêmes tests que le reste de la mise à jour.
-
-RAUC garde petite et bien testée la partie qui ne doit jamais échouer (vérifier, écrire l'autre slot,
-basculer l'état du bootloader), et vous laisse la politique. C'est ce découpage qui le rend si adapté à
-une conception A/B : les décisions risquées restent au même endroit, et l'appareil retrouve toujours le
-chemin d'un système qui fonctionnait.

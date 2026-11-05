@@ -11,8 +11,7 @@ quelqu'un pour brancher une clé USB, et la mise à jour doit survivre aux pires
 courant en pleine écriture, noyau qui panique sur une nouvelle révision matérielle, service qui se bloque.
 
 La réponse la plus courante en Linux embarqué est le **schéma A/B** : garder deux copies complètes du
-système et ne jamais écraser celle qui tourne. Cet article explique l'idée et la mécanique autour ;
-le [suivant](/fr/posts/architecture/os/ota-update/rauc/) montre comment RAUC l'implémente.
+système et ne jamais écraser celle qui tourne. Cet article explique l'idée et la mécanique autour.
 
 ## Ce qu'une mise à jour doit garantir
 
@@ -138,12 +137,3 @@ comprend pas. Les migrations doivent être rétrocompatibles, versionnées, ou r
   OSTree garde un stockage de fichiers adressé par contenu et bascule les déploiements avec des liens
   physiques. Les deux offrent un basculement atomique ; l'approche par image est plus simple à
   raisonner et à vérifier.
-
-## En résumé
-
-Le schéma A/B se décrit simplement : ne jamais écrire sur ce qui tourne, basculer avec un seul
-drapeau, compter les tentatives, et laisser une vérification de santé décider si le basculement tient.
-L'essentiel du travail réel est dans les détails autour : le script du bootloader, le watchdog, une
-vérification qui a du sens, et des données qui survivent à un retour arrière.
-L'[article suivant](/fr/posts/architecture/os/ota-update/rauc/) présente RAUC, qui gère la partie
-installation et bootloader de tout cela en Linux embarqué.

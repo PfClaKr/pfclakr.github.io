@@ -131,10 +131,3 @@ GroupIterator<Iterator>::operator*() const
     return this->iter[this->size - 1];   // un groupe est représenté par son dernier élément
 }
 ```
-
-## Avec le recul
-
-Le C++98 est verbeux, et c'est voulu. Après avoir écrit chaque constructeur de copie et chaque
-destructeur à la main, le C++ moderne se lit autrement : chaque `std::unique_ptr` est un destructeur
-dont on n'a plus à se souvenir, chaque `= default` une forme canonique qu'on n'a plus à écrire. Savoir
-ce qu'ils remplacent, c'est ce que ces modules enseignent.

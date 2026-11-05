@@ -169,13 +169,4 @@ Start one host without an IP and a MAC-only Type 2 route (`[2]:[0]:[48]:[mac]`) 
 **every** leaf. Give the hosts addresses and the route grows an IP (`…:[32]:[20.1.1.1]`). Then
 `ping` works across the fabric, and Wireshark shows ICMP inside UDP 4789 between loopbacks.
 
-## Takeaways
-
-- **Underlay and overlay are separate jobs.** OSPF only makes loopbacks reachable; BGP only
-  carries reachability information; VXLAN only moves frames.
-- **Part 2's problems are control-plane problems.** Flood and learn and multicast underlays go
-  away once the network *tells* each VTEP what it would otherwise have to discover.
-- **Route reflectors carry control traffic only.** The spine is not a VTEP; data flows leaf to
-  leaf.
-
 Configs for all three parts are on [GitHub](https://github.com/PfClaKr/Ecole42Paris_BADASS).

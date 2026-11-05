@@ -215,5 +215,3 @@ sed travaille par lignes et ne connaît ni les champs ni l'imbrication. Quand il
 troisième colonne quand la deuxième dépasse 100 », prenez awk. Pour du JSON, `jq` ; pour du CSV avec
 des virgules entre guillemets, un vrai parseur ; et si le script multi-ligne demande plus de deux ou
 trois astuces `N`/`G`, quelques lignes d'awk ou de Python seront plus lisibles dans six mois.
-L'[article suivant](/fr/posts/unix/bash/awk-xargs-find/) couvre awk et les autres outils qu'on
-croise à côté de sed dans les pipelines.

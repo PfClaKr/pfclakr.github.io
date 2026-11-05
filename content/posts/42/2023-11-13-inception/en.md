@@ -107,6 +107,3 @@ Inception passed, but reading it again, a few things stand out:
 - **Non-idempotent config.** The WordPress entrypoint appends `listen = 0.0.0.0:9000` to the php-fpm
   pool config on **every** start. It works because the last line wins, but the file grows each restart.
   This belongs in the image, at build time.
-
-The main takeaway isn't Docker syntax. A container is a process with a filesystem, and everything,
-including signals, PID 1, and init scripts, follows from that.

@@ -123,7 +123,3 @@ The server passed every evaluation test, but reading it again with more experien
 - **Headers in one read.** Headers are assumed to fit in the first 2 KiB `recv()`. A slow client, or a
   request with many cookies, breaks that assumption.
 - **No idle timeout.** A client that opens a connection and sends nothing keeps its socket forever.
-
-webserv is where "it works in the browser" and "it's correct" visibly come apart. Browsers are
-forgiving; `curl`, `telnet`, and a stress tester are not. When the two disagree, the RFCs (7230 to 7235
-at the time, now 9110 and 9112) are the referee.

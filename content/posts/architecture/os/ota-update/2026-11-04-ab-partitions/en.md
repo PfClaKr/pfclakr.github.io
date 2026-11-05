@@ -12,7 +12,7 @@ a service that hangs.
 
 The most common answer in embedded Linux is the **A/B layout**: keep two complete copies of the
 system and never overwrite the one you are running. This post explains the idea and the mechanics
-around it; the [next one](/posts/architecture/os/ota-update/rauc/) shows how RAUC implements it.
+around it.
 
 ## What an update must guarantee
 
@@ -129,11 +129,3 @@ backward compatible, versioned, or postponed until after "mark good".
 - **Image-based vs file-based.** RAUC, SWUpdate and Mender write whole images into slots; OSTree
   keeps a content-addressed store of files and switches deployments with hard links. Both give
   atomic switches; the image-based approach is easier to reason about and to verify.
-
-## Summary
-
-The A/B scheme is simple to describe: never write to what you are running, switch with a single flag,
-count the attempts, and let a health check decide whether the switch sticks. Most of the real work is
-in the details around it: the bootloader script, the watchdog, a meaningful health check, and data that
-survives a rollback. The [next post](/posts/architecture/os/ota-update/rauc/) looks at RAUC, which
-handles the install and bootloader part of this on embedded Linux.

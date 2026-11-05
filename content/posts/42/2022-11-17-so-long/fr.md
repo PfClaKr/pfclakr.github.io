@@ -80,12 +80,3 @@ mlx_loop(win.mlx_ptr);
 À chaque touche, le handler regarde la case visée : un mur ne fait rien, le sol déplace le joueur,
 un objet le déplace et décrémente le compteur, et la sortie ne termine la partie que si le compteur
 est à zéro. Puis il redessine la grille avec cinq sprites XPM de 32×32.
-
-## Ce que j'en retiens
-
-- **Valider l'entrée avant de lui faire confiance.** L'essentiel du code, et de l'évaluation, porte
-  sur les mauvaises cartes : fichier vide, saut de ligne manquant, carte d'une seule tuile de large.
-- **Chaque chemin de sortie doit libérer.** La fenêtre peut se fermer par ESC, par la croix, par une
-  victoire ou par une erreur au milieu du chargement, et chacun doit libérer la carte et les images.
-- **La recherche dans un graphe surgit là où on ne l'attend pas.** Sous les sprites, ce projet de
-  « jeu » est surtout un exercice de parcours en profondeur.

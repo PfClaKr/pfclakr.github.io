@@ -206,7 +206,3 @@ find src -type f -mtime -1 -print0 | xargs -0 grep -l TODO
 # Users that exist in /etc/passwd but are missing from an allow-list
 comm -23 <(cut -d: -f1 /etc/passwd | sort) <(sort allowed-users.txt)
 ```
-
-The pattern is always the same: one tool selects, one transforms, one aggregates. Once each of them
-is understood on its own, the long pipelines stop looking like magic and start reading like a
-sentence.

@@ -68,11 +68,3 @@ $(NAME): $(OBJS)
 ```
 
 Linking against it (`-L. -lft`) copies only the object files a program actually uses.
-
-## What it teaches
-
-- **Edge cases are the spec.** `n == 0`, overlapping buffers, empty strings, `INT_MIN` in `itoa`:
-  the peer evaluation and the test suites go straight for them.
-- **Every `malloc` needs an owner.** Who frees it, and what happens if it fails halfway?
-- **A library is a contract.** Later projects depend on these functions behaving exactly like
-  their man pages.

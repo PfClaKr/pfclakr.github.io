@@ -109,6 +109,3 @@ Inception est passé, mais en le relisant, quelques points ressortent :
 - **Une configuration non idempotente.** L'entrypoint WordPress ajoute `listen = 0.0.0.0:9000` à la
   configuration du pool php-fpm à **chaque** démarrage. Ça marche parce que la dernière ligne gagne,
   mais le fichier grossit à chaque redémarrage. Ça devrait être fait dans l'image, à la construction.
-
-La leçon principale n'est pas la syntaxe de Docker. Un conteneur est un processus avec un système de
-fichiers, et tout le reste, signaux, PID 1, scripts d'init, en découle.

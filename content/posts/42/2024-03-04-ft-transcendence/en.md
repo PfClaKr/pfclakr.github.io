@@ -125,6 +125,3 @@ failure modes.
   connection. A dedicated worker per room would be cleaner.
 - **Collision is checked at discrete steps.** As the ball speeds up, it can jump past a 10-pixel paddle
   in one tick. Sweeping the ball's path between ticks fixes that.
-
-Three people, a dozen technologies, and a deadline: ft_transcendence was as much about splitting work
-and agreeing on message formats as about code.

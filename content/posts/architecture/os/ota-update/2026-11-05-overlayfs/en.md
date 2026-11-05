@@ -172,7 +172,3 @@ whose changes you never want to keep. Same mount, with the upper and work direct
   system that is naturally true: the lower is the booted, read-only slot.
 - The kernel needs `CONFIG_OVERLAY_FS`, and `findmnt /etc` shows what is actually mounted, which is the
   first thing to check when a setting "doesn't stick".
-
-OverlayFS is the right tool for giving a read-only system a few writable corners. The thing to design
-up front is what happens to those corners when the system underneath them changes, because by default
-the answer is "they win".

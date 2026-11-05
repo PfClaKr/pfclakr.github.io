@@ -127,6 +127,3 @@ ses pannes à elle.
   liée à une connexion. Un worker dédié par salle serait plus propre.
 - **Les collisions sont testées par pas discrets.** Quand la balle accélère, elle peut sauter une
   raquette de 10 pixels en un seul pas. Balayer la trajectoire entre deux pas règle ça.
-
-Trois personnes, une douzaine de technologies et une échéance : ft_transcendence portait autant sur le
-partage du travail et l'accord sur les formats de messages que sur le code.

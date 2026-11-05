@@ -287,12 +287,6 @@ impl Site {
         .cloned()
         .unwrap_or_else(|| dir.rsplit('/').next().unwrap_or(dir).to_string())
     }
-    fn dir_description(&self, lang: &str, dir: &str) -> Option<String> {
-        self.content
-            .dirs
-            .get(dir)
-            .and_then(|m| m.description.get(lang).cloned())
-    }
     fn page_url(&self, doc: &Doc) -> String {
         encode_path(&format!("{}/{}/", self.cfg.prefix(&doc.lang), doc.slug))
     }
@@ -652,14 +646,10 @@ impl Site {
             let mut ctx = self.base_context(lang, "posts", &alternates);
             let t = self.t(lang);
             let title = self.dir_title(lang, dir);
-            let description = self
-                .dir_description(lang, dir)
-                .unwrap_or_else(|| t.site_description.clone());
-            let meta = self.page_meta(lang, Some(&title), &description, &url);
+            let meta = self.page_meta(lang, Some(&title), &t.site_description, &url);
             ctx.insert("page", &meta);
             ctx.insert("heading", &title);
             ctx.insert("dir", dir);
-            ctx.insert("dir_description", &self.dir_description(lang, dir));
             ctx.insert("crumbs", &self.crumbs(lang, dir));
             ctx.insert("tree", &self.tree(lang, dir));
             let posts: Vec<PostView> = self

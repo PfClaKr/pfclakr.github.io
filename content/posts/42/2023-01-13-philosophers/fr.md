@@ -101,7 +101,3 @@ par `check_meals` pendant que d'autres threads l'incrémentent. Sur x86, ces lec
 marcher, mais ce sont des data races, et la norme C ne promet rien. Aujourd'hui, je protégerais `stop`
 avec le mutex d'affichage (ou j'en ferais un `atomic_int`) et je compterais les philosophes rassasiés
 sous verrou.
-
-La vraie leçon de Philosophers n'est pas l'algorithme. C'est qu'un code concurrent peut passer tous les
-tests et rester faux, et que les outils (helgrind, ThreadSanitizer) voient ce que les tests manuels ne
-voient pas.

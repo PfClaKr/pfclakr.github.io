@@ -90,7 +90,3 @@ Avec des entrées bien réparties, c'est assez proche, mais une entrée déséqu
 `1 2 3 … 99 1000000` met presque tout dans un seul groupe et la récursion se dégrade. Normaliser
 l'entrée d'abord (remplacer chaque valeur par son rang, de 0 à *n*−1) règle le problème gratuitement :
 le milieu de l'intervalle devient la vraie médiane.
-
-push_swap est le premier projet de 42 où « ça marche » ne suffit pas : l'évaluation lance des entrées
-aléatoires de 100 et 500 nombres et compte les opérations, donc chaque idée doit être mesurée, pas
-devinée.

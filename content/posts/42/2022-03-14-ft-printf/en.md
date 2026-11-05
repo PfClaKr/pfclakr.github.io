@@ -90,6 +90,3 @@ The return value is what makes this harder than it looks: every helper has to re
 bytes it wrote, and the counts have to add up across recursion. I kept a separate `*_len` helper
 per type that computes the length up front, which is easier to get right than threading a counter
 through the recursion.
-
-It's a small project, but variadic functions show up again in every logging function you'll ever
-write, and knowing that `va_arg` trusts you blindly changes how you read `printf` calls.

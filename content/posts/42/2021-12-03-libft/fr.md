@@ -72,12 +72,3 @@ $(NAME): $(OBJS)
 
 À l’édition de liens (`-L. -lft`), seuls les fichiers objets réellement utilisés par le programme
 sont copiés.
-
-## Ce qu’on en retient
-
-- **Les cas limites sont la spécification.** `n == 0`, buffers qui se chevauchent, chaînes vides,
-  `INT_MIN` dans `itoa` : l’évaluation par les pairs et les testeurs visent directement ces cas.
-- **Chaque `malloc` a besoin d’un propriétaire.** Qui le libère, et que se passe-t-il s’il échoue
-  en plein milieu ?
-- **Une bibliothèque est un contrat.** Les projets suivants comptent sur ces fonctions pour se
-  comporter exactement comme leurs pages de manuel.

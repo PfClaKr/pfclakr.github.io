@@ -105,6 +105,3 @@ What ft_shield really teaches is a short list of places to sweep on a Linux host
 - **Network:** every listening socket (`ss -lntp`) reconciled against the services you expect.
 - **Files:** binaries in system paths not owned by any package, and files whose timestamps cluster around a
   suspicious time.
-
-Having built the thing that hides in each of those spots makes the sweep instinctive. The best way to learn
-where a backdoor lives is, once, in a VM you're about to delete, to put one there yourself.

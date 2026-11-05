@@ -120,7 +120,3 @@ relief. C'est comme ça que la scène de la Terre a ses montagnes sans un seul p
   décroît avec le carré de la distance, et les scènes à plusieurs lumières seraient plus cohérentes.
 - Chaque rayon teste chaque objet. Une hiérarchie de volumes englobants accélérerait beaucoup les
   grosses scènes, mais en 512×512 avec quelques dizaines d'objets, ce n'était pas nécessaire.
-
-Le meilleur côté de miniRT, c'est que chaque bug se voit. Un signe faux, c'est une sphère à l'envers ;
-un epsilon manquant, de l'acné ; une mauvaise normale, une bande noire. L'algèbre linéaire n'a jamais
-été aussi facile à déboguer.
