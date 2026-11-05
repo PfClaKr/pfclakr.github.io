@@ -515,9 +515,10 @@ html.search-open { overflow: hidden; }
   .search-hint, .site-header .search-toggle kbd { display: none; }
 }
 
-/* Smooth cross-page transitions where supported. */
-@view-transition { navigation: auto; }
-::view-transition-old(root), ::view-transition-new(root) { animation-duration: .18s; }
+/* No cross-document view transitions: the browser animates between snapshots
+   of the old and new page, and on phones the address bar changes the viewport
+   height between the two, so the snapshots were visibly squashed vertically
+   and then stretched back during every navigation. */
 
 /* ───────────── Mobile ───────────── */
 @media (max-width: 640px) {
@@ -582,7 +583,6 @@ html.search-open { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
-  @view-transition { navigation: none; }
 }
 
 @media print {
