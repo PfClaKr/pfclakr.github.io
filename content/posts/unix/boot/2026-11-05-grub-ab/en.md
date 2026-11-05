@@ -2,6 +2,7 @@
 title = "A/B slots with GRUB: grubenv, grub.cfg and a custom update-grub"
 description = "How to run A/B updates with GRUB on x86 UEFI machines: a shared chooser and grubenv on the ESP, while each slot keeps its own /boot and the grub.cfg its update-grub generates. Includes an update and a rollback run in QEMU with a real kernel."
 tags = ["linux", "grub", "boot", "ota", "uefi"]
+date = 2026-11-05T09:00:00
 +++
 
 The [A/B partitions post](/posts/architecture/os/ota-update/ab-partitions/) used U-Boot. On x86 UEFI

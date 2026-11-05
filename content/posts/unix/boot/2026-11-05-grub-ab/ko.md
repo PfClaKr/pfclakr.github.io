@@ -2,6 +2,7 @@
 title = "A/B 슬롯과 GRUB: grubenv, grub.cfg, update-grub 커스텀"
 description = "x86 UEFI 장비에서 GRUB으로 A/B 업데이트를 구성하는 방법: ESP에 공유 선택기와 grubenv를 두고, 각 슬롯은 자기 /boot와 update-grub이 만든 grub.cfg를 유지하는 구조. QEMU에서 실제 커널로 업데이트·롤백까지 돌려 본 결과 포함."
 tags = ["linux", "grub", "boot", "ota", "uefi"]
+date = 2026-11-05T09:00:00
 +++
 
 [A/B 파티션 글](/ko/posts/architecture/os/ota-update/ab-partitions/)은 U-Boot 기준이었습니다. x86 UEFI

@@ -1,13 +1,13 @@
 +++
-title = "setting_linux: setting up a new Linux machine, a vimrc, and moving from zsh to bash"
-description = "The checklist I go through on a fresh Linux machine, and the setting_linux repository I bring along: a vimrc, a prompt and an install script. How the vimrc's traps (tab width, smartcase, # comments, EUC-KR) were fixed, and what changed when the oh-my-zsh theme was ported to plain bash, all checked by actually running it."
+title = "setting_linux: setting up a new Linux machine, a vimrc and a bash prompt"
+description = "The checklist I go through on a fresh Linux machine, and the setting_linux repository I bring along: an install.sh that applies everything at once, each vimrc setting and why it is there, how the bash prompt works without oh-my-zsh, and the theme for when you use zsh. All checked by actually running it."
 tags = ["linux", "vim", "bash", "zsh", "shell", "dotfiles"]
 +++
 
 The files I copy first onto every new Linux machine live in the
-[setting_linux](https://github.com/PfClaKr/setting_linux) repository. It started as a `vimrc`, an oh-my-zsh theme
-and a `.zshrc`; wanting the same environment on servers and containers that have no zsh, I ported the prompt to
-plain bash and added a script that applies everything at once.
+[setting_linux](https://github.com/PfClaKr/setting_linux) repository. At its core are a vimrc and a bash prompt,
+applied by a single install script. Needing nothing but bash, the same environment works on servers and containers,
+and a zsh theme with the same look is there for machines that use oh-my-zsh.
 
 ```text
 setting_linux/
@@ -15,12 +15,12 @@ setting_linux/
 ├── vimrc               → ~/.vimrc
 ├── ychun.bash-theme    the bash prompt
 ├── extras.bash         history settings, aliases
-├── ychun.zsh-theme     the original oh-my-zsh theme (installed with --zsh)
+├── ychun.zsh-theme     theme for oh-my-zsh (installed with --zsh)
 └── .zshrc
 ```
 
-This post goes through the new-machine checklist, the install script, the vimrc, and then the zsh theme and its
-bash port. Everything was checked on Ubuntu 24.04 with Vim 9.1, bash 5.2 and zsh 5.9.
+This post goes through the new-machine checklist, the install script, and then the repository's files in turn
+(vimrc, bash prompt, `extras.bash`, zsh theme). Everything was checked on Ubuntu 24.04 with Vim 9.1, bash 5.2 and zsh 5.9.
 
 ## On a new Linux machine
 
@@ -98,8 +98,10 @@ Running `ufw enable` before allowing SSH cuts off a remote session on the spot.
 **8. Apply setting_linux.**
 
 ```bash
-git clone git@github.com:PfClaKr/setting_linux.git && ./setting_linux/install.sh
+curl -fsSL https://raw.githubusercontent.com/PfClaKr/setting_linux/main/install.sh | bash
 ```
+
+To keep a copy of the repository to tweak, `git clone https://github.com/PfClaKr/setting_linux.git` and run `./install.sh`.
 
 ## install.sh
 
@@ -137,129 +139,12 @@ unset f
   overridden on top of Ubuntu's default `.bashrc`.
 
 I checked it in empty HOMEs holding only Ubuntu's default `.bashrc`: a first install, a second run, an existing
-`~/.vimrc`, and `--zsh` with and without oh-my-zsh.
+`~/.vimrc`, and `--zsh` with and without oh-my-zsh. The `curl … | bash` straight from GitHub, and the wget path used on
+machines without curl, gave the same result.
 
 ## vimrc
 
-### The first version
-
-The repository's original vimrc was 18 lines:
-
-```vim
-if has("syntax")
-	syntax on
-endif
-
-set mouse=a
-set ts=4
-set hlsearch
-set nobackup
-set nu
-set autoindent
-set cindent
-set laststatus=2
-set showmatch
-set smartcase
-set smarttab
-set smartindent
-set ruler
-set fileencodings=utf8,euc-kr
-```
-
-| Option | Does |
-|---|---|
-| `syntax on` | Turns on syntax highlighting. `has("syntax")` checks that Vim was compiled with that feature, so minimal builds (`vim-tiny`) don't error out. |
-| `mouse=a` | Mouse in every mode: click to move the cursor, drag for a visual selection, wheel to scroll, drag window borders. |
-| `ts=4` | `tabstop`: a tab character in the file is displayed 4 columns wide. |
-| `hlsearch` | Highlights every match of the last search. `:noh` clears it. |
-| `nobackup` | No `file~` backup on write. This is already the default, and it is a different option from the `.swp` swap file. |
-| `nu` | `number`: line numbers. |
-| `autoindent` | A new line starts with the previous line's indent. |
-| `cindent` | Indents by C rules: one level after `{`, back to the matching column on `}`. |
-| `smartindent` | A simpler rule that indents after `{` or keywords like `if` and `for`. It has no effect while `cindent` is on. |
-| `smarttab` | <kbd>Tab</kbd> at the start of a line indents by `shiftwidth` instead of `tabstop`. |
-| `laststatus=2` | Always show the status line, even with a single window. |
-| `ruler` | Show the cursor's line and column; with `laststatus=2` it appears at the right of the status line. |
-| `showmatch` | Typing a closing bracket briefly jumps the cursor to the opening one. |
-| `smartcase` | Case-sensitive search when the pattern has an uppercase letter. As shown below, it does nothing on its own. |
-| `fileencodings=utf8,euc-kr` | The encodings tried when opening a file: UTF-8 first, EUC-KR if the bytes aren't valid UTF-8. |
-
-The `if has("syntax")` block, `smartcase` and `mouse=a` have the same shape as the commented examples in
-Debian/Ubuntu's `/etc/vim/vimrc`; the file is essentially a pick of lines from there. Actually running it showed
-five places where it didn't do what was intended.
-
-### A `~/.vimrc` turns off defaults.vim
-
-When there is **no** user vimrc, Vim loads `$VIMRUNTIME/defaults.vim`, which sets `incsearch` (search as you type),
-`scrolloff=5` (five lines of context around the cursor), `showcmd`, `wildmenu`, `filetype plugin indent on` and
-more. The moment `~/.vimrc` exists, that file is no longer loaded. If search stopped following your typing after
-you created your first vimrc, this is why. On Debian-based systems the system vimrc still loads `debian.vim`, which
-keeps the basics such as `nocompatible` and `backspace=indent,eol,start`.
-
-### Tab width: `ts=4`, but indents are 8 columns
-
-Only `tabstop` was changed to 4; `shiftwidth` stayed at its default of 8. `cindent`, `>>` and `smarttab`'s
-<kbd>Tab</kbd> all indent by `shiftwidth`, so one indent level became two 4-column tabs. Typing C code with this
-vimrc saved this (`^I` is a tab character):
-
-```text
-int f(void) {
-^I^Iif (x) {
-^I^I^I^Iy();
-^I^I}
-^I^Ireturn 0;
-}
-```
-
-On screen each level is 8 columns; in another editor or `cat` with 8-column tabs it is 16.
-
-### `smartcase` needs `ignorecase`
-
-`smartcase` is an exception to `ignorecase`: "ignore case, unless the pattern contains an uppercase letter". With
-`ignorecase` off it does nothing. The two lines sit next to each other in the Debian template, and only
-`smartcase` came along.
-
-### A global `cindent` and `#` comments
-
-`cindent` is buffer-local, but `set` in the vimrc sets the value every new buffer inherits, and filetype indenting
-wasn't enabled. So Python, shell scripts and YAML were indented by C rules too. The most visible symptom is lines
-starting with `#`: in C that is a preprocessor directive like `#include`, which belongs in column 0. Typing a
-comment inside a Python block gives:
-
-```text
-for i in x:
-^I^Ia = 1
-# note
-^I^Ib = 2
-```
-
-The line snaps to the left margin as soon as `#` is typed. `smartindent` has the same rule, so turning off
-`cindent` alone doesn't fix it.
-
-### `fileencodings` and Korean files
-
-With the default (`ucs-bom,utf-8,default,latin1`), a file that isn't UTF-8 opens as `latin1`: an EUC-KR file
-containing "안녕하세요" shows as `¾È³çÇÏ¼¼¿ä`. The first vimrc avoided that by retrying a failed UTF-8 read as
-EUC-KR, and saving writes the file back in its original encoding. UTF-8's byte rules are strict enough that files
-in other encodings are almost never mistaken for UTF-8, so putting the strict one first is the right order.
-
-The gap is that EUC-KR only covers 2,350 precomposed Hangul syllables. Korean files made on Windows are usually
-CP949, its superset, and break as soon as they contain a syllable like "똠":
-
-```text
-fileencoding=euc-kr   <8c>c방각하
-```
-
-### `mouse=a` and copying from the terminal
-
-Because Vim takes the mouse, the terminal's own drag-to-select no longer works inside it. In most terminals,
-holding <kbd>Shift</kbd> while dragging bypasses Vim and selects in the terminal. If copying doesn't work on a
-server over SSH, this option is the usual reason. It's less a trap than behaviour worth knowing, so it stays in
-the current version.
-
-### The current version
-
-With all of the above applied, the repository's vimrc now reads:
+The file `install.sh` copies to `~/.vimrc`:
 
 ```vim
 " ~/.vimrc -- installed by setting_linux/install.sh
@@ -286,15 +171,41 @@ set nobackup
 set fileencodings=utf-8,cp949   " cp949 also covers EUC-KR files
 ```
 
-- Loading `defaults.vim` explicitly brings back `syntax on`, `incsearch`, `scrolloff` and filetype indenting. It's
-  wrapped in `filereadable` so minimal installs without `defaults.vim` (`vim-tiny`) don't error out.
-- `shiftwidth=0` means "follow `tabstop`", so one indent level is one tab.
-- `cindent` and `smartindent` are gone in favour of filetype indenting: in C files Vim's C indent plugin turns
-  `cindent` on, while Python and shell get their own rules.
-- `cp949` is a superset of EUC-KR, so EUC-KR files still read fine.
+| Setting | Does |
+|---|---|
+| `source $VIMRUNTIME/defaults.vim` | Loads Vim's defaults; explained below. |
+| `mouse=a` | Mouse in every mode: click to move the cursor, drag for a visual selection, wheel to scroll, drag window borders. |
+| `tabstop=4` | A tab character in the file is displayed 4 columns wide. |
+| `shiftwidth=0` | The width of one indent level. `0` means "follow `tabstop`", so one level is one tab (4 columns). |
+| `smarttab` | <kbd>Tab</kbd> at the start of a line indents by `shiftwidth`. |
+| `autoindent` | A new line starts with the previous line's indent. |
+| `number` | Line numbers. |
+| `ruler` | The cursor's line and column; with `laststatus=2` it appears at the right of the status line. |
+| `laststatus=2` | Always show the status line, even with a single window. |
+| `showmatch` | Typing a closing bracket briefly jumps the cursor to the opening one. |
+| `hlsearch` | Highlights every match of the last search. `:noh` clears it. |
+| `ignorecase`, `smartcase` | Searches ignore case, unless the pattern contains an uppercase letter. |
+| `nobackup` | No `file~` backup on write. A different option from the `.swp` swap file. |
+| `fileencodings=utf-8,cp949` | The encodings tried when opening a file; explained below. |
 
-The same tests again: C indents by one tab per level, `# note` in a shell script stays where it was typed, and both
-Korean files open correctly.
+### Why load defaults.vim explicitly
+
+When there is **no** user vimrc, Vim loads `$VIMRUNTIME/defaults.vim`: syntax highlighting (`syntax on`), filetype
+plugins and indenting (`filetype plugin indent on`), search as you type (`incsearch`), five lines of context
+around the cursor (`scrolloff=5`), `showcmd`, `wildmenu`, jumping back to the last position when reopening a file,
+and more. But as soon as `~/.vimrc` exists, that file is no longer loaded automatically, so the first lines load it
+by hand. `filereadable` keeps minimal installs without `defaults.vim` (`vim-tiny`) from erroring out.
+
+That is also what lets indenting follow each filetype's rules: in C files Vim's C indent plugin turns on
+`cindent`, while Python and shell scripts use their own rules. Turning `cindent` on globally in a vimrc would apply
+C rules to every file, and since `#` in C is a preprocessor directive like `#include` that goes to column 0, `#`
+comments in Python or shell would snap to the left margin.
+
+### Tab width
+
+`shiftwidth` defaults to 8. With only `tabstop` set to 4, `>>` and automatic indenting would add 8 columns, two
+4-column tabs, per level. Tying the two with `shiftwidth=0` makes one indent level one tab. Typing C code with this
+vimrc saves this (`^I` is a tab character):
 
 ```text
 int f(void) {
@@ -302,23 +213,192 @@ int f(void) {
 ^I^Iy();
 ^I}
 }
+```
 
+In Python files, Vim's Python plugin switches to four spaces (`expandtab`, `shiftwidth=4`) as PEP 8 recommends.
+
+### `fileencodings` and Korean files
+
+With Vim's default (`ucs-bom,utf-8,default,latin1`), a file that isn't UTF-8 opens as `latin1`: an EUC-KR file
+containing "안녕하세요" shows as `¾È³çÇÏ¼¼¿ä`. `utf-8,cp949` tries UTF-8 first and, if the bytes aren't valid
+UTF-8, reads the file again as CP949. Saving writes it back in its original encoding.
+
+- **Order:** UTF-8's byte rules are strict enough that files in other encodings are almost never mistaken for
+  UTF-8, so the strict one goes first. ASCII-only files are detected as UTF-8.
+- **CP949 rather than EUC-KR:** EUC-KR only covers 2,350 precomposed Hangul syllables. Korean files made on Windows
+  are usually CP949, its superset, and read as EUC-KR a syllable like "똠" breaks into `<8c>c`. CP949 is a superset of
+  EUC-KR, so EUC-KR files read fine too.
+
+Opening an EUC-KR file and a CP949 file containing "똠방각하":
+
+```text
 fileencoding=cp949   안녕하세요
 fileencoding=cp949   똠방각하
 ```
 
-## The zsh theme: ychun.zsh-theme
+### `mouse=a` and copying from the terminal
 
-The theme is based on oh-my-zsh's `bira`. `./install.sh --zsh` puts it in `$ZSH_CUSTOM/themes/` (usually
-`~/.oh-my-zsh/custom/themes/`) and selects it with `ZSH_THEME="ychun"` in `.zshrc`. On screen:
+Because Vim takes the mouse, the terminal's own drag-to-select doesn't copy inside it. In most terminals, holding
+<kbd>Shift</kbd> while dragging bypasses Vim and selects in the terminal. If copying doesn't work on a server over
+SSH, that is usually why.
+
+## The bash prompt: ychun.bash-theme
+
+A two-line prompt that needs neither oh-my-zsh nor zsh, only bash. Here is the screen of a real terminal (a pty)
+after typing a few commands:
+
+```text
+╭─  root@vm ~                                                 [14:13:09]
+╰─➤ cd ~/.config/setting_linux
+╭─  root@vm ~/.config/setting_linux                           [14:13:10]
+╰─➤ false
+╭─  root@vm ~/.config/setting_linux                      1 ↵  [14:13:11]
+╰─➤ cd /tmp
+╭─  root@vm /tmp                                              [14:13:12]
+╰─➤ echo hi; (exit 127)
+hi
+╭─  root@vm /tmp                                       127 ↵  [14:13:12]
+╰─➤ git init -q -b main demo && cd demo && touch f
+╭─  root@vm /tmp/demo ‹main*›                                 [14:13:13]
+╰─➤ ls  # typing here
+```
+
+| Where | What |
+|---|---|
+| first line, left | user@host, current directory (home as `~`), git branch |
+| first line, right | the exit code and `↵` when the previous command failed, and the time the prompt was drawn |
+| second line | commands are typed after `➤` |
+
+- **As root**, the user name and `➤` are red: hard to forget you are in a root shell from `sudo -i`.
+- **In a shell reached over SSH** (`SSH_CONNECTION` or `SSH_CLIENT` set), the host name is red, so a local terminal
+  and one attached to a server are easy to tell apart.
+- **The git branch** is a yellow `‹main›`, or `‹main*›` with uncommitted changes. Without a branch (detached HEAD)
+  it shows a tag or a short commit hash.
+- The time is when the prompt was drawn, i.e. when the previous command finished: handy to see when a long command ended.
+- User and host use the terminal's default colour, so they stay readable on light backgrounds.
+
+### How it works
+
+**Values are computed in `PROMPT_COMMAND`; `PS1` only refers to variables.** bash runs whatever is in
+`PROMPT_COMMAND` right before drawing the prompt. The theme puts `__ychun_prompt` at its front:
+
+```bash
+__ychun_prompt() {
+  local ec=$?                                  # must stay the first command
+  __ychun_git=$(__ychun_git_info)
+  ...
+  return "$ec"
+}
+PROMPT_COMMAND="__ychun_prompt${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
+```
+
+The previous command's exit code `$?` is overwritten by any command at all, so it is captured on the function's
+**first line**. Returning the same value at the end lets any other `PROMPT_COMMAND` that follows (one added by the
+terminal, for instance) see the original `$?` too.
+
+**The branch name never goes into `PS1` as text.** If `PS1` were rebuilt each time with the branch name pasted in,
+bash would also run any `$(…)` in it when expanding `PS1` (`promptvars`). And git accepts a branch named `$(id)`:
+
+```text
+$ git check-ref-format --branch '$(id)' && git checkout -q -b '$(id)'
+--- branch name pasted into PS1
+[uid=0(root) gid=0(root) groups=0(root)] $
+--- ychun.bash-theme: PS1 only refers to a variable name
+╭─  root@vm …/inject ‹$(id)›
+```
+
+Just cloning someone else's repository and stepping into it could run a command. With a variable name such as
+`${__ychun_git}` in `PS1`, bash expands the value once and doesn't interpret what's inside.
+
+**Colour codes are wrapped in `\[ \]`.** readline counts the prompt's characters to place the cursor and wrap
+lines. Invisible colour codes not wrapped in `\[` and `\]` get counted too, and long commands or history browsing
+then wrap in the wrong place and overwrite text.
+
+**The right side is drawn by moving the cursor.** bash has no right prompt like zsh's `RPROMPT`. So before drawing
+the first line, the prompt saves the cursor (`\e7`), moves to the right-hand column (`\e[colG`), prints the exit code
+and time, and restores the cursor (`\e8`). All of it sits inside `\[ \]`, so readline sees it as zero width. When the
+left side is long enough to collide, the right side isn't drawn at all. In a 44-column terminal the time disappears on
+long paths, and input wrapping past the edge stays intact:
+
+```text
+╭─  root@vm ~                     [14:13:24]
+╰─➤ cd ~/.config/setting_linux
+╭─  root@vm ~/.config/setting_linux
+╰─➤ false
+╭─  root@vm ~/.config/setting_linux
+╰─➤ cd /tmp
+╭─  root@vm /tmp                  [14:13:27]
+╰─➤ echo hi; (exit 127)
+hi
+╭─  root@vm /tmp           127 ↵  [14:13:27]
+╰─➤ git init -q -b main demo && cd demo && t
+ouch f
+╭─  root@vm /tmp/demo ‹main*›
+╰─➤ ls  # typing here
+```
+
+**The git information comes from three git commands.**
+
+```bash
+__ychun_git_info() {
+  local ref
+  ref=$(GIT_OPTIONAL_LOCKS=0 git symbolic-ref --short -q HEAD 2>/dev/null) ||
+    ref=$(GIT_OPTIONAL_LOCKS=0 git describe --tags --exact-match HEAD 2>/dev/null) ||
+    ref=$(GIT_OPTIONAL_LOCKS=0 git rev-parse --short HEAD 2>/dev/null) || return 0
+  local dirty=
+  if [ -n "$(GIT_OPTIONAL_LOCKS=0 git status --porcelain --ignore-submodules=dirty 2>/dev/null | head -n 1)" ]; then
+    dirty='*'
+  fi
+  printf '‹%s%s› ' "$ref" "$dirty"
+}
+```
+
+The branch name; failing that a tag; failing that a short commit hash. `GIT_OPTIONAL_LOCKS=0` stops `git status` from
+taking a lock to refresh the index, so it doesn't collide with a git command running in another terminal. Outside a
+repository it prints nothing.
+
+## extras.bash
+
+The bash settings other than the prompt:
+
+```bash
+HISTSIZE=50000
+HISTFILESIZE=100000
+HISTCONTROL=ignoreboth:erasedups
+HISTTIMEFORMAT='%F %T  '
+shopt -s histappend cmdhist
+
+export EDITOR=vim VISUAL=vim
+
+alias c='clear'
+alias sysupdate='sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get autoclean && sudo apt-get autoremove -y'
+alias ll='ls -alF'
+alias grep='grep --color=auto'
+```
+
+| Setting | Does |
+|---|---|
+| `HISTSIZE`, `HISTFILESIZE` | How many commands to keep in memory and in `~/.bash_history`. Ubuntu's defaults are 1000 and 2000. |
+| `HISTCONTROL=ignoreboth:erasedups` | Commands starting with a space and repeats of the previous one aren't kept, and older copies of a command are removed. A command containing a password isn't recorded if you type a space before it. |
+| `HISTTIMEFORMAT` | Adds when each command ran to `history`'s output. |
+| `histappend` | Appends to the history file on exit instead of overwriting it, so several terminals don't erase each other's history. |
+| `cmdhist` | Keeps a multi-line command as one entry. |
+
+Features like zsh's `zsh-autosuggestions` and `zsh-syntax-highlighting` don't exist in bash itself. If you want
+them, the bash line editor ble.sh provides both.
+
+## If you use zsh: ychun.zsh-theme
+
+On machines with oh-my-zsh, `./install.sh --zsh` installs a zsh theme with the same look. It is based on oh-my-zsh's
+`bira` theme, goes into `$ZSH_CUSTOM/themes/`, and `ZSH_THEME` in `~/.zshrc` becomes `"ychun"`.
 
 ```text
 ╭─  ychun@laptop ~/setting_linux  ‹main*›
 ╰─➤                                              127 ↵  [21:04:13]
 ```
 
-It is a two-line prompt. The first line has the user, host, current directory and git branch; commands are typed
-after the `➤` on the second. On the right: the previous command's exit code (only when it failed) and the time.
+The difference from the bash version is the right side: zsh has `RPROMPT`, so the exit code and time sit at the right
+of the input line.
 
 ```zsh
 # Based on bira theme
@@ -366,8 +446,6 @@ ZSH_THEME_RUBY_PROMPT_SUFFIX="›%f"
 }
 ```
 
-### Prompt escapes
-
 Every time zsh draws `PROMPT` it replaces the escapes starting with `%`:
 
 | Escape | Meaning |
@@ -375,157 +453,18 @@ Every time zsh draws `PROMPT` it replaces the escapes starting with `%`:
 | `%n` | user name |
 | `%M` | full host name (`%m` stops at the first `.`) |
 | `%~` | current directory, with the home directory shortened to `~` |
-| `%#` | `%` for a normal user, `#` for root |
 | `%B` … `%b` | start … end bold |
 | `%F{colour}` … `%f` | start a foreground colour … back to the default |
 | `%?` | exit status of the previous command |
 | `%(?.true.false)` | the first part if that status is 0, the second otherwise |
 | `%*` | 24-hour time with seconds |
 
-`return_code`'s `%(?..%F{red}%? ↵%f)` reads "nothing on success, the code and `↵` in red on failure". `[%*]` is
-the time the prompt was drawn, which is when the previous command finished: handy to see when a long command ended.
+The quoting matters. `PROMPT` is defined in double quotes, so `${user_host}`, `${current_dir}` and `$PR_PROMPT` are
+replaced by their values **at definition time**; that's why the `PR_*` variables can be `local` to the anonymous
+function `() { … }`. `$(git_prompt_info)`, on the other hand, is spliced in from a single-quoted string and
+`\$(ruby_prompt_info)` is protected by a backslash, so both stay in `PROMPT` literally. With `setopt prompt_subst`,
+zsh runs those `$(…)` every time it draws the prompt.
 
-### Colouring root and SSH sessions
-
-- **When the UID is 0**, the user name and `➤` turn red: hard to forget you are in a root shell from `sudo -i`.
-- **When `SSH_CLIENT` or `SSH2_CLIENT` is set**, the host name turns red. OpenSSH sets `SSH_CLIENT` in remote
-  shells, so the colour of the host name tells a local terminal from one attached to a server at a glance.
-  `SSH2_CLIENT` is the variable a commercial SSH implementation used.
-
-`PR_USER_OP` (`%#`) is defined the same way but never used in `PROMPT`; it is left over from replacing bira's
-`$`/`#` with `➤`.
-
-### Quotes and `prompt_subst`
-
-`PROMPT` mixes parts whose value is fixed when it is defined with parts that are recomputed every time the prompt
-is drawn.
-
-- `${user_host}`, `${current_dir}` and `$PR_PROMPT` are inside double quotes, so they are replaced by their values
-  **at definition time**. That is why it's fine for the `PR_*` variables to be `local` to the anonymous function
-  `() { … }`.
-- `$(git_prompt_info)` is spliced in from a single-quoted string and `\$(ruby_prompt_info)` is protected by a
-  backslash. Both stay in `PROMPT` as literal `$(…)`.
-- With `setopt prompt_subst`, zsh runs the `$(…)` inside `PROMPT` each time it draws the prompt.
-
-Printing the stored `PROMPT` shows exactly that (run as root):
-
-```text
-╭─  %F{red}%n%f%F{cyan}@%F{white}%M%f %B%F{blue}%~%f%b $(ruby_prompt_info) $(git_prompt_info)
-╰─%F{red}➤ %f 
-```
-
-`git_prompt_info` and `ruby_prompt_info` come from oh-my-zsh. With modified files the branch becomes `‹main*›`;
-the theme doesn't set `ZSH_THEME_GIT_PROMPT_DIRTY`, so oh-my-zsh's default `*` is used (bira has a red `●`).
-`ruby_prompt_info` is empty without rvm, rbenv or chruby, which leaves two spaces between the directory and `‹main›`.
-
-## Porting it to bash: ychun.bash-theme
-
-The zsh theme doesn't work without oh-my-zsh: `git_prompt_info` is an oh-my-zsh function, and oh-my-zsh is what
-loads theme files. Servers, containers and embedded boards often don't even have zsh, so I rebuilt the same look
-with bash alone. Here is the screen of a real terminal (a pty) after typing a few commands:
-
-```text
-╭─  root@vm ~                                                 [14:13:09]
-╰─➤ cd ~/.config/setting_linux
-╭─  root@vm ~/.config/setting_linux                           [14:13:10]
-╰─➤ false
-╭─  root@vm ~/.config/setting_linux                      1 ↵  [14:13:11]
-╰─➤ cd /tmp
-╭─  root@vm /tmp                                              [14:13:12]
-╰─➤ echo hi; (exit 127)
-hi
-╭─  root@vm /tmp                                       127 ↵  [14:13:12]
-╰─➤ git init -q -b main demo && cd demo && touch f
-╭─  root@vm /tmp/demo ‹main*›                                 [14:13:13]
-╰─➤ ls  # typing here
-```
-
-The full file is `ychun.bash-theme` in the repository. Five things changed in the port.
-
-**1. `PROMPT_COMMAND` instead of `prompt_subst`.** bash runs whatever is in `PROMPT_COMMAND` right before drawing the
-prompt. That's where the git information, time and exit code are computed into variables; `PS1` only refers to them.
-
-```bash
-__ychun_prompt() {
-  local ec=$?                                  # must stay the first command
-  __ychun_git=$(__ychun_git_info)
-  ...
-  return "$ec"
-}
-PROMPT_COMMAND="__ychun_prompt${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
-```
-
-The previous command's exit code `$?` is overwritten by any command at all, so it has to be captured on the
-function's **first line**. Returning the same value at the end lets any other `PROMPT_COMMAND` that follows (one
-added by the terminal, for instance) see the original `$?` too.
-
-**2. The branch name never goes into `PS1` itself.** If `PS1` is rebuilt each time with the branch name pasted in as
-text, bash also runs any `$(…)` in it when it expands `PS1` (`promptvars`). And git accepts a branch named `$(id)`:
-
-```text
-$ git check-ref-format --branch '$(id)' && git checkout -q -b '$(id)'
---- branch name pasted into PS1
-[uid=0(root) gid=0(root) groups=0(root)] $
---- ychun.bash-theme: PS1 only refers to a variable name
-╭─  root@vm …/inject ‹$(id)›
-```
-
-Just cloning someone else's repository and stepping into it could run a command. With a variable name such as
-`${__ychun_git}` in `PS1`, bash expands the value once and doesn't interpret what's inside. The zsh theme didn't have
-this problem, because the output of `$(git_prompt_info)` isn't interpreted again.
-
-**3. Colour codes are wrapped in `\[ \]`.** readline counts the prompt's characters to place the cursor and wrap
-lines. Invisible colour codes not wrapped in `\[` and `\]` get counted too, and long commands or history browsing
-then wrap in the wrong place and overwrite text. zsh works out the width of `%F{…}` itself, so this wasn't needed there.
-
-**4. There is no right prompt.** bash has no `RPROMPT`, so before drawing the first line the prompt saves the cursor
-(`\e7`), moves to the right-hand column (`\e[colG`), prints the exit code and time, and restores the cursor (`\e8`).
-All of it sits inside `\[ \]`, so readline sees it as zero width. That's why, unlike zsh, the time is on the first
-line rather than the input line. When the left side is long enough to collide, the right side isn't drawn at all.
-In a 44-column terminal the time disappears on long paths, and input wrapping past the edge stays intact:
-
-```text
-╭─  root@vm ~                     [14:13:24]
-╰─➤ cd ~/.config/setting_linux
-╭─  root@vm ~/.config/setting_linux
-╰─➤ false
-╭─  root@vm ~/.config/setting_linux
-╰─➤ cd /tmp
-╭─  root@vm /tmp                  [14:13:27]
-╰─➤ echo hi; (exit 127)
-hi
-╭─  root@vm /tmp           127 ↵  [14:13:27]
-╰─➤ git init -q -b main demo && cd demo && t
-ouch f
-╭─  root@vm /tmp/demo ‹main*›
-╰─➤ ls  # typing here
-```
-
-**5. The git information is computed directly.** Three git commands replace oh-my-zsh's `git_prompt_info`:
-
-```bash
-__ychun_git_info() {
-  local ref
-  ref=$(GIT_OPTIONAL_LOCKS=0 git symbolic-ref --short -q HEAD 2>/dev/null) ||
-    ref=$(GIT_OPTIONAL_LOCKS=0 git describe --tags --exact-match HEAD 2>/dev/null) ||
-    ref=$(GIT_OPTIONAL_LOCKS=0 git rev-parse --short HEAD 2>/dev/null) || return 0
-  local dirty=
-  if [ -n "$(GIT_OPTIONAL_LOCKS=0 git status --porcelain --ignore-submodules=dirty 2>/dev/null | head -n 1)" ]; then
-    dirty='*'
-  fi
-  printf '‹%s%s› ' "$ref" "$dirty"
-}
-```
-
-The branch name; failing that (detached HEAD) a tag; failing that a short commit hash. `GIT_OPTIONAL_LOCKS=0` stops
-`git status` from taking a lock to refresh the index, so it doesn't collide with a git command running in another
-terminal; oh-my-zsh uses the same variable for the same reason.
-
-The rest of what zsh provided:
-
-- The aliases in `.zshrc` (`c`, `sysupdate`) and the history settings moved to `extras.bash`: 50,000 lines,
-  duplicates removed, timestamps (`HISTTIMEFORMAT`), and `histappend` so several terminals don't overwrite each other.
-- oh-my-zsh plugins such as `zsh-autosuggestions` and `zsh-syntax-highlighting` have no equivalent in bash itself.
-  If you really want them, the bash line editor ble.sh provides both.
-- The user and host use the terminal's default colour instead of the zsh theme's white (`%F{white}`), which is
-  hard to read on light-background terminals.
+`git_prompt_info` and `ruby_prompt_info` are oh-my-zsh functions, so this theme doesn't work without oh-my-zsh. The `*`
+for changes is oh-my-zsh's default (`ZSH_THEME_GIT_PROMPT_DIRTY`), and `ruby_prompt_info` is empty without rvm, rbenv or
+chruby, which leaves two spaces between the directory and `‹main›`.

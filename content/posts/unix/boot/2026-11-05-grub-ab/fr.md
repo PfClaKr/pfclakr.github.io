@@ -2,6 +2,7 @@
 title = "Slots A/B avec GRUB : grubenv, grub.cfg et un update-grub personnalisé"
 description = "Mettre en place des mises à jour A/B avec GRUB sur des machines x86 UEFI : un sélecteur partagé et grubenv sur l'ESP, chaque slot gardant son propre /boot et le grub.cfg que génère son update-grub. Avec une mise à jour et un retour arrière exécutés dans QEMU avec un vrai noyau."
 tags = ["linux", "grub", "boot", "ota", "uefi"]
+date = 2026-11-05T09:00:00
 +++
 
 L'[article sur les partitions A/B](/fr/posts/architecture/os/ota-update/ab-partitions/) s'appuyait sur

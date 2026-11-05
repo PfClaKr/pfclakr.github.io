@@ -2,6 +2,7 @@
 title = "부팅 과정 2: U-Boot — 환경 변수, bootcmd, FIT, 그리고 A/B 스크립트"
 description = "임베디드 리눅스의 부트로더 U-Boot가 하는 일을 QEMU arm64에서 실제로 돌려 보며 정리합니다: 환경 변수와 리눅스 쪽 fw_setenv, standard boot와 extlinux.conf, 손으로 하는 booti, 해시로 검증되는 FIT 이미지, 부트 스크립트로 만드는 A/B 슬롯 선택."
 tags = ["linux", "u-boot", "boot", "embedded", "arm64"]
+date = 2026-11-05T11:00:00
 +++
 
 [1편](/ko/posts/unix/boot/boot-1-firmware/)에서 ARM SoC는 부트 ROM이 작은 1단계 로더(U-Boot SPL 등)를

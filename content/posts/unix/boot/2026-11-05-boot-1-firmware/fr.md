@@ -2,6 +2,7 @@
 title = "Le démarrage 1 : du vecteur de reset au chargeur d'amorçage"
 description = "De la première instruction exécutée par un CPU mis sous tension jusqu'au saut dans le noyau : le vecteur de reset x86, UEFI et BIOS, la ROM de démarrage des SoC ARM et les étapes qui commencent en SRAM, et ce que le chargeur d'amorçage transmet au noyau. Vérifié sur un journal de démarrage QEMU."
 tags = ["linux", "boot", "uefi", "firmware", "embedded"]
+date = 2026-11-05T10:00:00
 +++
 
 Quand un noyau Linux démarre, plusieurs programmes se sont déjà exécutés l'un après l'autre. Cette série
