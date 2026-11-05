@@ -10,30 +10,7 @@ These are the projects I completed at **42 Paris** (login `ychun`), grouped by t
 Each name links to its repository; the full index lives in
 [PfClaKr/Ecole42Paris](https://github.com/PfClaKr/Ecole42Paris).
 
-## Write-ups
-
-- [libft: writing my own C standard library](/posts/libft/)
-- [get_next_line: reading a file one line at a time](/posts/get-next-line/)
-- [ft_printf: variadic functions without the magic](/posts/ft-printf/)
-- [minitalk: sending text one signal at a time](/posts/minitalk/)
-- [so_long: a tiny 2D game and a map validator](/posts/so-long/)
-- [push_swap: sorting with two stacks and eleven moves](/posts/push-swap/)
-- [Philosophers: threads, mutexes and not starving](/posts/philosophers/)
-- [minishell: writing a small bash](/posts/minishell/)
-- [miniRT: a ray tracer from first principles](/posts/minirt/)
-- [CPP Modules 00–09: learning C++98 the hard way](/posts/cpp-modules/)
-- [Inception: WordPress in three hand-written containers](/posts/inception/)
-- [webserv: an HTTP/1.1 server on a single epoll loop](/posts/webserv/)
-- [ft_transcendence: server-side Pong for four players](/posts/ft-transcendence/)
-- [libasm: back to libft, in x86-64 assembly](/posts/libasm/)
-- [little-penguin-1: ten small steps into the Linux kernel](/posts/little-penguin/)
-- [KFS: writing an x86 kernel from scratch in Rust](/posts/kfs-rust-kernel/)
-- [RainFall: a tour of memory-corruption bugs](/posts/rainfall/)
-- [OverRide: exploitation past the easy mitigations](/posts/override/)
-- [BADASS: putting L2 on top of L3 with VXLAN and BGP-EVPN](/posts/badass-bgp-evpn-vxlan/)
-- [ft_ping: rebuilding ping with raw ICMP sockets](/posts/ft-ping-raw-sockets/)
-- [ft_shield: how a backdoor hides, and how to find it](/posts/ft-shield/)
-- [Inception-of-Things: Kubernetes from VMs to GitOps](/posts/inception-of-things/)
+<p class="stats-42"><a href="https://42cv.dev/ychun" rel="noopener"><img src="https://42cv.dev/api/badge/cmp1jhhsl00020jt1xrx8atv5/stats?cursusId=21&amp;coalitionId=48" alt="ychun's 42 stats" loading="lazy" decoding="async"></a></p>
 
 ## C foundations
 
