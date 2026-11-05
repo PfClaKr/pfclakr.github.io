@@ -16,9 +16,13 @@
   --maxw-wide: 1080px;
   --gutter: 20px;
   --header-h: 60px;
-  --font: "Inter", "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo",
-          "Noto Sans KR", "Malgun Gothic", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Consolas, "D2Coding", monospace;
+  /* Pretendard is self-hosted (static/fonts/pretendard, SIL OFL 1.1) so every
+     device renders the same Korean/Latin glyphs. */
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+          "Segoe UI", "Noto Sans KR", "Malgun Gothic", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Hangul has no glyphs in the mono fonts; fall back to Pretendard for it. */
+  --mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Consolas, "D2Coding",
+          "Pretendard Variable", monospace;
   color-scheme: light;
 }
 [data-theme="dark"] {
