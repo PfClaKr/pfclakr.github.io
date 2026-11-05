@@ -104,7 +104,7 @@ flowchart TD
 실행 중에 바뀌는 것은 모두 다른 곳에 둡니다.
 
 - 로그, 데이터베이스, 지도, 캘리브레이션은 데이터 파티션에.
-- 쓰기가 꼭 필요한 몇몇 `/etc` 파일은 overlay나 bind 마운트로.
+- 쓰기가 꼭 필요한 몇몇 `/etc` 파일은 overlay나 bind 마운트로([OverlayFS 글](/ko/posts/architecture/os/ota-update/overlayfs/)).
 - `/var`와 `/tmp`는 데이터 파티션이나 RAM에.
 
 함정은 롤백입니다. 버전 N+1이 첫 부팅 때 데이터베이스 스키마를 마이그레이션하고 나서 헬스 체크에
