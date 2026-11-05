@@ -2,6 +2,7 @@
 title = "Le démarrage 2 : U-Boot — environnement, bootcmd, FIT et un script A/B"
 description = "Ce que fait vraiment U-Boot, le chargeur d'amorçage du Linux embarqué, exécuté sur QEMU arm64 : l'environnement et fw_setenv côté Linux, le standard boot et extlinux.conf, un démarrage à la main avec booti, des images FIT vérifiées par hachage, et le choix d'un slot A/B dans un script de démarrage."
 tags = ["linux", "u-boot", "boot", "embedded", "arm64"]
+date = 2026-11-05T11:00:00
 +++
 
 La [partie 1](/fr/posts/unix/boot/boot-1-firmware/) s'arrêtait sur la ROM de démarrage d'un SoC ARM qui charge

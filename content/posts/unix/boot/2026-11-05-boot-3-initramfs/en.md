@@ -2,6 +2,7 @@
 title = "Boot process 3: the initramfs — how the kernel gets to the real root"
 description = "What the initramfs does between the kernel and the real root filesystem: the cpio format and how the kernel unpacks it, when you can boot without one and when you can't, a hand-made busybox /init with switch_root, the structure of Ubuntu's initramfs-tools and break= debugging, and customising it with hooks and scripts."
 tags = ["linux", "initramfs", "boot", "embedded", "kernel"]
+date = 2026-11-05T12:00:00
 +++
 
 In [part 1](/posts/unix/boot/boot-1-firmware/) and [part 2](/posts/unix/boot/boot-2-u-boot/), the bootloader

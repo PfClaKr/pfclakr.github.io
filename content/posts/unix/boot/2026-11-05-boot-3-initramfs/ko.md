@@ -2,6 +2,7 @@
 title = "부팅 과정 3: initramfs — 커널이 진짜 루트를 찾기까지"
 description = "커널과 실제 루트 파일시스템 사이에서 initramfs가 하는 일: cpio 형식과 커널이 그것을 푸는 방식, initramfs 없이도 되는 경우와 안 되는 경우, busybox로 직접 만든 /init과 switch_root, 우분투 initramfs-tools의 구조와 break= 디버깅, hook과 스크립트로 커스텀하기."
 tags = ["linux", "initramfs", "boot", "embedded", "kernel"]
+date = 2026-11-05T12:00:00
 +++
 
 [1편](/ko/posts/unix/boot/boot-1-firmware/)과 [2편](/ko/posts/unix/boot/boot-2-u-boot/)에서 부트로더는 커널과

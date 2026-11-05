@@ -17,7 +17,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use anyhow::{bail, Context, Result};
-use chrono::NaiveDate;
+use chrono::{NaiveDate, NaiveTime};
 use serde::Deserialize;
 
 use crate::config::Config;
@@ -76,6 +76,9 @@ pub struct Doc {
     pub slug: String,
     pub meta: FrontMatter,
     pub date: Option<NaiveDate>,
+    /// Time of day from `date = 2026-11-05T10:00:00`; only orders posts
+    /// published on the same day.
+    pub time: Option<NaiveTime>,
     pub updated: Option<NaiveDate>,
     pub rendered: Rendered,
     pub source: PathBuf,
@@ -171,6 +174,11 @@ fn to_date(dt: &Option<toml::value::Datetime>, src: &Path) -> Result<Option<Naiv
         .with_context(|| format!("{}: invalid date", src.display()))
 }
 
+fn to_time(dt: &Option<toml::value::Datetime>) -> Option<NaiveTime> {
+    let t = dt.as_ref()?.time?;
+    NaiveTime::from_hms_opt(t.hour as u32, t.minute as u32, t.second as u32)
+}
+
 /// Splits `+++ toml +++ body` front matter.
 fn split_front_matter(raw: &str, src: &Path) -> Result<(FrontMatter, String)> {
     let raw = raw.trim_start_matches('\u{feff}');
@@ -202,6 +210,7 @@ fn load_doc(
         bail!("{}: `title` must not be empty", path.display());
     }
     let date = to_date(&meta.date, path)?.or_else(|| date_prefix(key));
+    let time = to_time(&meta.date);
     let updated = to_date(&meta.updated, path)?;
     let slug = meta.slug.clone().unwrap_or_else(|| base_slug(key));
     Ok(Doc {
@@ -210,6 +219,7 @@ fn load_doc(
         lang: lang.to_string(),
         slug,
         date,
+        time,
         updated,
         rendered: markdown::render(&body, asset_base),
         meta,
@@ -378,7 +388,14 @@ pub fn load(root: &Path, cfg: &Config, drafts: bool) -> Result<Content> {
             }
         }
     }
-    let newest = |g: &Group| g.docs.values().filter_map(|d| d.date).max();
+    // Newest first. Posts from the same day are ordered by the optional time
+    // in their `date`, then by key.
+    let newest = |g: &Group| {
+        g.docs
+            .values()
+            .filter_map(|d| d.date.map(|day| (day, d.time.unwrap_or(NaiveTime::MIN))))
+            .max()
+    };
     posts.sort_by(|a, b| newest(b).cmp(&newest(a)).then_with(|| a.key.cmp(&b.key)));
 
     Ok(Content {
@@ -404,6 +421,26 @@ mod tests {
     fn joins_folder_paths() {
         assert_eq!(Group::path_of("", "libft"), "libft");
         assert_eq!(Group::path_of("unix/bash", "sed"), "unix/bash/sed");
+    }
+
+    #[test]
+    fn date_with_time_orders_same_day_posts() {
+        let (fm, _) = split_front_matter(
+            "+++\ntitle = \"Hi\"\ndate = 2026-11-05T10:30:00\n+++\n",
+            Path::new("x.md"),
+        )
+        .unwrap();
+        assert_eq!(
+            to_date(&fm.date, Path::new("x.md")).unwrap(),
+            NaiveDate::from_ymd_opt(2026, 11, 5)
+        );
+        assert_eq!(to_time(&fm.date), NaiveTime::from_hms_opt(10, 30, 0));
+        let (plain, _) = split_front_matter(
+            "+++\ntitle = \"Hi\"\ndate = 2026-11-05\n+++\n",
+            Path::new("x.md"),
+        )
+        .unwrap();
+        assert_eq!(to_time(&plain.date), None);
     }
 
     #[test]

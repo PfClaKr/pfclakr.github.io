@@ -2,6 +2,7 @@
 title = "Boot process 2: U-Boot — environment, bootcmd, FIT and an A/B script"
 description = "What U-Boot, the embedded Linux bootloader, actually does, run on QEMU arm64: the environment and fw_setenv on the Linux side, standard boot and extlinux.conf, booting by hand with booti, FIT images verified by hashes, and A/B slot selection in a boot script."
 tags = ["linux", "u-boot", "boot", "embedded", "arm64"]
+date = 2026-11-05T11:00:00
 +++
 
 [Part 1](/posts/unix/boot/boot-1-firmware/) ended with an ARM SoC's boot ROM loading a small first-stage

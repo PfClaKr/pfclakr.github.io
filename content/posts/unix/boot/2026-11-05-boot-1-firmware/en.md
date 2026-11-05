@@ -2,6 +2,7 @@
 title = "Boot process 1: from the reset vector to the bootloader"
 description = "From the first instruction a powered-on CPU runs to the jump into the kernel: the x86 reset vector, UEFI and BIOS, the ARM SoC boot ROM and the stages that start in SRAM, and what the bootloader hands to the kernel. Checked against a QEMU boot log."
 tags = ["linux", "boot", "uefi", "firmware", "embedded"]
+date = 2026-11-05T10:00:00
 +++
 
 By the time a Linux kernel starts, several programs have already run one after another. This series covers

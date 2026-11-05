@@ -2,6 +2,7 @@
 title = "Le démarrage 3 : l'initramfs — comment le noyau atteint la vraie racine"
 description = "Ce que fait l'initramfs entre le noyau et le vrai système de fichiers racine : le format cpio et la façon dont le noyau le décompresse, quand on peut s'en passer et quand on ne peut pas, un /init busybox fait main avec switch_root, la structure d'initramfs-tools sous Ubuntu et le débogage avec break=, et sa personnalisation par hooks et scripts."
 tags = ["linux", "initramfs", "boot", "embedded", "kernel"]
+date = 2026-11-05T12:00:00
 +++
 
 Dans la [partie 1](/fr/posts/unix/boot/boot-1-firmware/) et la [partie 2](/fr/posts/unix/boot/boot-2-u-boot/),
