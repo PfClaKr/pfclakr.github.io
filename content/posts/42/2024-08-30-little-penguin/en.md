@@ -154,10 +154,3 @@ Two honest caveats: `struct mount` is private (it comes from `fs/mount.h`, not a
 module only builds against a full kernel source tree. And the walk takes no lock, so a mount or unmount
 happening at the same time could change the tree under it. The real `/proc/mounts` holds the namespace
 lock while iterating.
-
-## What stays
-
-Most of little-penguin is learning where things live: logs in `dmesg`, devices in `/dev` managed by
-udev, debug knobs in debugfs, process views in procfs. Once you know that map, kernel code becomes much
-less intimidating, which is exactly what made writing a kernel from scratch in
-[KFS](/posts/42/kfs-rust-kernel/) feel approachable afterwards.

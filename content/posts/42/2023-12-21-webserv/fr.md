@@ -131,7 +131,3 @@ Le serveur a passé tous les tests d'évaluation, mais en le relisant avec plus 
   2 Kio. Un client lent, ou une requête avec beaucoup de cookies, casse cette hypothèse.
 - **Pas de délai d'inactivité.** Un client qui ouvre une connexion sans rien envoyer garde sa socket
   pour toujours.
-
-webserv, c'est là où « ça marche dans le navigateur » et « c'est correct » se séparent visiblement. Les
-navigateurs sont indulgents ; `curl`, `telnet` et un testeur de charge ne le sont pas. Quand ils ne
-sont pas d'accord, ce sont les RFC (7230 à 7235 à l'époque, aujourd'hui 9110 et 9112) qui tranchent.

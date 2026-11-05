@@ -128,10 +128,3 @@ GroupIterator<Iterator>::operator*() const
     return this->iter[this->size - 1];   // a group is represented by its last element
 }
 ```
-
-## Looking back
-
-C++98 is verbose, and that's the point. After writing every copy constructor and destructor by hand,
-modern C++ reads differently: each `std::unique_ptr` is a destructor you no longer have to remember,
-and each `= default` is a canonical form you no longer have to write. Knowing what they replace is what
-these modules teach.

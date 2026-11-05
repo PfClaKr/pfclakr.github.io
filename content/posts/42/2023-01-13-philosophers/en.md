@@ -94,6 +94,3 @@ The program behaves correctly in the tests, but `-fsanitize=thread` would compla
 `check_meals` while other threads increment it. On x86 these reads happen to work, but they're data
 races, so the C standard makes no promise. Today I'd protect `stop` with the print mutex (or make
 it `atomic_int`) and count finished philosophers under a lock.
-
-The real lesson of Philosophers isn't the algorithm. It's that concurrent code can pass every test
-and still be wrong, and that the tools (helgrind, ThreadSanitizer) see what manual testing can't.

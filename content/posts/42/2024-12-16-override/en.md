@@ -75,8 +75,3 @@ Every technique here exists because one defence was deployed without the others.
 - GOT overwrites motivated **RELRO** (`-Wl,-z,relro,-z,now`), which maps the GOT read-only after startup.
 - Anti-debugging and syscall screening are **obfuscation**, useful to slow analysis but never a security
   boundary; real isolation is seccomp, namespaces, and least privilege.
-
-The lesson that stuck from OverRide is that mitigations are a *system*. Any single one has a known bypass;
-their value is in forcing an attacker to chain several, each of which needs something (an address, a leak,
-a writable table) that another mitigation is meant to deny. Having built the chains by hand, I read a
-hardening flag list very differently now.

@@ -113,5 +113,4 @@ le dernier code de sortie, le nombre d'enfants en cours et un PID.
 
 Le dépôt contient un testeur qui lance des centaines de lignes de commande dans bash et dans
 minishell et compare stdout, stderr et les codes de sortie, avec des suites séparées pour la syntaxe,
-les pipes, les redirections, les builtins et les signaux. Un shell, c'est surtout un parseur, et un
-parseur, c'est surtout des cas limites.
+les pipes, les redirections, les builtins et les signaux.

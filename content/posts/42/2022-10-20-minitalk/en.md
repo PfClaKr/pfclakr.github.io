@@ -90,7 +90,3 @@ stops right there.
   `volatile` the compiler may hoist the read out of the loop and spin forever.
 - `write()` and `kill()` are async-signal-safe; `printf` and `malloc` aren't. Keeping the handler
   to those two calls is what makes it correct, and it's worth saying so explicitly in the code.
-
-minitalk is a toy, but it's a clean introduction to asynchronous events, and to the fact that "I
-sent it" and "it was received" are two different things. That lesson comes back with every network
-protocol.

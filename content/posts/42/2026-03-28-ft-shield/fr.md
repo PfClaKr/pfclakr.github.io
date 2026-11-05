@@ -108,7 +108,3 @@ Ce que ft_shield enseigne vraiment, c'est une courte liste d'endroits à balayer
 - **Réseau :** chaque socket en écoute (`ss -lntp`) rapproché des services attendus.
 - **Fichiers :** des binaires dans des chemins système n'appartenant à aucun paquet, et des fichiers dont
   les horodatages se regroupent autour d'un moment suspect.
-
-Avoir construit la chose qui se cache dans chacun de ces endroits rend le balayage instinctif. La meilleure
-façon d'apprendre où vit une porte dérobée, c'est, une fois, dans une VM qu'on s'apprête à supprimer, d'en
-poser une soi-même.

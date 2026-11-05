@@ -92,7 +92,3 @@ mauvais et il s'arrête là.
 - `write()` et `kill()` sont async-signal-safe ; `printf` et `malloc` ne le sont pas. C'est parce
   que le handler se limite à ces deux appels qu'il est correct, et ça mérite d'être écrit en
   commentaire.
-
-minitalk est un jouet, mais c'est une bonne introduction aux événements asynchrones, et au fait que
-« je l'ai envoyé » et « il a été reçu » sont deux choses différentes. La leçon revient avec chaque
-protocole réseau.

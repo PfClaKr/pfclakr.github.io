@@ -137,14 +137,5 @@ of sum" formula.
 
 They are parsed with `getopt_long`, and each numeric value is range-checked before use.
 
-## Takeaways
-
-- **Raw sockets show what the kernel normally hides:** headers, byte order (`htons`) and
-  checksums, all in your hands.
-- **Every packet is untrusted input.** Check lengths before casting, and filter by identifier,
-  because a raw socket sees traffic that isn't yours.
-- **Signals belong at the edges.** The handlers only flip a flag; all the real work stays in the
-  main loop.
-
 The source is on [GitHub](https://github.com/PfClaKr/Ecole42Paris_ft_ping). Build with `make`,
 then run `sudo ./ft_ping -c 4 example.com`.

@@ -86,8 +86,3 @@ programme :
 - L'anti-débogage et le filtrage de syscalls sont de l'**obfuscation**, utile pour ralentir l'analyse mais
   jamais une frontière de sécurité ; l'isolation réelle, c'est seccomp, les namespaces et le moindre
   privilège.
-
-La leçon qui est restée d'OverRide, c'est que les protections sont un *système*. Chacune prise seule a un
-contournement connu ; leur valeur est de forcer l'attaquant à en enchaîner plusieurs, chacune ayant besoin
-de quelque chose (une adresse, une fuite, une table modifiable) qu'une autre protection est censée refuser.
-Après avoir construit les chaînes à la main, je lis une liste de flags de durcissement très différemment.

@@ -84,7 +84,3 @@ layers of defence, which is the real lesson of the project:
 
 Each mitigation raises the bar; none is sufficient alone, which is why they're layered. Having had to
 defeat their *absence* by hand makes it obvious what each one is actually buying you.
-
-RainFall is the project that changed how I read my own C. Now `gets`, a bare `printf(var)`, a `free`
-followed by another use, and a size multiplication all look like what they are: the start of someone
-else's exploit.

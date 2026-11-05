@@ -70,7 +70,3 @@ Every function then works on `final_line[fd]` instead of a single pointer.
   a huge value, the buffer must be allocated on the heap, because it won't fit on the stack.
 - **The last line.** A file that doesn't end with `\n` still has a last line, and it must be
   returned without one.
-
-It's a small function, but it's the first time a 42 project makes you think about **state that
-outlives a call** and who owns each allocation. The same pattern comes back in every parser
-afterwards.

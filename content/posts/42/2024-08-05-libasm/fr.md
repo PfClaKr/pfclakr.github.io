@@ -111,6 +111,3 @@ La correction tient en une instruction (`pop rdi` ou `add rsp, 8` avant de trait
 que l'assembleur retire : aucun compilateur ne vérifie que chaque chemin laisse la pile comme il l'a
 trouvée. Un chemin d'erreur qui s'exécute une fois sur un million doit être aussi juste que le chemin
 normal.
-
-libasm est court, mais après, un listing désassemblé n'est plus du bruit. Les prologues de fonctions,
-les `call` via la PLT et les `movzx` avant une comparaison se lisent comme des phrases familières.

@@ -73,7 +73,3 @@ Toutes les fonctions travaillent ensuite sur `final_line[fd]` au lieu d'un point
   tient pas sur la pile.
 - **La dernière ligne.** Un fichier qui ne se termine pas par `\n` a quand même une dernière
   ligne, et il faut la renvoyer sans saut de ligne.
-
-C'est une petite fonction, mais c'est la première fois qu'un projet de 42 oblige à penser à un
-**état qui survit à l'appel** et à qui possède chaque allocation. Le même schéma revient ensuite
-dans tous les parseurs.

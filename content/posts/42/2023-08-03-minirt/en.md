@@ -119,6 +119,3 @@ single extra polygon.
   distance, and scenes with several lights would look more consistent with it.
 - Every ray tests every object. A bounding volume hierarchy would make large scenes much faster, but
   at 512×512 with a few dozen objects, it wasn't needed.
-
-The best part of miniRT is that every bug is visible. A wrong sign is an inside-out sphere, a missing
-epsilon is acne, and a bad normal is a black stripe. Linear algebra has never been this easy to debug.

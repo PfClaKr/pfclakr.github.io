@@ -148,10 +148,3 @@ static void iter_mount_tree(struct seq_file *m, struct rb_node *node)
 전체 커널 소스 트리에 대해서만 빌드됩니다. 그리고 순회하면서 아무 잠금도 잡지 않아서, 동시에 마운트나
 언마운트가 일어나면 읽는 도중에 트리가 바뀔 수 있습니다. 진짜 `/proc/mounts`는 순회하는 동안 네임스페이스
 잠금을 잡습니다.
-
-## 남는 것
-
-little-penguin의 대부분은 무엇이 어디에 사는지 배우는 일입니다. 로그는 `dmesg`에, 장치는 udev가 관리하는
-`/dev`에, 디버그 손잡이는 debugfs에, 프로세스 정보는 procfs에. 이 지도를 알고 나면 커널 코드가 훨씬 덜
-무섭습니다. 덕분에 나중에 [KFS](/ko/posts/42/kfs-rust-kernel/)에서 커널을 처음부터 만드는 일도 해 볼 만하게
-느껴졌습니다.

@@ -92,6 +92,3 @@ while (get_time() - start <= time_to_sleep && !info->stop)
 읽습니다. x86에서는 이 읽기가 우연히 동작하지만 데이터 레이스이고, C 표준은 아무것도 보장하지 않습니다.
 지금이라면 `stop`을 출력 뮤텍스로 보호하거나 `atomic_int`로 만들고, 다 먹은 철학자 수를 잠금 아래에서
 세겠습니다.
-
-Philosophers의 진짜 교훈은 알고리즘이 아닙니다. 동시성 코드는 모든 테스트를 통과하고도 틀릴 수 있고,
-도구(helgrind, ThreadSanitizer)는 손으로 하는 테스트가 못 보는 걸 본다는 것입니다.

@@ -172,15 +172,4 @@ apparaît sur **tous** les leafs. Donnez des adresses aux hôtes et la route s�
 (`…:[32]:[20.1.1.1]`). Le `ping` traverse alors la fabric, et Wireshark montre de l’ICMP dans de
 l’UDP 4789 entre les loopbacks.
 
-## À retenir
-
-- **Underlay et overlay sont deux métiers distincts.** OSPF rend seulement les loopbacks
-  joignables ; BGP transporte seulement l’information d’accessibilité ; VXLAN déplace seulement des
-  trames.
-- **Les problèmes de la partie 2 sont des problèmes de plan de contrôle.** Le flood and learn et
-  l’underlay multicast disparaissent dès que le réseau *indique* à chaque VTEP ce qu’il devrait
-  sinon découvrir lui-même.
-- **Un route reflector ne transporte que du trafic de contrôle.** Le spine n’est pas un VTEP ; les
-  données circulent de leaf à leaf.
-
 Les configurations des trois parties sont sur [GitHub](https://github.com/PfClaKr/Ecole42Paris_BADASS).

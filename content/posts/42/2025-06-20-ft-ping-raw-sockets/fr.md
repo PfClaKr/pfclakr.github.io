@@ -140,14 +140,5 @@ carrés moins carré de la somme ».
 
 Elles sont analysées avec `getopt_long`, et chaque valeur numérique est vérifiée avant usage.
 
-## À retenir
-
-- **Les sockets brutes montrent ce que le noyau cache d’habitude :** en-têtes, ordre des octets
-  (`htons`) et checksums sont entre vos mains.
-- **Chaque paquet est une entrée non fiable.** On vérifie les longueurs avant de caster, et on
-  filtre par identifiant, car une socket brute voit du trafic qui n’est pas le nôtre.
-- **Les signaux restent en bordure.** Les gestionnaires se contentent de basculer un drapeau ; tout
-  le vrai travail reste dans la boucle principale.
-
 Le code source est sur [GitHub](https://github.com/PfClaKr/Ecole42Paris_ft_ping). Compilez avec
 `make`, puis lancez `sudo ./ft_ping -c 4 example.com`.

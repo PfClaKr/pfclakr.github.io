@@ -105,19 +105,3 @@ flowchart LR
     D["manual kubectl change"] -.->|reverted| K
     A -->|reconcile| K
 ```
-
-## What it taught me
-
-- **Declarative beats imperative.** The jump from "run these commands in order" (Inception's bash
-  entrypoints) to "describe the end state and let a controller converge" is the real content of the
-  project. A reconciling controller handles drift, restarts and partial failures that a script can't.
-- **The cluster network is a real network.** Picking the wrong interface, forgetting the private network,
-  or colliding ports (K3d maps host ports to the load balancer) all cause failures that look like
-  Kubernetes bugs but are plain networking.
-- **Everything is an object you can read.** `Ingress`, `Service`, `Deployment`, `Application` — the whole
-  system is YAML you `kubectl get` and `describe`. That's intimidating at first and then liberating:
-  there's no hidden state, just the API.
-
-IoT is where Kubernetes stopped being a buzzword for me and became a set of concrete objects and a
-controller loop. GitOps in particular changed how I think about deployment: the question is no longer
-"did I run the right command?" but "does the repo say what I want?".

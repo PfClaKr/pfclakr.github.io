@@ -214,8 +214,3 @@ cases, the bootloader eventually falls back to the previous slot on its own.
   matters a lot on cellular links.
 - **Hooks are code that runs as root during updates.** Keep them small, idempotent, and covered by
   the same tests as the rest of the update.
-
-RAUC keeps the part that must never go wrong (verify, write the other slot, flip the bootloader
-state) small and well tested, and leaves policy to you. That split is why it fits so well under an
-A/B design: the risky decisions stay in one place, and the device can always find its way back to a
-system that worked.

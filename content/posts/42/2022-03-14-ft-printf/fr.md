@@ -91,6 +91,3 @@ C'est la valeur de retour qui rend l'exercice plus délicat qu'il n'y paraît : 
 dire combien d'octets elle a écrits, et les comptes doivent tomber juste à travers la récursion.
 J'ai gardé une fonction `*_len` par type qui calcule la longueur à l'avance, plus simple à rendre
 correcte que de faire circuler un compteur dans la récursion.
-
-C'est un petit projet, mais les fonctions variadiques reviennent dans chaque fonction de log qu'on
-écrira, et savoir que `va_arg` vous fait aveuglément confiance change la façon de lire un `printf`.

@@ -87,7 +87,3 @@ des couches de défense, et c'est la vraie leçon du projet :
 
 Chaque protection relève la barre ; aucune ne suffit seule, d'où leur empilement. Avoir dû vaincre leur
 *absence* à la main rend évident ce que chacune apporte vraiment.
-
-RainFall, c'est le projet qui a changé ma façon de lire mon propre C. Maintenant, `gets`, un
-`printf(var)` nu, un `free` suivi d'un autre usage et une multiplication de taille ressemblent à ce
-qu'ils sont : le début de l'exploit de quelqu'un d'autre.

@@ -208,7 +208,3 @@ find src -type f -mtime -1 -print0 | xargs -0 grep -l TODO
 # Utilisateurs présents dans /etc/passwd mais absents d'une liste autorisée
 comm -23 <(cut -d: -f1 /etc/passwd | sort) <(sort utilisateurs-autorises.txt)
 ```
-
-Le schéma est toujours le même : un outil sélectionne, un autre transforme, un dernier agrège. Une
-fois chacun compris séparément, les longs pipelines cessent de ressembler à de la magie et se lisent
-comme une phrase.

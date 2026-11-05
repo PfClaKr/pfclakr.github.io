@@ -107,20 +107,3 @@ flowchart LR
     D["changement kubectl manuel"] -.->|annulé| K
     A -->|réconcilie| K
 ```
-
-## Ce que j'en retiens
-
-- **Le déclaratif bat l'impératif.** Le passage de « lancer ces commandes dans l'ordre » (les entrypoints
-  bash d'Inception) à « décrire l'état final et laisser un contrôleur converger » est le vrai contenu du
-  projet. Un contrôleur de réconciliation gère la dérive, les redémarrages et les pannes partielles qu'un
-  script ne gère pas.
-- **Le réseau du cluster est un vrai réseau.** Choisir la mauvaise interface, oublier le réseau privé, ou
-  faire entrer en collision des ports (K3d mappe des ports de l'hôte vers le load balancer) donnent des
-  pannes qui ressemblent à des bugs Kubernetes mais ne sont que du réseau.
-- **Tout est un objet lisible.** `Ingress`, `Service`, `Deployment`, `Application` — tout le système est du
-  YAML qu'on `kubectl get` et `describe`. Intimidant au début, puis libérateur : pas d'état caché, juste
-  l'API.
-
-IoT, c'est le moment où Kubernetes a cessé d'être un mot à la mode pour devenir un ensemble d'objets
-concrets et une boucle de contrôleur. Le GitOps en particulier a changé ma façon de penser le déploiement :
-la question n'est plus « ai-je lancé la bonne commande ? » mais « le dépôt dit-il ce que je veux ? ».

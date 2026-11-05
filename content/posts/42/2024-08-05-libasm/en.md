@@ -106,6 +106,3 @@ The fix is one instruction (`pop rdi` or `add rsp, 8` before handling the error)
 to set `errno = ENOMEM` by hand, because `malloc` already did. It's a good example of what assembly
 takes away: no compiler checks that every path leaves the stack as it found it. An error path that
 runs once in a million calls has to be just as correct as the happy path.
-
-libasm is short, but after it, a disassembly listing stops being noise. Function prologues, `call`
-through the PLT, and `movzx` before a comparison all read like familiar sentences.

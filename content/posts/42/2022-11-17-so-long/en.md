@@ -77,12 +77,3 @@ mlx_loop(win.mlx_ptr);
 On each key press, the handler looks at the target tile: a wall does nothing, floor moves the player,
 a collectible moves and decrements the counter, and the exit ends the game only if the counter is
 zero. Then it redraws the grid with five 32×32 XPM sprites.
-
-## What it taught me
-
-- **Validate input before trusting it.** Most of the code, and most of the evaluation, is about bad
-  maps: an empty file, a missing newline, a map that is one tile wide.
-- **Every exit path must free.** The window can close from ESC, the red cross, a win, or a parse
-  error halfway through loading, and each one has to release the map and the images.
-- **Graph search shows up in unexpected places.** Under the sprites, this "game" project is really
-  an exercise in depth-first search.
