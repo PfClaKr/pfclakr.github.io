@@ -13,7 +13,7 @@ conteneur, construit à partir de son propre `Dockerfile` sur une image Debian o
 ## L'architecture
 
 ```mermaid
-flowchart LR
+flowchart TD
     U["navigateur"] -->|"HTTPS :443"| N["nginx<br/>TLS 1.2/1.3"]
     N -->|"FastCGI :9000"| W["WordPress<br/>php-fpm"]
     W -->|"MySQL :3306"| M["MariaDB"]

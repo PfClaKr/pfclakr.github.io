@@ -15,7 +15,7 @@ L’implémentation complète fait environ 400 lignes dans le
 ## La boucle
 
 ```mermaid
-flowchart LR
+flowchart TD
     R[résolution de l’hôte<br/>getaddrinfo] --> S[socket brute<br/>TTL + délai de réception]
     S --> B[requête ICMP echo<br/>id = pid, seq = n]
     B --> T[sendto + horodatage]

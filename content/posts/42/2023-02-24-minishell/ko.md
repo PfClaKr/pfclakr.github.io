@@ -23,7 +23,7 @@ tags = ["42", "c", "unix"]
 셸 내부의 처리 과정은 작은 컴파일러처럼 생겼습니다.
 
 ```mermaid
-flowchart LR
+flowchart TD
     A["readline()"] --> B["따옴표 검사"]
     B --> C["토큰화"]
     C --> D["$VAR 확장"]

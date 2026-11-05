@@ -24,7 +24,7 @@ Ce qu'il doit gérer :
 Le traitement dans le shell ressemble à un tout petit compilateur :
 
 ```mermaid
-flowchart LR
+flowchart TD
     A["readline()"] --> B["guillemets"]
     B --> C["tokenisation"]
     C --> D["développement $VAR"]

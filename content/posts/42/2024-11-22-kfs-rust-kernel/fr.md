@@ -181,7 +181,7 @@ nombres magiques.
 La pagination 32 bits découpe une adresse virtuelle en trois parties :
 
 ```mermaid
-flowchart LR
+flowchart TD
     VA["adresse virtuelle<br/>[ 10 bits | 10 bits | 12 bits ]"] --> PD["répertoire de pages<br/>entrée = va >> 22"]
     PD --> PT["table de pages<br/>entrée = (va >> 12) & 0x3FF"]
     PT --> F["cadre de 4 Kio + décalage"]

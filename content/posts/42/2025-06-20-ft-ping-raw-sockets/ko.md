@@ -14,7 +14,7 @@ C로 다시 작성하는 과제입니다. 대신 일해 주는 라이브러리�
 ## 루프
 
 ```mermaid
-flowchart LR
+flowchart TD
     R[호스트 해석<br/>getaddrinfo] --> S[raw 소켓 열기<br/>TTL + 수신 타임아웃]
     S --> B[ICMP echo 요청 생성<br/>id = pid, seq = n]
     B --> T[sendto + 시각 기록]
