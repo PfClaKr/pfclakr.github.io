@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <header class="page-header">
+  <p class="prompt" aria-hidden="true"><span class="sig">$</span>ls ./tags</p>
   <h1>{{ t.tags }}</h1>
 </header>
 {%- if tags %}

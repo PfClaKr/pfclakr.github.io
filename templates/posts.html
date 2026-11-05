@@ -2,6 +2,7 @@
 {% import "macros.html" as m %}
 {% block content %}
 <header class="page-header">
+  <p class="prompt" aria-hidden="true"><span class="sig">$</span>ls ./posts{% if section == "tags" %} | grep {{ heading | split(pat="#") | last }}{% endif %}</p>
   <h1>{{ heading }}{% if posts %}<span class="count">{{ posts | length }}</span>{% endif %}</h1>
   {%- if posts | length > 5 %}
   <div class="post-filter" hidden>
