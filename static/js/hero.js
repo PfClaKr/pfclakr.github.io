@@ -86,18 +86,21 @@
       var themes = {
         ripple: {
           phosphor: "#5f8378", accent: "#b7935a", opacity: 0.55,
+          light: { phosphor: "#4f7468", accent: "#8d5a17", opacity: 0.42 },
           hint: touch ? "drag to ripple · tap to splash" : "move to ripple · click to splash",
           enter: function () { ex.clear(); },
           frame: function () { var c = cell(); ex.step_ripple(c[0], c[1], held); }
         },
         life: {
           phosphor: "#b89155", accent: "#6f9f8f", opacity: 0.6,
+          light: { phosphor: "#9a7334", accent: "#3f6b5f", opacity: 0.45 },
           hint: touch ? "drag to draw · tap drops a glider" : "draw cells · click drops a glider",
           enter: function () { ex.clear(); ex.seed_life(130); this._t = 0; },
           frame: function () { var c = cell(); var gen = (this._t++ % 5 === 0) ? 1 : 0; ex.step_life(c[0], c[1], clickEdge, gen); }
         },
         field: {
           phosphor: "#808f99", accent: "#c0633f", opacity: 0.62,
+          light: { phosphor: "#66737c", accent: "#a4502f", opacity: 0.45 },
           hint: touch ? "drag to stir · tap reverses spin" : "stir the field · click reverses spin",
           enter: function () { ex.clear(); },
           frame: function () {
@@ -118,12 +121,20 @@
       };
 
       var cur = "ripple";
+      // Colours follow the site theme (paper vs near-black).
+      function paint() {
+        var th = themes[cur];
+        var c = document.documentElement.dataset.theme === "dark" ? th : th.light;
+        rootStyle.setProperty("--fx-phosphor", c.phosphor);
+        rootStyle.setProperty("--fx-accent", c.accent);
+        rootStyle.setProperty("--fx-opacity", c.opacity);
+      }
+      document.addEventListener("themechange", paint);
+
       function apply(key) {
         cur = key;
         var th = themes[key];
-        rootStyle.setProperty("--fx-phosphor", th.phosphor);
-        rootStyle.setProperty("--fx-accent", th.accent);
-        rootStyle.setProperty("--fx-opacity", th.opacity);
+        paint();
         th.enter();
         var btns = box.querySelectorAll(".fx-switch button");
         for (var i = 0; i < btns.length; i++) {
