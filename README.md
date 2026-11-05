@@ -17,7 +17,7 @@ Rust로 직접 만든 다국어(🇬🇧 English · 🇫🇷 Français · 🇰�
 ```bash
 cargo run --release -- serve        # http://127.0.0.1:1111 (저장하면 자동 새로고침)
 cargo run --release -- build        # public/ 에 사이트 생성
-cargo run --release -- new my-post ko   # 새 글 초안 생성
+cargo run --release -- new unix/bash/my-post ko   # 새 글 초안 (폴더 경로 포함)
 cargo test
 ```
 
@@ -32,10 +32,14 @@ i18n/{en,fr,ko}.toml      UI 문자열, 사이트 제목/설명, 날짜 형식
 content/
   home/{lang}.md          홈(명함) 자기소개
   pages/about/{lang}.md   고정 페이지 → /about/, /fr/about/, /ko/about/
-  posts/
-    2021-12-03-libft/
-      en.md  fr.md  ko.md     같은 폴더 = 서로의 번역본
-      diagram.png             글에 쓰는 이미지 (상대 경로로 참조)
+  posts/                  폴더 구조 = 사이트의 글 경로 (/posts/<폴더…>/<slug>/)
+    42/
+      _dir.toml               폴더 표시 이름·설명 (선택)
+      2021-12-03-libft/
+        en.md  fr.md  ko.md   같은 폴더 = 서로의 번역본
+        diagram.png           글에 쓰는 이미지 (상대 경로로 참조)
+    unix/bash/2026-11-05-sed/
+    architecture/os/ota-update/2026-11-05-rauc/
 templates/                Tera 템플릿 (HTML 구조)
 static/                   CSS, JS, 이미지, 파비콘 (그대로 복사됨)
 src/                      사이트 생성기 (Rust)
@@ -48,7 +52,21 @@ src/                      사이트 생성기 (Rust)
 
 ## 글 쓰기
 
-`content/posts/<YYYY-MM-DD>-<slug>/<lang>.md`:
+`content/posts/[<폴더>/…]<YYYY-MM-DD>-<slug>/<lang>.md`
+
+`<lang>.md`가 들어 있는 디렉터리는 글, 그렇지 않은 디렉터리는 폴더입니다. 폴더는 깊이 제한 없이
+만들 수 있고, 폴더 경로가 그대로 URL이 되며 폴더마다 목록 페이지(`/posts/unix/bash/`)가 생깁니다.
+`/posts/`에는 폴더 트리가 표시됩니다. 폴더 이름을 언어별로 보여 주려면 `_dir.toml`을 둡니다:
+
+```toml
+title = { en = "OTA update", fr = "Mise à jour OTA", ko = "OTA 업데이트" }
+weight = 10                 # 같은 단계 폴더 사이의 순서 (작을수록 앞)
+
+[description]
+ko = "폴더 목록 페이지 상단에 표시되는 설명"
+```
+
+글 파일 형식:
 
 ```markdown
 +++
@@ -73,8 +91,11 @@ URL 규칙 (기본 언어 = `en`, 루트에 배치):
 |---|---|---|---|
 | 홈 | `/` | `/fr/` | `/ko/` |
 | 글 목록 | `/posts/` | `/fr/posts/` | `/ko/posts/` |
-| 글 | `/posts/<slug>/` | `/fr/posts/<slug>/` | `/ko/posts/<slug>/` |
+| 폴더 | `/posts/<폴더>/` | `/fr/posts/<폴더>/` | `/ko/posts/<폴더>/` |
+| 글 | `/posts/<폴더>/<slug>/` | `/fr/posts/<폴더>/<slug>/` | `/ko/posts/<폴더>/<slug>/` |
 | 태그 | `/tags/<tag>/` | `/fr/tags/<tag>/` | `/ko/tags/<tag>/` |
+
+폴더 안의 글은 예전 형식인 `/posts/<slug>/`로 들어와도 새 주소로 넘어가는 리다이렉트 페이지가 함께 생성됩니다.
 
 번역되지 않은 글은 `show_untranslated = true`일 때 다른 언어 목록에도 **원문 언어 배지**와 함께 표시됩니다.
 

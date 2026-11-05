@@ -5,7 +5,7 @@ tags = ["42", "kubernetes", "devops"]
 +++
 
 **Inception-of-Things** (IoT) est le projet Kubernetes de 42, la suite dans l'esprit du travail Docker
-d'[Inception](/fr/posts/inception/). Il se construit en trois parties : un cluster multi-nœuds sur des
+d'[Inception](/fr/posts/42/inception/). Il se construit en trois parties : un cluster multi-nœuds sur des
 VMs, du routage vers l'intérieur, et enfin le GitOps, où un dépôt Git est la source de vérité de ce qui
 tourne. On l'a fait en binôme ([source](https://github.com/PfClaKr/Ecole42Paris_Inception_of_Things)).
 

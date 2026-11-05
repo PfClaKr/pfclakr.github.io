@@ -54,7 +54,7 @@ Deux détails s'y cachent :
 - **Rien n'est vérifié.** Si le format dit `%s` et que l'appelant a passé un `int`, `va_arg` le
   réinterprète sans broncher comme un pointeur. C'est pour ça que les compilateurs avertissent sur
   les chaînes de format, et que `printf(saisie_utilisateur)` est une faille
-  (voir [RainFall](/fr/posts/rainfall/)).
+  (voir [RainFall](/fr/posts/42/rainfall/)).
 
 ## Afficher des nombres
 

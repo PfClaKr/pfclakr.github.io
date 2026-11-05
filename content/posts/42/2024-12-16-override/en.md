@@ -4,7 +4,7 @@ description = "The sequel to RainFall: ten more levels where the shortcuts are c
 tags = ["42", "security", "reverse-engineering"]
 +++
 
-**OverRide** is the follow-up to [RainFall](/posts/rainfall/): the same set-uid ladder, `level00` to
+**OverRide** is the follow-up to [RainFall](/posts/42/rainfall/): the same set-uid ladder, `level00` to
 `level09`, but the binaries fight back. Where RainFall let you overwrite a return address and jump
 straight into shellcode, OverRide turns on the defences and forces the techniques you actually need on a
 modern target ([source](https://github.com/PfClaKr/Ecole42Paris_Override)).

@@ -2,8 +2,23 @@
 {% import "macros.html" as m %}
 {% block content %}
 <header class="page-header">
-  <p class="prompt" aria-hidden="true"><span class="sig">$</span>ls ./posts{% if section == "tags" %} | grep {{ heading | split(pat="#") | last }}{% endif %}</p>
+  <p class="prompt"><span class="sig" aria-hidden="true">$</span>ls <a href="{{ home_url }}posts/" class="path">./posts</a>
+    {%- if crumbs %}{% for c in crumbs %}/<a href="{{ c.url }}" class="path">{{ c.name }}</a>{% endfor %}{% endif %}
+    {%- if section == "tags" %} | grep {{ heading | split(pat="#") | last }}{% endif %}</p>
   <h1>{{ heading }}{% if posts %}<span class="count">{{ posts | length }}</span>{% endif %}</h1>
+  {%- if dir_description %}
+  <p class="page-lede">{{ dir_description }}</p>
+  {%- endif %}
+  {%- if tree %}
+  <nav class="dir-tree" aria-label="{{ t.folders }}">
+    <ul>
+      {%- for r in tree %}
+      <li><span class="branch" aria-hidden="true">{{ r.prefix }}</span><a href="{{ r.url }}">{{ r.name }}/</a>
+        {%- if r.title %}<span class="dir-title">{{ r.title }}</span>{% endif %}<span class="count">{{ r.count }}</span></li>
+      {%- endfor %}
+    </ul>
+  </nav>
+  {%- endif %}
   {%- if posts | length > 5 %}
   <div class="post-filter" hidden>
     <svg class="icon" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>

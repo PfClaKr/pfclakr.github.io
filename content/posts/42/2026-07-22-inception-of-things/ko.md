@@ -4,7 +4,7 @@ description = "2인 팀으로 만든 세 파트짜리 Kubernetes 과제: Vagrant
 tags = ["42", "kubernetes", "devops"]
 +++
 
-**Inception-of-Things**(IoT)는 42의 Kubernetes 과제로, [Inception](/ko/posts/inception/)의 Docker 작업을
+**Inception-of-Things**(IoT)는 42의 Kubernetes 과제로, [Inception](/ko/posts/42/inception/)의 Docker 작업을
 정신적으로 잇는 후속입니다. 세 파트로 쌓아 올립니다. VM 위의 멀티 노드 클러스터, 그 안으로의 라우팅, 그리고
 마지막으로 Git 저장소가 실행 상태의 진실의 원천이 되는 GitOps. 2인 팀으로 했습니다
 ([소스](https://github.com/PfClaKr/Ecole42Paris_Inception_of_Things)).

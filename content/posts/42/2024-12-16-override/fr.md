@@ -4,7 +4,7 @@ description = "La suite de RainFall : dix niveaux de plus où les raccourcis son
 tags = ["42", "security", "reverse-engineering"]
 +++
 
-**OverRide** est la suite de [RainFall](/fr/posts/rainfall/) : la même échelle de binaires set-uid,
+**OverRide** est la suite de [RainFall](/fr/posts/42/rainfall/) : la même échelle de binaires set-uid,
 `level00` à `level09`, mais cette fois ils se défendent. Là où RainFall laissait écraser une adresse de
 retour et sauter directement dans du shellcode, OverRide active les protections et impose les techniques
 dont on a réellement besoin sur une cible moderne
