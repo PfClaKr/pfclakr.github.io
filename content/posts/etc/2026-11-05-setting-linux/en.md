@@ -83,8 +83,11 @@ sudo sshd -t && sudo systemctl restart ssh
 ```
 
 When an option appears several times, `sshd_config` uses the **first** value. Ubuntu cloud images sometimes ship a
-`50-cloud-init.conf` with `PasswordAuthentication yes`, so the file name has to sort before it (`10-`). Before
-restarting, check from another terminal that key login works. Sessions already connected aren't dropped.
+`50-cloud-init.conf` with `PasswordAuthentication yes`, so the file name has to sort before it (`10-`).
+
+:::warning
+Before restarting, check from another terminal that key login works. Sessions already connected aren't dropped.
+:::
 
 **7. (Server) Turn on the firewall and automatic security updates.**
 
@@ -93,7 +96,9 @@ sudo ufw allow OpenSSH && sudo ufw enable
 sudo apt install -y unattended-upgrades && sudo dpkg-reconfigure -plow unattended-upgrades
 ```
 
+:::warning
 Running `ufw enable` before allowing SSH cuts off a remote session on the spot.
+:::
 
 **8. Apply setting_linux.**
 

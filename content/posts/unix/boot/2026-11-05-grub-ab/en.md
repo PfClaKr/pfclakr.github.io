@@ -277,10 +277,12 @@ Debian-family kernel packages run the hooks in `/etc/kernel/postinst.d/` after i
 kernel in slot B puts the new kernel in slot B's `/boot` and regenerates slot B's grub.cfg only. The ESP and
 slot A stay as they were.
 
+:::tip
 `grub-common` (grub-mkconfig) and `grub2-common` (update-grub and the kernel hook) are all the GRUB packages
 a slot image needs. Packages that run `grub-install` from their postinst, such as `grub-efi-amd64`,
 `grub-efi-amd64-signed` and `shim-signed`, stay out of the slots; the ESP's GRUB is installed separately, at
 image build or factory time.
+:::
 
 ### Building the primary GRUB
 
@@ -298,10 +300,12 @@ grub-editenv esp/EFI/BOOT/grubenv set ORDER="A B" A_OK=1 A_TRY=0 B_OK=0 B_TRY=0
 so `grub.cfg` and `grubenv` are looked up there. `\EFI\BOOT\BOOTX64.EFI` is the path the firmware finds
 without any boot entry, so NVRAM doesn't need to be touched.
 
+:::note Secure Boot
 With Secure Boot, keep the distribution's signed `shimx64.efi` and `grubx64.efi`, and replace the
 `grub.cfg` that GRUB reads first in its ESP directory (the three-line pointer on a normal install) with the
 chooser above. Modules can't be added to a signed image, so check that every command the chooser uses is
 built into it.
+:::
 
 ## The Linux side: changing the state
 
@@ -350,7 +354,9 @@ rootfs: running release 2.0 from /dev/vda3
 No bootable slot left
 ```
 
-(The `ab:` line is printed after `TRY` is set to 1, so the chosen slot always shows `/1`.)
+:::note
+The `ab:` line is printed after `TRY` is set to 1, so the chosen slot always shows `/1`.
+:::
 
 In boot 2 GRUB saved `B_TRY=1` and booted B. B rebooted without mark-good, so boot 3 skipped it and came
 back to A. `ORDER` still says `B A` at that point: the agent on A can tell the update failed from the fact

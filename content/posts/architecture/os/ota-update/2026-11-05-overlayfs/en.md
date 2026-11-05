@@ -94,9 +94,11 @@ Version 2 hardens `sshd_config` and gets installed into the other slot. The devi
 - after a **rollback**, version 1 sees whatever version 2 wrote into the upper, such as a config file
   migrated to a new format.
 
+:::note
 None of this is a bug in OverlayFS. Changing the lower while the overlay is not mounted is allowed, and
 "the upper wins" is exactly the documented behaviour. It just doesn't match what an image-based update
 promises: that version 2 means version 2's files.
+:::
 
 ## Ways out
 

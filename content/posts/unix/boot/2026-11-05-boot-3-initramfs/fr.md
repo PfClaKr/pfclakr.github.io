@@ -35,8 +35,10 @@ son `/init` comme PID 1. `rdinit=` sur la ligne de commande désigne un autre pr
 - S'il n'y a **pas** de `/init` après décompression, le noyau revient à l'ancienne méthode : il monte lui-même
   le périphérique de `root=` et lance `/sbin/init` (ou `init=`).
 
+:::info
 Le mécanisme précédent était l'**initrd**, une image de périphérique bloc (un disque en RAM). Le nom de fichier
 `initrd.img` et la commande `initrd` des chargeurs sont des restes de cette époque ; presque tout utilise cpio aujourd'hui.
+:::
 
 ## Quand on peut s'en passer
 

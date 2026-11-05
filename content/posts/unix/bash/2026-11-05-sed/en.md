@@ -133,10 +133,12 @@ sed -i '' 's/foo/bar/' file     # BSD / macOS: the backup suffix is mandatory, '
 sed -i.bak 's/foo/bar/' file && rm file.bak   # works on both
 ```
 
+:::warning
 Two more things to know about `-i`: it writes a new file and renames it over the old one, so hard
 links to the original are broken (and a symlink is replaced by a regular file unless you pass GNU's
 `--follow-symlinks`). And it happily rewrites a file even when nothing matched, which changes its
 modification time.
+:::
 
 ## The hold space: multi-line tricks
 

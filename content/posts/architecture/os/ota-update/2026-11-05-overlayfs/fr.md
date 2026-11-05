@@ -96,9 +96,11 @@ L'appareil redémarre en version 2, l'overlay est remonté avec le `/etc` de la 
 - après un **retour arrière**, la version 1 voit ce que la version 2 a écrit dans l'upper, par exemple
   un fichier de configuration migré vers un nouveau format.
 
+:::note
 Rien de tout cela n'est un bug d'OverlayFS. Modifier le lower pendant que l'overlay n'est pas monté est
 permis, et « l'upper l'emporte » est exactement le comportement documenté. Ça ne correspond simplement
 pas à la promesse d'une mise à jour par image : que la version 2 signifie les fichiers de la version 2.
+:::
 
 ## Les solutions
 

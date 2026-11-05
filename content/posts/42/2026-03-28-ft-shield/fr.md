@@ -11,9 +11,11 @@ c'est vous qui défendez une machine ([source](https://github.com/PfClaKr/Ecole4
 commence par cet avertissement, fournit un `reset.sh` pour supprimer le programme, et cet article reste du
 côté du défenseur : quoi chercher, et où.
 
-> ⚠️ Un programme qui ouvre un shell distant est dangereux par définition. ft_shield a sa place dans une VM
-> isolée et jetable, et nulle part ailleurs. Tout ce qui suit est présenté comme de la détection, parce que
-> c'est la compétence qui se transfère.
+:::danger
+Un programme qui ouvre un shell distant est dangereux par définition. ft_shield a sa place dans une VM
+isolée et jetable, et nulle part ailleurs. Tout ce qui suit est présenté comme de la détection, parce que
+c'est la compétence qui se transfère.
+:::
 
 ## Ce que toute porte dérobée persistante doit faire
 

@@ -112,9 +112,11 @@ Everything that changes at runtime lives elsewhere:
   ([OverlayFS post](/posts/architecture/os/ota-update/overlayfs/));
 - `/var` and `/tmp` on the data partition or in RAM.
 
-The trap is rollback. If version N+1 migrates a database schema on first boot and then fails its
+:::warning Rollback and data migrations
+If version N+1 migrates a database schema on first boot and then fails its
 health check, version N boots again and finds data it does not understand. Migrations have to be
 backward compatible, versioned, or postponed until after "mark good".
+:::
 
 ## Variations
 

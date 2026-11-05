@@ -87,8 +87,12 @@ sudo sshd -t && sudo systemctl restart ssh
 
 Quand une option apparaît plusieurs fois, `sshd_config` retient la **première** valeur. Les images cloud d'Ubuntu
 contiennent parfois un `50-cloud-init.conf` avec `PasswordAuthentication yes` : le nom du fichier doit donc être
-trié avant (`10-`). Avant de redémarrer, vérifiez depuis un autre terminal que la connexion par clé fonctionne.
+trié avant (`10-`).
+
+:::warning
+Avant de redémarrer, vérifiez depuis un autre terminal que la connexion par clé fonctionne.
 Les sessions déjà ouvertes ne sont pas coupées.
+:::
 
 **7. (Serveur) Activer le pare-feu et les mises à jour de sécurité automatiques.**
 
@@ -97,7 +101,9 @@ sudo ufw allow OpenSSH && sudo ufw enable
 sudo apt install -y unattended-upgrades && sudo dpkg-reconfigure -plow unattended-upgrades
 ```
 
+:::warning
 Lancer `ufw enable` avant d'autoriser SSH coupe immédiatement une session distante.
+:::
 
 **8. Appliquer setting_linux.**
 

@@ -108,8 +108,10 @@ printf 'x\ny\n' | xargs -I{} echo "item: {}"
 find . -name '*.png' -print0 | xargs -0 -P 4 -n 16 optipng   # 작업자 4개, 한 번에 16개씩
 ```
 
+:::warning
 `-r` 줄은 보기보다 중요합니다. GNU xargs는 입력이 없어도 명령을 한 번 실행하기 때문에, 빈 목록에
 `... | xargs rm`을 하면 인자 없는 `rm`이 실행됩니다. `-r`을 붙이거나 `find -exec`를 쓰세요.
+:::
 
 ## find -exec: `\;`와 `+`
 

@@ -5,11 +5,16 @@
 //! - ```mermaid code blocks rendered as `<pre class="mermaid">` for mermaid.js
 //! - heading anchors + a table of contents
 //! - lazy-loaded images, with relative paths rewritten to the post's asset folder
+//! - admonitions: Docusaurus-style `:::warning Title` … `:::` blocks and GitHub
+//!   `> [!WARNING]` alerts, both rendered as `<div class="admonition …">` with a
+//!   localized default title
 
 use std::collections::HashSet;
 use std::sync::OnceLock;
 
-use pulldown_cmark::{CodeBlockKind, CowStr, Event, HeadingLevel, Options, Parser, Tag, TagEnd};
+use pulldown_cmark::{
+    BlockQuoteKind, CodeBlockKind, CowStr, Event, HeadingLevel, Options, Parser, Tag, TagEnd,
+};
 use serde::Serialize;
 use syntect::highlighting::Theme;
 use syntect::html::{css_for_theme_with_class_style, ClassStyle, ClassedHTMLGenerator};
@@ -42,8 +47,17 @@ pub struct Rendered {
     pub text: String,
 }
 
-/// Renders markdown. `asset_base` (e.g. `/posts/hello/`) is prepended to relative image URLs.
+/// Renders markdown with English admonition titles (tests).
+#[cfg(test)]
 pub fn render(markdown: &str, asset_base: Option<&str>) -> Rendered {
+    render_lang(markdown, asset_base, "en")
+}
+
+/// Renders markdown. `asset_base` (e.g. `/posts/hello/`) is prepended to relative image URLs;
+/// admonitions get their default titles in `lang`.
+pub fn render_lang(markdown: &str, asset_base: Option<&str>, lang: &str) -> Rendered {
+    let markdown = expand_admonitions(markdown, lang);
+    let markdown = markdown.as_str();
     let mut opts = Options::empty();
     opts.insert(Options::ENABLE_TABLES);
     opts.insert(Options::ENABLE_FOOTNOTES);
@@ -184,6 +198,22 @@ pub fn render(markdown: &str, asset_base: Option<&str>) -> Rendered {
                 ));
             }
 
+            // GitHub alerts (`> [!NOTE]`) get the same markup as `:::note`.
+            Event::Start(Tag::BlockQuote(Some(kind))) => {
+                let kind = match kind {
+                    BlockQuoteKind::Note => "note",
+                    BlockQuoteKind::Tip => "tip",
+                    BlockQuoteKind::Important => "important",
+                    BlockQuoteKind::Warning => "warning",
+                    BlockQuoteKind::Caution => "danger",
+                };
+                events.push(Event::Html(admonition_open(kind, "", lang).into()));
+            }
+            Event::End(TagEnd::BlockQuote(Some(_))) => {
+                out.text.push(' ');
+                events.push(Event::Html("</div>\n".into()));
+            }
+
             Event::Start(Tag::Paragraph) => {
                 if !summary_done {
                     in_first_paragraph = true;
@@ -249,6 +279,90 @@ pub fn render(markdown: &str, asset_base: Option<&str>) -> Rendered {
             .as_str(),
         160,
     );
+    out
+}
+
+/// Admonition kinds and their default titles (ko, fr, en).
+fn admonition_kind(name: &str) -> Option<(&'static str, [&'static str; 3])> {
+    Some(match name {
+        "note" => ("note", ["참고", "Remarque", "Note"]),
+        "tip" => ("tip", ["팁", "Astuce", "Tip"]),
+        "info" => ("info", ["정보", "Info", "Info"]),
+        "important" => ("important", ["중요", "Important", "Important"]),
+        // Docusaurus treats `caution` as an alias of `warning`.
+        "warning" | "caution" => ("warning", ["주의", "Attention", "Warning"]),
+        "danger" => ("danger", ["위험", "Danger", "Danger"]),
+        _ => return None,
+    })
+}
+
+fn admonition_open(kind: &str, title: &str, lang: &str) -> String {
+    let (kind, defaults) = admonition_kind(kind).unwrap_or(("note", ["참고", "Remarque", "Note"]));
+    let title = if title.trim().is_empty() {
+        match lang {
+            "ko" => defaults[0],
+            "fr" => defaults[1],
+            _ => defaults[2],
+        }
+    } else {
+        title.trim()
+    };
+    format!(
+        "<div class=\"admonition admonition-{kind}\">\n<p class=\"admonition-title\">{}</p>\n",
+        escape_html(title)
+    )
+}
+
+/// Turns `:::kind [title]` … `:::` blocks into an HTML wrapper around normal
+/// markdown. Only lines starting at column 0 count, and fenced code is left
+/// alone. `:::kind[title]` (Docusaurus v3) works too. Blocks can nest.
+fn expand_admonitions(markdown: &str, lang: &str) -> String {
+    let mut out = String::with_capacity(markdown.len() + 64);
+    let mut fence: Option<String> = None;
+    let mut depth = 0usize;
+    for line in markdown.split_inclusive('\n') {
+        let trimmed = line.trim_end();
+        let lead = trimmed.trim_start();
+        if let Some(f) = &fence {
+            if lead.starts_with(f.as_str()) && lead.trim_start_matches(f.chars().next().unwrap()).trim().is_empty() {
+                fence = None;
+            }
+            out.push_str(line);
+            continue;
+        }
+        if lead.starts_with("```") || lead.starts_with("~~~") {
+            let ch = lead.chars().next().unwrap();
+            let n = lead.chars().take_while(|&c| c == ch).count();
+            fence = Some(ch.to_string().repeat(n));
+            out.push_str(line);
+            continue;
+        }
+        if let Some(rest) = trimmed.strip_prefix(":::") {
+            if rest.trim().is_empty() && depth > 0 {
+                depth -= 1;
+                out.push_str("\n</div>\n\n");
+                continue;
+            }
+            let name: String = rest.chars().take_while(|c| c.is_ascii_alphabetic()).collect();
+            if let Some((kind, _)) = admonition_kind(&name.to_ascii_lowercase()) {
+                let after = &rest[name.len()..];
+                let title = after
+                    .trim()
+                    .strip_prefix('[')
+                    .and_then(|t| t.strip_suffix(']'))
+                    .unwrap_or(after.trim());
+                depth += 1;
+                out.push('\n');
+                out.push_str(&admonition_open(kind, title, lang));
+                out.push('\n');
+                continue;
+            }
+        }
+        out.push_str(line);
+    }
+    for _ in 0..depth {
+        out.push_str("\n</div>\n");
+    }
     out
 }
 
@@ -376,6 +490,33 @@ fn truncate_chars(s: &str, max: usize) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn admonitions_from_both_syntaxes() {
+        let r = render_lang(
+            ":::warning 주의할 점\n키 로그인을 **먼저** 확인합니다.\n:::\n\n:::tip\n팁.\n:::\n\n> [!NOTE]\n> 참고.\n",
+            None,
+            "ko",
+        );
+        assert!(r.html.contains("<div class=\"admonition admonition-warning\">"));
+        assert!(r.html.contains("<p class=\"admonition-title\">주의할 점</p>"));
+        assert!(r.html.contains("<strong>먼저</strong>"));
+        assert!(r.html.contains("<p class=\"admonition-title\">팁</p>"));
+        assert!(r.html.contains("<div class=\"admonition admonition-note\">\n<p class=\"admonition-title\">참고</p>"));
+        assert!(!r.html.contains(":::"));
+        assert!(!r.html.contains("<blockquote"));
+        assert!(r.text.contains("키 로그인을 먼저 확인합니다."));
+        assert_eq!(r.html.matches("<div class=\"admonition").count(), r.html.matches("</div>").count());
+    }
+
+    #[test]
+    fn admonition_markers_inside_code_and_unknown_kinds_stay_text() {
+        let r = render_lang("```\n:::note\n```\n\n:::nope\ntext\n:::\n\n:::caution[Mind the gap]\nx\n:::\n", None, "en");
+        assert!(r.html.contains(":::note"));
+        assert!(r.html.contains(":::nope"));
+        assert!(r.html.contains("admonition-warning"));
+        assert!(r.html.contains(">Mind the gap</p>"));
+    }
 
     #[test]
     fn slugify_handles_scripts() {

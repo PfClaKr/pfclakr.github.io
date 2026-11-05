@@ -276,9 +276,11 @@ menuentry "Linux 6.8.0-147-generic (slot $SLOT)" {
 커널을 업그레이드하면 슬롯 B의 `/boot`에 새 커널이 들어가고 슬롯 B의 grub.cfg만 다시 만들어집니다. ESP와
 슬롯 A는 그대로입니다.
 
+:::tip
 슬롯 이미지에 넣을 GRUB 패키지는 `grub-common`(grub-mkconfig)과 `grub2-common`(update-grub, 커널 훅)이면
 충분합니다. `grub-efi-amd64`, `grub-efi-amd64-signed`, `shim-signed`처럼 postinst에서 `grub-install`을 하는
 패키지는 슬롯에 넣지 않습니다. ESP의 GRUB은 이미지 빌드나 공장 설치 단계에서 따로 설치합니다.
+:::
 
 ### 기본 GRUB 만들기
 
@@ -296,9 +298,11 @@ grub-editenv esp/EFI/BOOT/grubenv set ORDER="A B" A_OK=1 A_TRY=0 B_OK=0 B_TRY=0
 `grubenv`를 ESP에서 찾습니다. `\EFI\BOOT\BOOTX64.EFI`는 펌웨어가 부트 엔트리 없이도 찾는 기본 경로라서
 NVRAM을 건드리지 않아도 됩니다.
 
+:::note 시큐어 부트
 시큐어 부트에서는 배포판이 서명한 `shimx64.efi`와 `grubx64.efi`를 그대로 쓰고, 그 GRUB이 처음 읽는 ESP
 디렉터리의 `grub.cfg`(일반 설치에서 세 줄짜리 연결 고리가 있던 파일)를 위의 선택기로 바꿉니다. 서명된
 이미지에 모듈을 추가할 수 없으니 선택기가 쓰는 명령이 그 이미지에 들어 있는지 확인해야 합니다.
+:::
 
 ## 리눅스 쪽: 상태 바꾸기
 
@@ -347,7 +351,9 @@ rootfs: running release 2.0 from /dev/vda3
 No bootable slot left
 ```
 
-(`ab:` 줄의 숫자는 `TRY`를 1로 바꾼 뒤에 출력해서, 선택된 슬롯은 항상 `/1`로 보입니다.)
+:::note
+`ab:` 줄의 숫자는 `TRY`를 1로 바꾼 뒤에 출력해서, 선택된 슬롯은 항상 `/1`로 보입니다.
+:::
 
 부팅 2에서 GRUB은 `B_TRY=1`을 저장하고 B를 부팅했습니다. B가 mark-good을 하지 못한 채 재부팅되자
 부팅 3에서는 B를 건너뛰고 A로 돌아왔습니다. 이때 `ORDER`는 여전히 `B A`입니다. 다시 올라온 A의 에이전트는

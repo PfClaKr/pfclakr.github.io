@@ -114,8 +114,10 @@ printf 'x\ny\n' | xargs -I{} echo "item: {}"
 find . -name '*.png' -print0 | xargs -0 -P 4 -n 16 optipng   # 4 processus, 16 fichiers chacun
 ```
 
+:::warning
 La ligne `-r` compte plus qu'il n'y paraît : GNU xargs lance la commande une fois même sans entrée,
 donc `... | xargs rm` avec une liste vide exécute un `rm` nu. Ajoutez `-r`, ou utilisez `find -exec`.
+:::
 
 ## find -exec : `\;` ou `+`
 

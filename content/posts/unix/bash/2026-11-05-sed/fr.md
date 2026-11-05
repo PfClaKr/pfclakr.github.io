@@ -136,10 +136,12 @@ sed -i '' 's/foo/bar/' fichier     # BSD / macOS : le suffixe de sauvegarde est 
 sed -i.bak 's/foo/bar/' fichier && rm fichier.bak   # fonctionne partout
 ```
 
+:::warning
 Deux autres choses à savoir sur `-i` : il écrit un nouveau fichier puis le renomme par-dessus
 l'ancien, donc les liens physiques vers l'original sont rompus (et un lien symbolique est remplacé
 par un fichier normal, sauf avec l'option GNU `--follow-symlinks`). Et il réécrit le fichier même
 si rien ne correspond, ce qui change sa date de modification.
+:::
 
 ## Le hold space : les astuces sur plusieurs lignes
 

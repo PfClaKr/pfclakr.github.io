@@ -112,8 +112,10 @@ printf 'x\ny\n' | xargs -I{} echo "item: {}"
 find . -name '*.png' -print0 | xargs -0 -P 4 -n 16 optipng   # 4 workers, 16 files each
 ```
 
+:::warning
 The `-r` row matters more than it looks: GNU xargs runs the command once even with no input, so
 `... | xargs rm` with an empty list runs a bare `rm`. Add `-r`, or use `find -exec`.
+:::
 
 ## find -exec: `\;` versus `+`
 

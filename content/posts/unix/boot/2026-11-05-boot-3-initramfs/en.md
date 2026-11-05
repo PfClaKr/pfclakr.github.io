@@ -35,8 +35,10 @@ as PID 1. `rdinit=` on the command line names a different program. A few details
 - If there is **no** `/init` after unpacking, the kernel falls back to the old way: it mounts the `root=` device
   itself and runs `/sbin/init` (or `init=`).
 
+:::info
 The older mechanism was **initrd**, a block-device image (a RAM disk). The file name `initrd.img` and the
 bootloader command `initrd` are leftovers from that era; nearly everything uses cpio now.
+:::
 
 ## When you can boot without one
 

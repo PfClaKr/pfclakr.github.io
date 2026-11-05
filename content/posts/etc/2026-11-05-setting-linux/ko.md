@@ -83,7 +83,11 @@ sudo sshd -t && sudo systemctl restart ssh
 
 `sshd_config`는 같은 옵션이 여러 번 나오면 **처음 값**을 씁니다. 우분투 클라우드 이미지에는
 `50-cloud-init.conf`가 `PasswordAuthentication yes`를 넣어 두기도 해서, 파일 이름을 그보다 앞서게(`10-`) 지어야
-합니다. 재시작하기 전에 다른 터미널에서 키로 접속되는지 꼭 확인합니다. 이미 연결된 세션은 끊기지 않습니다.
+합니다.
+
+:::warning
+재시작하기 전에 다른 터미널에서 키로 접속되는지 꼭 확인합니다. 이미 연결된 세션은 끊기지 않습니다.
+:::
 
 **7. (서버) 방화벽과 자동 보안 업데이트를 켭니다.**
 
@@ -92,7 +96,9 @@ sudo ufw allow OpenSSH && sudo ufw enable
 sudo apt install -y unattended-upgrades && sudo dpkg-reconfigure -plow unattended-upgrades
 ```
 
+:::warning
 `ufw enable` 전에 SSH를 허용하지 않으면 원격 접속이 그대로 끊깁니다.
+:::
 
 **8. setting_linux를 적용합니다.**
 

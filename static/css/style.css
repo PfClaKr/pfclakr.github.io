@@ -444,15 +444,28 @@ main.ld-main {
 .prose pre.mermaid.is-wide { text-align: left; }
 .prose .footnote-definition { font-size: 15px; color: var(--fg-muted); }
 .prose .footnote-definition p { display: inline; }
-/* GitHub-style alerts: > [!NOTE] */
-.prose blockquote[class^="markdown-alert-"] { border-left-color: var(--alert); background: color-mix(in srgb, var(--alert) 8%, transparent); border-radius: 0 8px 8px 0; color: var(--fg); padding: 10px 18px; }
-.prose blockquote[class^="markdown-alert-"] > :last-child { margin-bottom: 0; }
-.prose blockquote[class^="markdown-alert-"]::before { display: block; font: 700 12.5px var(--mono); letter-spacing: .03em; color: var(--alert); margin-bottom: 4px; }
-.markdown-alert-note { --alert: #2f81f7; } .markdown-alert-note::before { content: "Note"; }
-.markdown-alert-tip { --alert: #1a7f37; } .markdown-alert-tip::before { content: "Tip"; }
-.markdown-alert-important { --alert: #8250df; } .markdown-alert-important::before { content: "Important"; }
-.markdown-alert-warning { --alert: #bf8700; } .markdown-alert-warning::before { content: "Warning"; }
-.markdown-alert-caution { --alert: #cf222e; } .markdown-alert-caution::before { content: "Caution"; }
+/* Admonitions: `:::warning Title` … `:::` and GitHub `> [!WARNING]` both render as
+   <div class="admonition admonition-warning"><p class="admonition-title">…</p>…</div>. */
+.prose .admonition {
+  --adm: var(--fg-muted);
+  margin: 0 0 1.3em; padding: 12px 18px 12px 16px;
+  border-left: 3px solid var(--adm); border-radius: 0 var(--radius) var(--radius) 0;
+  background: color-mix(in srgb, var(--adm) 7%, var(--bg));
+}
+.prose .admonition > :last-child { margin-bottom: 0; }
+.prose .admonition-title {
+  margin: 0 0 4px; font: 700 12.5px/1.6 var(--mono); letter-spacing: .02em; color: var(--adm);
+}
+.prose .admonition-note { --adm: var(--fg-muted); }
+.prose .admonition-tip { --adm: var(--green); }
+.prose .admonition-info { --adm: #3f6f9a; }
+.prose .admonition-important { --adm: #74569e; }
+.prose .admonition-warning { --adm: var(--accent); }
+.prose .admonition-danger { --adm: #b23b33; }
+[data-theme="dark"] .prose .admonition-info { --adm: #7fa8cf; }
+[data-theme="dark"] .prose .admonition-important { --adm: #ad95d6; }
+[data-theme="dark"] .prose .admonition-danger { --adm: #e07a6f; }
+.prose .admonition :not(pre) > code { background: color-mix(in srgb, var(--adm) 10%, var(--code-bg)); }
 
 /* ───────────── Search dialog ───────────── */
 html.search-open { overflow: hidden; }

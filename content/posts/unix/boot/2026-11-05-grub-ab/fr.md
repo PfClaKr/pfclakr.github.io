@@ -282,10 +282,12 @@ Les paquets de noyau de la famille Debian exécutent après installation les hoo
 `/boot/grub/grub.cfg` existe. Mettre à niveau le noyau dans le slot B place le nouveau noyau dans le
 `/boot` du slot B et ne régénère que le grub.cfg du slot B. L'ESP et le slot A restent intacts.
 
+:::tip
 `grub-common` (grub-mkconfig) et `grub2-common` (update-grub et le hook du noyau) sont les seuls paquets
 GRUB nécessaires dans une image de slot. Les paquets qui lancent `grub-install` depuis leur postinst, comme
 `grub-efi-amd64`, `grub-efi-amd64-signed` et `shim-signed`, restent en dehors des slots ; le GRUB de l'ESP
 est installé à part, lors de la construction de l'image ou en usine.
+:::
 
 ### Construire le GRUB principal
 
@@ -303,10 +305,12 @@ grub-editenv esp/EFI/BOOT/grubenv set ORDER="A B" A_OK=1 A_TRY=0 B_OK=0 B_TRY=0
 lancé, l'ESP : c'est là qu'il cherche `grub.cfg` et `grubenv`. `\EFI\BOOT\BOOTX64.EFI` est le chemin que le
 micrologiciel trouve sans aucune entrée de démarrage, donc inutile de toucher à la NVRAM.
 
+:::note Secure Boot
 Avec Secure Boot, on garde les `shimx64.efi` et `grubx64.efi` signés de la distribution et on remplace le
 `grub.cfg` que ce GRUB lit en premier dans son répertoire de l'ESP (le relais de trois lignes d'une
 installation normale) par le sélecteur ci-dessus. On ne peut pas ajouter de modules à une image signée :
 il faut vérifier que chaque commande du sélecteur y est intégrée.
+:::
 
 ## Côté Linux : changer l'état
 
@@ -356,7 +360,9 @@ rootfs: running release 2.0 from /dev/vda3
 No bootable slot left
 ```
 
-(La ligne `ab:` est affichée après le passage de `TRY` à 1 : le slot choisi apparaît donc toujours avec `/1`.)
+:::note
+La ligne `ab:` est affichée après le passage de `TRY` à 1 : le slot choisi apparaît donc toujours avec `/1`.
+:::
 
 Au démarrage 2, GRUB a enregistré `B_TRY=1` et démarré B. B a redémarré sans mark-good, donc le démarrage 3
 l'a sauté et est revenu sur A. `ORDER` vaut encore `B A` à ce moment : l'agent sur A peut déduire l'échec de

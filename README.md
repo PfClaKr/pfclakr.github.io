@@ -5,7 +5,8 @@ Rust로 직접 만든 다국어(🇬🇧 English · 🇫🇷 Français · 🇰�
 - **빌드 타임 렌더링**: `pulldown-cmark`로 마크다운 → HTML, 결과물은 순수 정적 HTML (SEO 친화)
 - **코드 하이라이팅**: `syntect` + `two-face` (TOML, TS, Dockerfile 등 포함), 라이트/다크 테마 자동
 - **Mermaid** 다이어그램: ```` ```mermaid ```` 블록이 있는 페이지에서만 mermaid.js 로드
-- **GFM**: 표, 각주, 체크리스트, 취소선, `> [!NOTE]` 알림 블록, 헤딩 앵커 + 목차(TOC)
+- **GFM**: 표, 각주, 체크리스트, 취소선, 헤딩 앵커 + 목차(TOC)
+- **알림 상자**: Docusaurus식 `:::warning 제목` … `:::`과 GitHub식 `> [!WARNING]`을 같은 모양으로 렌더링, 기본 제목은 글의 언어로
 - **댓글**: [giscus](https://giscus.app) (GitHub Discussions) — 번역본끼리 같은 스레드 공유
 - **SEO**: canonical, `hreflang` + `x-default`, Open Graph / Twitter Card, JSON-LD (`BlogPosting`, `BreadcrumbList`, `Person`), 다국어 `sitemap.xml`, `robots.txt`, 언어별 Atom 피드
 - **다크 모드**, 모바일 대응, 코드 복사 버튼, 이전/다음 글 내비게이션
@@ -69,7 +70,7 @@ weight = 10                 # 같은 단계 폴더 사이의 순서 (작을수�
 +++
 title = "Rust 소유권 이해하기"
 description = "검색 결과와 링크 미리보기에 쓰이는 요약 (생략 시 첫 문단)"
-date = 2026-11-02          # 생략 시 폴더명의 날짜 사용
+date = 2026-11-02          # 생략 시 폴더명의 날짜 사용. 2026-11-02T10:00:00처럼 시각을 쓰면 같은 날 글의 순서를 정함
 updated = 2026-11-10       # 선택
 tags = ["rust", "memory"]
 draft = false              # true면 `--drafts` 옵션 없이는 빌드되지 않음
@@ -81,6 +82,33 @@ comments = true            # 선택: 댓글 표시
 
 본문...
 ```
+
+알림 상자:
+
+```markdown
+:::warning 재시작 전에
+다른 터미널에서 키 로그인이 되는지 **먼저** 확인합니다.
+:::
+
+:::tip
+제목을 생략하면 언어별 기본 제목(팁 / Astuce / Tip)이 붙습니다.
+:::
+
+> [!NOTE]
+> GitHub 문법도 같은 상자로 나옵니다.
+```
+
+| 종류 | 기본 제목 (ko / fr / en) |
+|---|---|
+| `note` | 참고 / Remarque / Note |
+| `tip` | 팁 / Astuce / Tip |
+| `info` | 정보 / Info / Info |
+| `important` | 중요 / Important / Important |
+| `warning` (`caution`) | 주의 / Attention / Warning |
+| `danger` | 위험 / Danger / Danger |
+
+`:::`는 줄 맨 앞에 있을 때만 인식되고, 코드 블록 안의 `:::`는 그대로 둡니다. `:::warning[제목]` 형식도 됩니다.
+GitHub의 `> [!CAUTION]`은 `danger`로 나옵니다.
 
 URL 규칙 (기본 언어 = `en`, 루트에 배치):
 
