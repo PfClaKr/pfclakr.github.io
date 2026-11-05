@@ -38,7 +38,7 @@ ft_shield는 자신을 **systemd 서비스**로 설치합니다. 유닛 파일�
 ```bash
 systemctl list-unit-files --state=enabled      # 여기 낯선 게 있나?
 ls -lt /etc/systemd/system/ /lib/systemd/system # 최신 유닛 파일부터
-systemctl cat <의심스러운-서비스>               # ExecStart 경로 읽기
+systemctl cat <suspicious-service>              # ExecStart 경로 읽기
 ```
 
 단서는 이렇습니다. 진짜 데몬을 흉내 낸 이름의 유닛, 이상한 경로(`/bin`, `/tmp`, 홈 디렉터리)를 가리키는

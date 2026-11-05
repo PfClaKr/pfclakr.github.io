@@ -14,7 +14,7 @@ The whole implementation is about 400 lines in the
 ## The loop
 
 ```mermaid
-flowchart LR
+flowchart TD
     R[resolve host<br/>getaddrinfo] --> S[open raw socket<br/>set TTL + receive timeout]
     S --> B[build ICMP echo request<br/>id = pid, seq = n]
     B --> T[sendto + timestamp]

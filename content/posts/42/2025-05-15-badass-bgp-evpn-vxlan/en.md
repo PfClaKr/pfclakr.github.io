@@ -149,11 +149,11 @@ sequenceDiagram
     participant L1 as leaf 1
     participant RR as spine (RR)
     participant L2 as leaf 2
-    H1->>L1: first frame (source MAC learned on br0)
-    L1->>RR: BGP UPDATE, Type 2: MAC of host 1 is behind 1.1.1.2
+    H1->>L1: first frame<br/>(source MAC learned on br0)
+    L1->>RR: BGP UPDATE, Type 2:<br/>MAC of host 1<br/>is behind 1.1.1.2
     RR->>L2: reflected UPDATE
     Note over L2: knows where host 1 is<br/>before seeing any of its traffic
-    L2->>L1: later frames go straight into a VXLAN tunnel
+    L2->>L1: later frames go straight<br/>into a VXLAN tunnel
 ```
 
 That chain is easy to demonstrate. With every host stopped, only Type 3 routes exist, and the

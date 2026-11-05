@@ -151,11 +151,11 @@ sequenceDiagram
     participant L1 as leaf 1
     participant RR as spine (RR)
     participant L2 as leaf 2
-    H1->>L1: première trame (MAC source apprise sur br0)
-    L1->>RR: UPDATE BGP, Type 2 : la MAC de l’hôte 1 est derrière 1.1.1.2
+    H1->>L1: première trame<br/>(MAC source apprise sur br0)
+    L1->>RR: UPDATE BGP, Type 2 :<br/>la MAC de l’hôte 1<br/>est derrière 1.1.1.2
     RR->>L2: UPDATE réfléchi
     Note over L2: sait où est l’hôte 1<br/>avant d’avoir vu son trafic
-    L2->>L1: les trames suivantes partent directement dans un tunnel VXLAN
+    L2->>L1: les trames suivantes partent<br/>directement dans un tunnel VXLAN
 ```
 
 Cette chaîne se démontre facilement. Avec tous les hôtes arrêtés, seules les routes de type 3

@@ -124,7 +124,7 @@ struct Crumb {
 #[derive(Serialize)]
 struct TreeRow {
     /// Box-drawing prefix, e.g. `│   └── ` (glyphs served by the
-    /// `jetbrains-mono-box-drawing.woff2` subset so the columns line up).
+    /// `jetbrains-mono-symbols.woff2` subset so the columns line up).
     prefix: String,
     name: String,
     url: String,

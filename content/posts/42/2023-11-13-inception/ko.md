@@ -13,7 +13,7 @@ Debian이나 Alpine 이미지 위에 직접 쓴 `Dockerfile`로 빌드해야 합
 ## 구조
 
 ```mermaid
-flowchart LR
+flowchart TD
     U["브라우저"] -->|"HTTPS :443"| N["nginx<br/>TLS 1.2/1.3"]
     N -->|"FastCGI :9000"| W["WordPress<br/>php-fpm"]
     W -->|"MySQL :3306"| M["MariaDB"]

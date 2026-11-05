@@ -24,7 +24,7 @@ What it has to support:
 The pipeline inside the shell looks like a tiny compiler:
 
 ```mermaid
-flowchart LR
+flowchart TD
     A["readline()"] --> B["quote check"]
     B --> C["tokenize"]
     C --> D["expand $VAR"]

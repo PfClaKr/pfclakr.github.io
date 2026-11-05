@@ -144,8 +144,8 @@ sequenceDiagram
     participant L1 as 리프 1
     participant RR as 스파인 (RR)
     participant L2 as 리프 2
-    H1->>L1: 첫 프레임 (br0에서 출발지 MAC 학습)
-    L1->>RR: BGP UPDATE, Type 2: 호스트 1의 MAC은 1.1.1.2 뒤에 있음
+    H1->>L1: 첫 프레임<br/>(br0에서 출발지 MAC 학습)
+    L1->>RR: BGP UPDATE, Type 2:<br/>호스트 1의 MAC은<br/>1.1.1.2 뒤에 있음
     RR->>L2: 반사된 UPDATE
     Note over L2: 호스트 1의 트래픽을 보기도 전에<br/>위치를 이미 알고 있음
     L2->>L1: 이후 프레임은 바로 VXLAN 터널로

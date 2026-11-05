@@ -170,7 +170,7 @@ pub fn alloc_frame(&mut self) -> Result<usize, PhysicalMemoryError> {
 32비트 페이징은 가상 주소를 세 부분으로 나눕니다.
 
 ```mermaid
-flowchart LR
+flowchart TD
     VA["가상 주소<br/>[ 10비트 | 10비트 | 12비트 ]"] --> PD["페이지 디렉터리<br/>항목 = va >> 22"]
     PD --> PT["페이지 테이블<br/>항목 = (va >> 12) & 0x3FF"]
     PT --> F["4 KiB 프레임 + 오프셋"]

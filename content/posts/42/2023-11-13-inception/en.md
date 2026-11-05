@@ -13,7 +13,7 @@ your own `Dockerfile` on top of a bare Debian or Alpine image. Pulling `wordpres
 ## The architecture
 
 ```mermaid
-flowchart LR
+flowchart TD
     U["browser"] -->|"HTTPS :443"| N["nginx<br/>TLS 1.2/1.3"]
     N -->|"FastCGI :9000"| W["WordPress<br/>php-fpm"]
     W -->|"MySQL :3306"| M["MariaDB"]

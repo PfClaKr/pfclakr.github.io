@@ -171,7 +171,7 @@ Errors are ordinary Rust values (`OutofMemory`, `FrameAlreadyUse`, …) rather t
 32-bit paging splits a virtual address into three parts:
 
 ```mermaid
-flowchart LR
+flowchart TD
     VA["virtual address<br/>[ 10 bits | 10 bits | 12 bits ]"] --> PD["page directory<br/>entry = va >> 22"]
     PD --> PT["page table<br/>entry = (va >> 12) & 0x3FF"]
     PT --> F["4 KiB frame + offset"]

@@ -24,13 +24,13 @@
   --header-h: 60px;
   /* Pretendard is self-hosted (static/fonts/pretendard, SIL OFL 1.1) so every
      device renders the same Korean/Latin glyphs. */
-  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+  --font: Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
           "Segoe UI", "Noto Sans KR", "Malgun Gothic", Roboto, "Helvetica Neue", Arial, sans-serif;
   /* Hangul has no glyphs in the mono fonts; fall back to Pretendard for it. */
   /* JetBrains Mono is self-hosted (Latin only) so phones without a mono font
      still get one; Hangul falls through to Pretendard. */
   --mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
-          "D2Coding", "Pretendard Variable", monospace;
+          "D2Coding", Pretendard, monospace;
   color-scheme: light;
 }
 [data-theme="dark"] {
@@ -424,12 +424,16 @@ main.ld-main {
 }
 .copy-btn:hover { color: var(--fg); background: var(--bg-elev); border-color: var(--border); }
 .copy-btn.done { color: var(--accent); }
+/* Block + text-align (not flex): when a diagram is wider than the column it
+   overflows to the right and scrolls from its left edge instead of being cut. */
 .prose pre.mermaid {
-  display: flex; justify-content: center; overflow-x: auto; background: var(--bg-soft);
+  display: block; text-align: center; overflow-x: auto; background: var(--bg-soft);
   border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; font: 13px var(--mono);
-  white-space: pre; word-break: normal; overflow-wrap: normal;
+  white-space: pre; word-break: normal; overflow-wrap: normal; -webkit-overflow-scrolling: touch;
 }
-.prose pre.mermaid[data-processed] { white-space: normal; }
+.prose pre.mermaid[data-processed] { white-space: normal; text-align: center; }
+.prose pre.mermaid svg { display: inline-block; vertical-align: top; }
+.prose pre.mermaid.is-wide { text-align: left; }
 .prose .footnote-definition { font-size: 15px; color: var(--fg-muted); }
 .prose .footnote-definition p { display: inline; }
 /* GitHub-style alerts: > [!NOTE] */
