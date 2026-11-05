@@ -123,8 +123,8 @@ struct Crumb {
 /// A row of the `tree`-style folder listing.
 #[derive(Serialize)]
 struct TreeRow {
-    /// ASCII tree prefix, e.g. ``|   `-- `` (box-drawing glyphs are not in the
-    /// Latin-only mono subset, so they would fall back to another font).
+    /// Box-drawing prefix, e.g. `│   └── ` (glyphs served by the
+    /// `jetbrains-mono-box-drawing.woff2` subset so the columns line up).
     prefix: String,
     name: String,
     url: String,
@@ -383,7 +383,7 @@ impl Site {
             .collect()
     }
 
-    /// `tree -d --charset=ascii` of the folders below `base` (`""` = all), with post counts.
+    /// `tree -d` of the folders below `base` (`""` = all), with post counts.
     fn tree(&self, lang: &str, base: &str) -> Vec<TreeRow> {
         fn parent(path: &str) -> &str {
             path.rsplit_once('/').map(|(p, _)| p).unwrap_or("")
@@ -403,7 +403,7 @@ impl Site {
         let first = children(base);
         let n = first.len();
         for (i, d) in first.into_iter().enumerate().rev() {
-            stack.push((d.clone(), if i + 1 == n { "`-- " } else { "|-- " }.to_string()));
+            stack.push((d.clone(), if i + 1 == n { "└── " } else { "├── " }.to_string()));
         }
         while let Some((dir, prefix)) = stack.pop() {
             let name = dir.rsplit('/').next().unwrap_or(&dir).to_string();
@@ -416,11 +416,11 @@ impl Site {
                 count: self.listing_in(lang, &dir).len(),
             });
             // Indent for the children: replace the branch with a rail or blank.
-            let indent = prefix.replace("|-- ", "|   ").replace("`-- ", "    ");
+            let indent = prefix.replace("├── ", "│   ").replace("└── ", "    ");
             let kids = children(&dir);
             let k = kids.len();
             for (i, c) in kids.into_iter().enumerate().rev() {
-                let branch = if i + 1 == k { "`-- " } else { "|-- " };
+                let branch = if i + 1 == k { "└── " } else { "├── " };
                 stack.push((c.clone(), format!("{indent}{branch}")));
             }
         }
