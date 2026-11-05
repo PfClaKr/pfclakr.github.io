@@ -20,15 +20,18 @@
     var frame = document.querySelector("iframe.giscus-frame");
     if (frame) frame.contentWindow.postMessage({ giscus: { setConfig: { theme: t } } }, "https://giscus.app");
   }
+  // Language dropdown: close on outside click or Escape.
+  var langMenu = document.querySelector("details.lang-menu");
+  if (langMenu) {
+    document.addEventListener("click", function (e) { if (langMenu.open && !langMenu.contains(e.target)) langMenu.open = false; });
+    langMenu.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && langMenu.open) { langMenu.open = false; langMenu.querySelector("summary").focus(); }
+    });
+  }
+
   var toggle = document.querySelector(".theme-toggle");
   if (toggle) toggle.addEventListener("click", function () { setTheme(theme() === "dark" ? "light" : "dark"); });
 
-  // Close the language menu when clicking elsewhere.
-  document.addEventListener("click", function (e) {
-    document.querySelectorAll("details.lang-menu[open]").forEach(function (d) {
-      if (!d.contains(e.target)) d.removeAttribute("open");
-    });
-  });
 
   // ── Code blocks: header bar with language label and copy button ──
   var copyText = document.body.dataset.copy || "Copy";

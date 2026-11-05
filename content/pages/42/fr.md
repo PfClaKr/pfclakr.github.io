@@ -10,30 +10,7 @@ Voici les projets que j’ai validés à **42 Paris** (login `ychun`), classés 
 Chaque nom renvoie vers son dépôt ; l’index complet se trouve dans
 [PfClaKr/Ecole42Paris](https://github.com/PfClaKr/Ecole42Paris).
 
-## Articles détaillés
-
-- [libft : écrire ma propre bibliothèque standard C](/fr/posts/libft/)
-- [get_next_line : lire un fichier ligne par ligne](/fr/posts/get-next-line/)
-- [ft_printf : les fonctions variadiques sans magie](/fr/posts/ft-printf/)
-- [minitalk : envoyer du texte un signal à la fois](/fr/posts/minitalk/)
-- [so_long : un petit jeu 2D et un validateur de cartes](/fr/posts/so-long/)
-- [push_swap : trier avec deux piles et onze opérations](/fr/posts/push-swap/)
-- [Philosophers : threads, mutex et ne pas mourir de faim](/fr/posts/philosophers/)
-- [minishell : écrire un petit bash](/fr/posts/minishell/)
-- [miniRT : un ray tracer à partir des principes de base](/fr/posts/minirt/)
-- [CPP Modules 00–09 : apprendre le C++98 à la dure](/fr/posts/cpp-modules/)
-- [Inception : WordPress dans trois conteneurs écrits à la main](/fr/posts/inception/)
-- [webserv : un serveur HTTP/1.1 sur une seule boucle epoll](/fr/posts/webserv/)
-- [ft_transcendence : un Pong côté serveur pour quatre joueurs](/fr/posts/ft-transcendence/)
-- [libasm : retour à libft, en assembleur x86-64](/fr/posts/libasm/)
-- [little-penguin-1 : dix petits pas dans le noyau Linux](/fr/posts/little-penguin/)
-- [KFS : écrire un noyau x86 de zéro en Rust](/fr/posts/kfs-rust-kernel/)
-- [RainFall : une visite guidée des bugs de corruption mémoire](/fr/posts/rainfall/)
-- [OverRide : l'exploitation au-delà des protections faciles](/fr/posts/override/)
-- [BADASS : du L2 au-dessus du L3 avec VXLAN et BGP-EVPN](/fr/posts/badass-bgp-evpn-vxlan/)
-- [ft_ping : recoder ping avec des sockets ICMP brutes](/fr/posts/ft-ping-raw-sockets/)
-- [ft_shield : comment une porte dérobée se cache, et comment la trouver](/fr/posts/ft-shield/)
-- [Inception-of-Things : de Kubernetes sur des VMs au GitOps](/fr/posts/inception-of-things/)
+<p class="stats-42"><a href="https://42cv.dev/ychun" rel="noopener"><img src="https://42cv.dev/api/badge/cmp1jhhsl00020jt1xrx8atv5/stats?cursusId=21&amp;coalitionId=48" alt="Statistiques 42 de ychun" loading="lazy" decoding="async"></a></p>
 
 ## Fondamentaux en C
 

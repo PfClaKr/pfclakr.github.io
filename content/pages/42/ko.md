@@ -10,30 +10,7 @@ in_menu = true
 이름을 누르면 해당 저장소로 이동하고, 전체 목록은
 [PfClaKr/Ecole42Paris](https://github.com/PfClaKr/Ecole42Paris)에 있습니다.
 
-## 상세 글
-
-- [libft: 나만의 C 표준 라이브러리 만들기](/ko/posts/libft/)
-- [get_next_line: 파일을 한 줄씩 읽기](/ko/posts/get-next-line/)
-- [ft_printf: 마법 없이 가변 인자 함수 이해하기](/ko/posts/ft-printf/)
-- [minitalk: 시그널 하나씩으로 문자열 보내기](/ko/posts/minitalk/)
-- [so_long: 작은 2D 게임과 맵 검증기](/ko/posts/so-long/)
-- [push_swap: 스택 두 개와 연산 11개로 정렬하기](/ko/posts/push-swap/)
-- [Philosophers: 스레드, 뮤텍스, 그리고 굶어 죽지 않기](/ko/posts/philosophers/)
-- [minishell: 작은 bash 만들기](/ko/posts/minishell/)
-- [miniRT: 기본 원리부터 만든 레이 트레이서](/ko/posts/minirt/)
-- [CPP 모듈 00–09: C++98을 어렵게 배우기](/ko/posts/cpp-modules/)
-- [Inception: 직접 작성한 컨테이너 세 개로 WordPress 띄우기](/ko/posts/inception/)
-- [webserv: epoll 루프 하나로 돌아가는 HTTP/1.1 서버](/ko/posts/webserv/)
-- [ft_transcendence: 4인용 서버 측 Pong](/ko/posts/ft-transcendence/)
-- [libasm: x86-64 어셈블리로 다시 만드는 libft](/ko/posts/libasm/)
-- [little-penguin-1: 리눅스 커널로 들어가는 작은 열 걸음](/ko/posts/little-penguin/)
-- [KFS: Rust로 x86 커널을 처음부터 만들기](/ko/posts/kfs-rust-kernel/)
-- [RainFall: 메모리 손상 버그 둘러보기](/ko/posts/rainfall/)
-- [OverRide: 쉬운 완화 기법 너머의 익스플로잇](/ko/posts/override/)
-- [BADASS: VXLAN과 BGP-EVPN으로 L3 위에 L2 얹기](/ko/posts/badass-bgp-evpn-vxlan/)
-- [ft_ping: raw ICMP 소켓으로 ping 다시 만들기](/ko/posts/ft-ping-raw-sockets/)
-- [ft_shield: 백도어는 어떻게 숨고, 어떻게 찾아내나](/ko/posts/ft-shield/)
-- [Inception-of-Things: VM 위 Kubernetes에서 GitOps까지](/ko/posts/inception-of-things/)
+<p class="stats-42"><a href="https://42cv.dev/ychun" rel="noopener"><img src="https://42cv.dev/api/badge/cmp1jhhsl00020jt1xrx8atv5/stats?cursusId=21&amp;coalitionId=48" alt="ychun의 42 통계" loading="lazy" decoding="async"></a></p>
 
 ## C 기초
 
