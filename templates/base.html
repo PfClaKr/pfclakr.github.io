@@ -62,7 +62,8 @@
       if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       document.documentElement.dataset.theme = t;
       var f; try { f = localStorage.getItem("fx"); } catch (e) {}
-      if (["ripple", "life", "field", "off"].indexOf(f) < 0) f = "ripple";
+      // No saved choice yet: animate the landing, keep reading pages calm.
+      if (["ripple", "life", "field", "off"].indexOf(f) < 0) f = "{% if section == "home" %}ripple{% else %}off{% endif %}";
       document.documentElement.dataset.fx = f;
     })();
   </script>
@@ -95,13 +96,16 @@
         <button class="search-toggle" type="button" aria-label="{{ t.search }}" title="{{ t.search }}" aria-keyshortcuts="/ Control+K Meta+K">
           {{ m::icon(name="search") }}<kbd aria-hidden="true">/</kbd>
         </button>
-        <nav class="lang-switch" aria-label="{{ t.language }}">
-          {%- for l in languages %}
-          <a href="{{ l.url }}" hreflang="{{ l.code }}" lang="{{ l.code }}" title="{{ l.name }}"
-             {%- if l.active %} aria-current="true"{% endif %}
-             {%- if not l.exists %} class="missing"{% endif %}>{{ l.code | upper }}</a>
-          {%- endfor %}
-        </nav>
+        <details class="lang-menu">
+          <summary aria-label="{{ t.language }}" title="{{ t.language }}">{{ m::icon(name="globe") }}<span>{{ lang | upper }}</span></summary>
+          <ul>
+            {%- for l in languages %}
+            <li><a href="{{ l.url }}" hreflang="{{ l.code }}" lang="{{ l.code }}"
+                   {%- if l.active %} aria-current="true"{% endif %}
+                   {%- if not l.exists %} class="missing"{% endif %}><span class="code">{{ l.code }}</span>{{ l.name }}</a></li>
+            {%- endfor %}
+          </ul>
+        </details>
         <button class="theme-toggle" type="button" aria-label="{{ t.toggle_theme }}" title="{{ t.toggle_theme }}">
           {{ m::icon(name="sun") }}{{ m::icon(name="moon") }}
         </button>
