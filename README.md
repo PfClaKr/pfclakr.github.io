@@ -9,6 +9,7 @@ Rust로 직접 만든 다국어(🇬🇧 English · 🇫🇷 Français · 🇰�
 - **댓글**: [giscus](https://giscus.app) (GitHub Discussions) — 번역본끼리 같은 스레드 공유
 - **SEO**: canonical, `hreflang` + `x-default`, Open Graph / Twitter Card, JSON-LD (`BlogPosting`, `BreadcrumbList`, `Person`), 다국어 `sitemap.xml`, `robots.txt`, 언어별 Atom 피드
 - **다크 모드**, 모바일 대응, 코드 복사 버튼, 이전/다음 글 내비게이션
+- **검색**: 빌드 때 언어별 인덱스(`/search.json`, `/fr/search.json`, `/ko/search.json`) 생성, 헤더 버튼이나 `/`, `Ctrl/⌘+K`로 전체 글 검색 (외부 서비스 없음)
 - **폰트**: [Pretendard](https://github.com/orioncactus/pretendard) 자체 호스팅 (`static/fonts/pretendard`, SIL OFL 1.1) — 페이지에 쓰인 글자 조각만 받아옴
 
 ## 빠른 시작

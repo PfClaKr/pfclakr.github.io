@@ -83,6 +83,9 @@
         {%- endfor %}
       </nav>
       <div class="header-tools">
+        <button class="search-toggle" type="button" aria-label="{{ t.search }}" title="{{ t.search }}" aria-keyshortcuts="/ Control+K Meta+K">
+          {{ m::icon(name="search") }}<span class="lbl">{{ t.search }}</span><kbd aria-hidden="true">/</kbd>
+        </button>
         <details class="lang-menu">
           <summary aria-label="{{ t.language }}">{{ m::icon(name="globe") }}<span>{{ lang | upper }}</span></summary>
           <ul>
@@ -133,6 +136,17 @@
     </div>
   </footer>
   {%- endblock site_footer %}
+  <dialog class="search-dialog" data-index="{{ search_url }}" data-empty="{{ t.search_empty }}" aria-label="{{ t.search }}">
+    <div class="search-field">
+      {{ m::icon(name="search") }}
+      <input type="search" placeholder="{{ t.search_placeholder }}" aria-label="{{ t.search }}" autocomplete="off" spellcheck="false" enterkeyhint="go"
+             role="combobox" aria-expanded="false" aria-controls="search-results" aria-autocomplete="list">
+      <button type="button" class="search-close" aria-label="Esc">Esc</button>
+    </div>
+    <ul id="search-results" class="search-results" role="listbox" aria-label="{{ t.search }}"></ul>
+    <p class="search-status" role="status"></p>
+    <p class="search-hint" aria-hidden="true">{{ t.search_hint }}</p>
+  </dialog>
   {%- if dev %}
   <script>
     (function () {
