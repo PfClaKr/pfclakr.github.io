@@ -10,15 +10,20 @@
 <div id="hero-fx" class="ld">
   <div class="ld-top">
     <span class="ld-where">{{ site.base_url | replace(from="https://", to="") }}</span>
-    <nav class="ld-langs" aria-label="{{ t.language }}">
-      {%- for l in languages %}
-      <a href="{{ l.url }}" hreflang="{{ l.code }}" lang="{{ l.code }}"{% if l.active %} aria-current="true"{% endif %}>{{ l.code | upper }}</a>
-      {%- endfor %}
-    </nav>
+    <div class="ld-tools">
+      <nav class="ld-langs" aria-label="{{ t.language }}">
+        {%- for l in languages %}
+        <a href="{{ l.url }}" hreflang="{{ l.code }}" lang="{{ l.code }}"{% if l.active %} aria-current="true"{% endif %}>{{ l.code | upper }}</a>
+        {%- endfor %}
+      </nav>
+      <button class="theme-toggle" type="button" aria-label="{{ t.toggle_theme }}" title="{{ t.toggle_theme }}">
+        {{ m::icon(name="sun") }}{{ m::icon(name="moon") }}
+      </button>
+    </div>
   </div>
 
   <main id="main" class="ld-main">
-    <p class="ld-prompt"><span class="sig">$</span> whoami</p>
+    <p class="prompt"><span class="sig">$</span>whoami</p>
     <h1>{{ site.author.name }}</h1>
     <div class="ld-bio">{{ bio | safe }}</div>
     <nav class="ld-nav" aria-label="Main">

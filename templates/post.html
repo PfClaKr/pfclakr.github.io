@@ -2,6 +2,7 @@
 {% block content %}
 <article class="post" itemscope itemtype="https://schema.org/BlogPosting">
   <header class="post-header">
+    <p class="prompt" aria-hidden="true"><span class="sig">$</span>cat ./posts/{{ post.url | trim_end_matches(pat="/") | split(pat="/") | last }}.md</p>
     <h1 itemprop="headline">{{ post.title }}</h1>
     <p class="post-meta">
       <span class="sr-only">{{ t.published }}</span>

@@ -54,8 +54,8 @@
   {%- endif %}
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0d0f13" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f7f6f2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a0b0e" media="(prefers-color-scheme: dark)">
   <script>
     (function () {
       var t; try { t = localStorage.getItem("theme"); } catch (e) {}
@@ -122,7 +122,7 @@
   {%- block site_footer %}
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p>© {{ year }} {{ site.author.name }}</p>
+      <p><span class="ok" aria-hidden="true">●</span>© {{ year }} {{ site.author.name }}</p>
       <p class="footer-links">
         <a href="{{ feed_url }}">{{ m::icon(name="rss") }} {{ t.feed }}</a>
         {%- if site.author.github %}
