@@ -108,7 +108,8 @@ dm-verity can check them, and an update can replace a slot wholesale without mer
 Everything that changes at runtime lives elsewhere:
 
 - a **data partition** for logs, databases, maps, calibration;
-- `/etc` handled through an overlay or bind mounts for the few files that must be writable;
+- `/etc` handled through an overlay or bind mounts for the few files that must be writable
+  ([OverlayFS post](/posts/architecture/os/ota-update/overlayfs/));
 - `/var` and `/tmp` on the data partition or in RAM.
 
 The trap is rollback. If version N+1 migrates a database schema on first boot and then fails its

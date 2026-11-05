@@ -114,7 +114,8 @@ entier sans rien fusionner.
 Tout ce qui change à l'exécution vit ailleurs :
 
 - une **partition de données** pour les logs, bases de données, cartes, calibrations ;
-- `/etc` via un overlay ou des montages bind pour les quelques fichiers qui doivent être modifiables ;
+- `/etc` via un overlay ou des montages bind pour les quelques fichiers qui doivent être modifiables
+  ([article sur OverlayFS](/fr/posts/architecture/os/ota-update/overlayfs/)) ;
 - `/var` et `/tmp` sur la partition de données ou en RAM.
 
 Le piège, c'est le retour arrière. Si la version N+1 migre un schéma de base de données au premier
