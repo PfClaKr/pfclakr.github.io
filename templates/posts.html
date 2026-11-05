@@ -6,9 +6,6 @@
     {%- if crumbs %}{% for c in crumbs %}/<a href="{{ c.url }}" class="path">{{ c.name }}</a>{% endfor %}{% endif %}
     {%- if section == "tags" %} | grep {{ heading | split(pat="#") | last }}{% endif %}</p>
   <h1>{{ heading }}{% if posts %}<span class="count">{{ posts | length }}</span>{% endif %}</h1>
-  {%- if dir_description %}
-  <p class="page-lede">{{ dir_description }}</p>
-  {%- endif %}
   {%- if tree %}
   <nav class="dir-tree" aria-label="{{ t.folders }}">
     <ul>

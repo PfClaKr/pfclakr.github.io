@@ -1,7 +1,2 @@
 title = { en = "Architecture", fr = "Architecture", ko = "아키텍처" }
 weight = 30
-
-[description]
-en = "How systems are put together: operating systems, update mechanisms, boot chains."
-fr = "Comment les systèmes sont assemblés : systèmes d'exploitation, mécanismes de mise à jour, chaînes de démarrage."
-ko = "시스템이 어떻게 구성되는지: 운영체제, 업데이트 방식, 부트 체인."

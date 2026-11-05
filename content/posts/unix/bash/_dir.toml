@@ -1,6 +1,1 @@
 title = { en = "Bash", fr = "Bash", ko = "Bash" }
-
-[description]
-en = "sed, awk, xargs, find and the other commands people copy without quite understanding them."
-fr = "sed, awk, xargs, find et les autres commandes qu'on copie sans vraiment les comprendre."
-ko = "sed, awk, xargs, find처럼 복사해서 쓰지만 제대로 이해하기는 어려운 명령어들."

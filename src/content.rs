@@ -61,8 +61,6 @@ pub struct DirMeta {
     /// Localized display name, e.g. `title = { en = "Architecture", ko = "아키텍처" }`.
     #[serde(default)]
     pub title: BTreeMap<String, String>,
-    #[serde(default)]
-    pub description: BTreeMap<String, String>,
     /// Ordering among sibling folders (then by name).
     #[serde(default)]
     pub weight: i32,

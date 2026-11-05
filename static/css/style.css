@@ -247,7 +247,6 @@ main.ld-main {
 /* ───────────── Lists ───────────── */
 .prompt a.path { color: inherit; }
 .prompt a.path:hover { color: var(--accent); text-decoration: none; }
-.page-lede { margin: 10px 0 0; color: var(--fg-muted); max-width: 60ch; }
 /* Folder tree (`tree -d`), rendered with real box-drawing characters. */
 .dir-tree { margin: 22px 0 4px; font: 13.5px/1.5 var(--mono); }
 .dir-tree ul { list-style: none; margin: 0; padding: 0; }

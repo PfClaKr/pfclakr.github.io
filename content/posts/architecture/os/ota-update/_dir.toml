@@ -1,6 +1,1 @@
 title = { en = "OTA update", fr = "Mise à jour OTA", ko = "OTA 업데이트" }
-
-[description]
-en = "Updating devices in the field without bricking them: A/B partitions, RAUC, rollback."
-fr = "Mettre à jour des appareils sur le terrain sans les briquer : partitions A/B, RAUC, retour arrière."
-ko = "현장에 있는 장비를 벽돌로 만들지 않고 업데이트하기: A/B 파티션, RAUC, 롤백."

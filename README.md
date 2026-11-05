@@ -34,7 +34,7 @@ content/
   pages/about/{lang}.md   고정 페이지 → /about/, /fr/about/, /ko/about/
   posts/                  폴더 구조 = 사이트의 글 경로 (/posts/<폴더…>/<slug>/)
     42/
-      _dir.toml               폴더 표시 이름·설명 (선택)
+      _dir.toml               폴더 표시 이름 (선택)
       2021-12-03-libft/
         en.md  fr.md  ko.md   같은 폴더 = 서로의 번역본
         diagram.png           글에 쓰는 이미지 (상대 경로로 참조)
@@ -61,9 +61,6 @@ src/                      사이트 생성기 (Rust)
 ```toml
 title = { en = "OTA update", fr = "Mise à jour OTA", ko = "OTA 업데이트" }
 weight = 10                 # 같은 단계 폴더 사이의 순서 (작을수록 앞)
-
-[description]
-ko = "폴더 목록 페이지 상단에 표시되는 설명"
 ```
 
 글 파일 형식:
