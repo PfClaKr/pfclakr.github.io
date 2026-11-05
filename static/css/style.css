@@ -245,6 +245,22 @@ main.ld-main {
 .landing .prompt .sig { color: var(--fx-accent); }
 
 /* ───────────── Lists ───────────── */
+.prompt a.path { color: inherit; }
+.prompt a.path:hover { color: var(--accent); text-decoration: none; }
+.page-lede { margin: 10px 0 0; color: var(--fg-muted); max-width: 60ch; }
+/* Folder tree (`tree -d`), rendered with real box-drawing characters. */
+.dir-tree { margin: 22px 0 4px; font: 13.5px/1.9 var(--mono); }
+.dir-tree ul { list-style: none; margin: 0; padding: 0; }
+.dir-tree li { display: flex; align-items: baseline; white-space: pre; min-width: 0; }
+.dir-tree .branch { color: var(--fg-faint); }
+.dir-tree a { color: var(--fg-strong); font-weight: 600; }
+.dir-tree a:hover { color: var(--accent); text-decoration: none; }
+.dir-tree .dir-title { margin-left: 10px; color: var(--fg-muted); font: 13.5px var(--font); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.page-header .dir-tree .count { margin-left: auto; padding-left: 16px; color: var(--fg-faint); font: 12.5px var(--mono); vertical-align: baseline; }
+.post-dir {
+  font: 500 12.5px var(--mono); color: var(--green); margin-right: .6em;
+}
+.post-dir:hover { color: var(--accent); text-decoration: none; }
 .post-filter {
   position: relative; display: flex; align-items: center; margin-top: 20px; max-width: 420px;
 }

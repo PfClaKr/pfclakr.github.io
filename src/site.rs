@@ -113,9 +113,37 @@ struct TagLink {
     count: usize,
 }
 
+/// One segment of a folder path, linked to its listing page.
+#[derive(Serialize, Clone)]
+struct Crumb {
+    name: String,
+    url: String,
+}
+
+/// A row of the `tree`-style folder listing.
+#[derive(Serialize)]
+struct TreeRow {
+    /// ASCII tree prefix, e.g. ``|   `-- `` (box-drawing glyphs are not in the
+    /// Latin-only mono subset, so they would fall back to another font).
+    prefix: String,
+    name: String,
+    url: String,
+    /// Localized name when it differs from the folder name.
+    title: Option<String>,
+    count: usize,
+}
+
 #[derive(Serialize, Clone)]
 struct PostView {
     key: String,
+    /// URL slug (last path segment).
+    slug: String,
+    /// Folder path (`""`, `"42"`, `"unix/bash"`).
+    dir: String,
+    /// Folder listing page, when the post lives in a folder.
+    dir_url: Option<String>,
+    /// Folder path segments, each linked.
+    crumbs: Vec<Crumb>,
     lang: String,
     lang_name: String,
     title: String,
@@ -175,6 +203,7 @@ impl Site {
         for lang in &langs {
             self.render_home(lang)?;
             self.render_post_list(lang)?;
+            self.render_dirs(lang)?;
             self.render_tags(lang)?;
             self.render_feed(lang)?;
             self.write_search_index(lang)?;
@@ -200,6 +229,7 @@ impl Site {
             }
         }
         self.render_404()?;
+        self.write_redirects()?;
         self.write_sitemap()?;
         self.write_robots()?;
         Ok(())
@@ -223,8 +253,45 @@ impl Site {
         encode_path(&format!(
             "{}/posts/{}/",
             self.cfg.prefix(&doc.lang),
-            doc.slug
+            Group::path_of(&doc.dir, &doc.slug)
         ))
+    }
+    fn dir_url(&self, lang: &str, dir: &str) -> String {
+        encode_path(&format!("{}/posts/{}/", self.cfg.prefix(lang), dir))
+    }
+    /// `a/b/c` → [a → /posts/a/, b → /posts/a/b/, c → /posts/a/b/c/].
+    fn crumbs(&self, lang: &str, dir: &str) -> Vec<Crumb> {
+        let mut path = String::new();
+        dir.split('/')
+            .filter(|s| !s.is_empty())
+            .map(|seg| {
+                path = Group::path_of(&path, seg);
+                Crumb {
+                    name: seg.to_string(),
+                    url: self.dir_url(lang, &path),
+                }
+            })
+            .collect()
+    }
+    /// Localized folder name: `_dir.toml` title, else the folder name.
+    fn dir_title(&self, lang: &str, dir: &str) -> String {
+        let meta = self.content.dirs.get(dir);
+        meta.and_then(|m| {
+            m.title.get(lang).or_else(|| {
+                self.cfg
+                    .fallback_order()
+                    .into_iter()
+                    .find_map(|l| m.title.get(l))
+            })
+        })
+        .cloned()
+        .unwrap_or_else(|| dir.rsplit('/').next().unwrap_or(dir).to_string())
+    }
+    fn dir_description(&self, lang: &str, dir: &str) -> Option<String> {
+        self.content
+            .dirs
+            .get(dir)
+            .and_then(|m| m.description.get(lang).cloned())
     }
     fn page_url(&self, doc: &Doc) -> String {
         encode_path(&format!("{}/{}/", self.cfg.prefix(&doc.lang), doc.slug))
@@ -263,6 +330,10 @@ impl Site {
         let date = doc.date.expect("posts always have a date");
         PostView {
             key: doc.key.clone(),
+            slug: doc.slug.clone(),
+            dir: doc.dir.clone(),
+            dir_url: (!doc.dir.is_empty()).then(|| self.dir_url(viewer_lang, &doc.dir)),
+            crumbs: self.crumbs(viewer_lang, &doc.dir),
             lang: doc.lang.clone(),
             lang_name: t.language_name.clone(),
             title: doc.meta.title.clone(),
@@ -301,6 +372,59 @@ impl Site {
                 None => None,
             })
             .collect()
+    }
+
+    /// Posts listed for `lang` inside folder `dir` (recursively).
+    fn listing_in(&self, lang: &str, dir: &str) -> Vec<&Doc> {
+        let prefix = format!("{dir}/");
+        self.listing(lang)
+            .into_iter()
+            .filter(|d| dir.is_empty() || d.dir == dir || d.dir.starts_with(&prefix))
+            .collect()
+    }
+
+    /// `tree -d --charset=ascii` of the folders below `base` (`""` = all), with post counts.
+    fn tree(&self, lang: &str, base: &str) -> Vec<TreeRow> {
+        fn parent(path: &str) -> &str {
+            path.rsplit_once('/').map(|(p, _)| p).unwrap_or("")
+        }
+        let children = |of: &str| -> Vec<&String> {
+            let mut v: Vec<&String> = self
+                .content
+                .dirs
+                .keys()
+                .filter(|d| parent(d) == of)
+                .collect();
+            v.sort_by_key(|d| (self.content.dirs[*d].weight, (*d).clone()));
+            v
+        };
+        let mut rows = Vec::new();
+        let mut stack: Vec<(String, String)> = Vec::new(); // (path, indent)
+        let first = children(base);
+        let n = first.len();
+        for (i, d) in first.into_iter().enumerate().rev() {
+            stack.push((d.clone(), if i + 1 == n { "`-- " } else { "|-- " }.to_string()));
+        }
+        while let Some((dir, prefix)) = stack.pop() {
+            let name = dir.rsplit('/').next().unwrap_or(&dir).to_string();
+            let title = self.dir_title(lang, &dir);
+            rows.push(TreeRow {
+                prefix: prefix.clone(),
+                url: self.dir_url(lang, &dir),
+                title: (title != name).then_some(title),
+                name,
+                count: self.listing_in(lang, &dir).len(),
+            });
+            // Indent for the children: replace the branch with a rail or blank.
+            let indent = prefix.replace("|-- ", "|   ").replace("`-- ", "    ");
+            let kids = children(&dir);
+            let k = kids.len();
+            for (i, c) in kids.into_iter().enumerate().rev() {
+                let branch = if i + 1 == k { "`-- " } else { "|-- " };
+                stack.push((c.clone(), format!("{indent}{branch}")));
+            }
+        }
+        rows
     }
 
     /// tag slug → (display name, posts) for `lang`.
@@ -514,8 +638,69 @@ impl Site {
             .map(|d| self.post_view(d, lang))
             .collect();
         ctx.insert("posts", &posts);
+        ctx.insert("tree", &self.tree(lang, ""));
         self.render_to("posts.html", &ctx, &url)?;
         self.add_sitemap(&url, None, &alternates);
+        Ok(())
+    }
+
+    /// One listing page per folder: its sub-folders and every post below it.
+    fn render_dirs(&self, lang: &str) -> Result<()> {
+        for dir in self.content.dirs.keys() {
+            let url = self.dir_url(lang, dir);
+            let alternates = self.all_langs(|s, l| s.dir_url(l, dir));
+            let mut ctx = self.base_context(lang, "posts", &alternates);
+            let t = self.t(lang);
+            let title = self.dir_title(lang, dir);
+            let description = self
+                .dir_description(lang, dir)
+                .unwrap_or_else(|| t.site_description.clone());
+            let meta = self.page_meta(lang, Some(&title), &description, &url);
+            ctx.insert("page", &meta);
+            ctx.insert("heading", &title);
+            ctx.insert("dir", dir);
+            ctx.insert("dir_description", &self.dir_description(lang, dir));
+            ctx.insert("crumbs", &self.crumbs(lang, dir));
+            ctx.insert("tree", &self.tree(lang, dir));
+            let posts: Vec<PostView> = self
+                .listing_in(lang, dir)
+                .into_iter()
+                .map(|d| self.post_view(d, lang))
+                .collect();
+            ctx.insert("posts", &posts);
+            self.render_to("posts.html", &ctx, &url)?;
+            self.add_sitemap(&url, None, &alternates);
+        }
+        Ok(())
+    }
+
+    /// Posts used to live at `/posts/<slug>/`; keep those links working.
+    fn write_redirects(&self) -> Result<()> {
+        for g in &self.content.posts {
+            for doc in g.docs.values() {
+                if doc.dir.is_empty() {
+                    continue;
+                }
+                let old = encode_path(&format!("{}/posts/{}/", self.cfg.prefix(&doc.lang), doc.slug));
+                let rel = format!("{}index.html", decode_path(&old).trim_start_matches('/'));
+                if self.written.borrow().contains(&rel) {
+                    continue;
+                }
+                let new = self.post_url(doc);
+                let abs = escape_html(&self.abs(&new));
+                let html = format!(
+                    "<!doctype html>\n<html lang=\"{lang}\"><head><meta charset=\"utf-8\">\
+                     <title>{title}</title><link rel=\"canonical\" href=\"{abs}\">\
+                     <meta name=\"robots\" content=\"noindex\">\
+                     <meta http-equiv=\"refresh\" content=\"0; url={href}\"></head>\
+                     <body><a href=\"{href}\">{title}</a></body></html>\n",
+                    lang = doc.lang,
+                    title = escape_html(&doc.meta.title),
+                    href = escape_html(&new),
+                );
+                self.write_file(&rel, &html)?;
+            }
+        }
         Ok(())
     }
 
@@ -591,6 +776,21 @@ impl Site {
             meta.og_image = self.abs(img);
         }
         let t = self.t(lang);
+        let mut crumbs = vec![
+            (t.get("nav_home").to_string(), self.home_url(lang)),
+            (t.get("nav_posts").to_string(), self.posts_url(lang)),
+        ];
+        let mut path = String::new();
+        for seg in doc.dir.split('/').filter(|s| !s.is_empty()) {
+            path = Group::path_of(&path, seg);
+            crumbs.push((self.dir_title(lang, &path), self.dir_url(lang, &path)));
+        }
+        crumbs.push((doc.meta.title.clone(), url.clone()));
+        let breadcrumbs: Vec<serde_json::Value> = crumbs
+            .iter()
+            .enumerate()
+            .map(|(i, (name, u))| json!({ "@type": "ListItem", "position": i + 1, "name": name, "item": self.abs(u) }))
+            .collect();
         meta.json_ld = ld(json!({
             "@context": "https://schema.org",
             "@graph": [
@@ -610,11 +810,7 @@ impl Site {
                 },
                 {
                     "@type": "BreadcrumbList",
-                    "itemListElement": [
-                        { "@type": "ListItem", "position": 1, "name": t.get("nav_home"), "item": self.abs(&self.home_url(lang)) },
-                        { "@type": "ListItem", "position": 2, "name": t.get("nav_posts"), "item": self.abs(&self.posts_url(lang)) },
-                        { "@type": "ListItem", "position": 3, "name": doc.meta.title, "item": self.abs(&url) },
-                    ]
+                    "itemListElement": breadcrumbs,
                 }
             ]
         }));
@@ -632,7 +828,10 @@ impl Site {
             &(doc.meta.comments && self.cfg.comments.enabled()),
         );
         // All translations share one discussion thread.
-        ctx.insert("comment_term", &content::base_slug(&group.key));
+        ctx.insert(
+            "comment_term",
+            &Group::path_of(&group.dir, &content::base_slug(&group.key)),
+        );
 
         let translations: Vec<PostView> = group
             .docs
@@ -642,11 +841,13 @@ impl Site {
             .collect();
         ctx.insert("translations", &translations);
 
-        // Previous / next within the same language.
+        // Previous / next within the same language and top-level folder.
+        let top = |d: &str| d.split('/').next().unwrap_or("").to_string();
         let own: Vec<&Doc> = self
             .content
             .posts
             .iter()
+            .filter(|g| top(&g.dir) == top(&group.dir))
             .filter_map(|g| g.docs.get(lang))
             .collect();
         if let Some(pos) = own.iter().position(|d| d.key == doc.key) {
@@ -799,6 +1000,8 @@ impl Site {
             g: Vec<String>,
             /// original language name when it differs from `lang`
             l: Option<String>,
+            /// folder path
+            c: String,
             /// description
             s: String,
             /// plain body text
@@ -816,6 +1019,7 @@ impl Site {
                     .unwrap_or_default(),
                 g: doc.meta.tags.clone(),
                 l: (doc.lang != lang).then(|| self.t(&doc.lang).language_name.clone()),
+                c: doc.dir.clone(),
                 s: doc.description().to_string(),
                 x: doc.rendered.text.clone(),
             })
@@ -831,6 +1035,7 @@ impl Site {
                     d: String::new(),
                     g: Vec::new(),
                     l: None,
+                    c: String::new(),
                     s: doc.description().to_string(),
                     x: doc.rendered.text.clone(),
                 }),
@@ -935,7 +1140,10 @@ impl Site {
             if g.assets.is_empty() {
                 continue;
             }
-            let dir = self.out.join("posts").join(content::base_slug(&g.key));
+            let dir = self
+                .out
+                .join("posts")
+                .join(Group::path_of(&g.dir, &content::base_slug(&g.key)));
             fs::create_dir_all(&dir)?;
             for a in &g.assets {
                 fs::copy(a, dir.join(a.file_name().unwrap()))?;

@@ -3,7 +3,7 @@
 //! ```text
 //! cargo run --release -- build            # → public/
 //! cargo run --release -- serve            # http://127.0.0.1:1111 with live reload
-//! cargo run --release -- new my-post ko   # scaffold content/posts/<today>-my-post/ko.md
+//! cargo run --release -- new unix/bash/sed ko   # scaffold content/posts/unix/bash/<today>-sed/ko.md
 //! ```
 
 mod config;
@@ -21,7 +21,7 @@ const USAGE: &str = "\
 Usage:
   blog build [--drafts] [--out <dir>] [--base-url <url>]
   blog serve [--drafts] [--port <port>] [--host <host>]
-  blog new <slug> [lang]
+  blog new [folder/…/]<slug> [lang]
 
 Options:
   --drafts          Include posts with `draft = true`
@@ -97,9 +97,16 @@ fn main() -> Result<()> {
 }
 
 fn new_post(args: &[String]) -> Result<()> {
-    let Some(slug) = args.first() else {
-        bail!("usage: blog new <slug> [lang]")
+    let Some(path) = args.first() else {
+        bail!("usage: blog new [folder/…/]<slug> [lang]")
     };
+    // `unix/bash/sed` → folder `unix/bash`, slug `sed`.
+    let (folder, slug) = path.rsplit_once('/').unwrap_or(("", path.as_str()));
+    let folder: Vec<String> = folder
+        .split('/')
+        .filter(|s| !s.is_empty())
+        .map(markdown::slugify)
+        .collect();
     let cfg = config::Config::load(&PathBuf::from("."))?;
     let lang = args.get(1).cloned().unwrap_or(cfg.default_language.clone());
     if !cfg.languages.contains(&lang) {
@@ -107,7 +114,11 @@ fn new_post(args: &[String]) -> Result<()> {
     }
     let today = chrono::Local::now().date_naive();
     let slug = markdown::slugify(slug);
-    let dir = PathBuf::from("content/posts").join(format!("{}-{slug}", today.format("%Y-%m-%d")));
+    let mut dir = PathBuf::from("content/posts");
+    for f in &folder {
+        dir.push(f);
+    }
+    let dir = dir.join(format!("{}-{slug}", today.format("%Y-%m-%d")));
     let file = dir.join(format!("{lang}.md"));
     if file.exists() {
         bail!("{} already exists", file.display());

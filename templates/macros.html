@@ -26,6 +26,9 @@
 <article class="post-card"{% if post.is_fallback %} lang="{{ post.lang }}"{% endif %}>
   <h3 class="post-card-title"><a href="{{ post.url }}">{{ post.title }}</a></h3>
   <p class="post-meta">
+    {%- if post.dir_url %}
+    <a class="post-dir" href="{{ post.dir_url }}">{{ post.dir }}/</a>
+    {%- endif %}
     <time datetime="{{ post.date_iso }}">{{ post.date_display }}</time>
 <span class="sep" aria-hidden="true">·</span>{{ post.reading_time }}
     {%- if post.is_fallback %}

@@ -2,7 +2,8 @@
 {% block content %}
 <article class="post" itemscope itemtype="https://schema.org/BlogPosting">
   <header class="post-header">
-    <p class="prompt" aria-hidden="true"><span class="sig">$</span>cat ./posts/{{ post.url | trim_end_matches(pat="/") | split(pat="/") | last }}.md</p>
+    <p class="prompt"><span class="sig" aria-hidden="true">$</span>cat <a href="{{ home_url }}posts/" class="path">./posts</a>/
+      {%- for c in post.crumbs %}<a href="{{ c.url }}" class="path">{{ c.name }}</a>/{% endfor %}{{ post.slug }}.md</p>
     <h1 itemprop="headline">{{ post.title }}</h1>
     <p class="post-meta">
       <span class="sr-only">{{ t.published }}</span>

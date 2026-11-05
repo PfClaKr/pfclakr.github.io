@@ -180,7 +180,7 @@
         var li = document.createElement("li");
         li.id = "sr-" + i;
         li.setAttribute("role", "option");
-        var meta = [e.d].concat(e.g.map(function (g) { return "#" + g; })).filter(Boolean).join(" · ");
+        var meta = [e.c ? e.c + "/" : "", e.d].concat(e.g.map(function (g) { return "#" + g; })).filter(Boolean).join(" · ");
         li.innerHTML = '<a href="' + escapeHtml(e.u) + '">' +
           '<span class="sr-title">' + highlight(e.t, terms) + (e.l ? ' <span class="badge">' + escapeHtml(e.l) + "</span>" : "") + "</span>" +
           (meta ? '<span class="sr-meta">' + escapeHtml(meta) + "</span>" : "") +
