@@ -1,0 +1,7 @@
+title = { en = "Unix", fr = "Unix", ko = "Unix" }
+weight = 20
+
+[description]
+en = "Notes on the Unix toolbox: shells, text tools and the commands worth learning properly."
+fr = "Notes sur la boîte à outils Unix : shells, outils texte et commandes qui méritent d'être bien apprises."
+ko = "Unix 도구 상자 노트: 셸, 텍스트 도구, 제대로 익혀 둘 만한 명령어들."
