@@ -60,9 +60,9 @@ else
 
 ```mermaid
 flowchart LR
-    A["chunk of a"] -->|"> piv1 (ra)"| L["large: bottom of a"]
-    A -->|"pb, then > piv2 (rb)"| M["middle: bottom of b"]
-    A -->|"pb"| S["small: top of b"]
+    A["chunk of a"] -->|"x > piv1 : ra"| L["large: bottom of a"]
+    A -->|"piv2 < x ≤ piv1 : pb, rb"| M["middle: bottom of b"]
+    A -->|"x ≤ piv2 : pb"| S["small: top of b"]
 ```
 
 After the pass, the rotated groups are brought back to the top with reverse rotations, and the

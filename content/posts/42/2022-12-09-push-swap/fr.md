@@ -60,9 +60,9 @@ else
 
 ```mermaid
 flowchart LR
-    A["morceau de a"] -->|"> piv1 (ra)"| L["grands : fond de a"]
-    A -->|"pb, puis > piv2 (rb)"| M["moyens : fond de b"]
-    A -->|"pb"| S["petits : sommet de b"]
+    A["morceau de a"] -->|"x > piv1 : ra"| L["grands : fond de a"]
+    A -->|"piv2 < x ≤ piv1 : pb, rb"| M["moyens : fond de b"]
+    A -->|"x ≤ piv2 : pb"| S["petits : sommet de b"]
 ```
 
 Après la passe, les groupes tournés reviennent au sommet par des rotations inverses, et la fonction
