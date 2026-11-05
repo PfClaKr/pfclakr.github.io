@@ -23,12 +23,6 @@
   var toggle = document.querySelector(".theme-toggle");
   if (toggle) toggle.addEventListener("click", function () { setTheme(theme() === "dark" ? "light" : "dark"); });
 
-  // Close the language menu when clicking elsewhere.
-  document.addEventListener("click", function (e) {
-    document.querySelectorAll("details.lang-menu[open]").forEach(function (d) {
-      if (!d.contains(e.target)) d.removeAttribute("open");
-    });
-  });
 
   // ── Code blocks: header bar with language label and copy button ──
   var copyText = document.body.dataset.copy || "Copy";

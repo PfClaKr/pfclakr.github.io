@@ -61,41 +61,47 @@
       var t; try { t = localStorage.getItem("theme"); } catch (e) {}
       if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       document.documentElement.dataset.theme = t;
+      var f; try { f = localStorage.getItem("fx"); } catch (e) {}
+      if (["ripple", "life", "field", "off"].indexOf(f) < 0) f = "ripple";
+      document.documentElement.dataset.fx = f;
     })();
   </script>
+  <link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css">
   <link rel="stylesheet" href="/fonts/pretendard/pretendardvariable-dynamic-subset.css">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/syntax.css">
   <script src="/js/main.js" defer></script>
+  <script src="/js/hero.js" defer></script>
   {%- if page.has_mermaid %}
   <script type="module" src="/js/mermaid-init.js"></script>
   {%- endif %}
 </head>
 <body{% block body_attrs %}{% endblock body_attrs %} data-copy="{{ t.copy }}" data-copied="{{ t.copied }}">
   <a class="skip-link" href="#main">{{ t.skip_to_content }}</a>
-  {%- block site_header %}
+  <pre id="fx-screen" class="fx-screen" aria-hidden="true"></pre>
+  <div class="fx-veil" aria-hidden="true"></div>
+
   <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="{{ home_url }}"><span class="sig" aria-hidden="true">~/</span>{{ site.author.name }}</a>
+    <div class="container wide header-inner">
+      <a class="brand" href="{{ home_url }}"><span class="sig" aria-hidden="true">~/</span>{{ site.author.name | lower }}</a>
       <nav class="main-nav" aria-label="Main">
         {%- for item in nav %}
-        <a href="{{ item.url }}"{% if item.key == section %} aria-current="page"{% endif %}>{{ item.title }}</a>
+        {%- if item.key != "home" %}
+        <a href="{{ item.url }}" title="{{ item.title }}"{% if item.key == section %} aria-current="page"{% endif %}><span class="s" aria-hidden="true">./</span>{{ item.key }}</a>
+        {%- endif %}
         {%- endfor %}
       </nav>
       <div class="header-tools">
         <button class="search-toggle" type="button" aria-label="{{ t.search }}" title="{{ t.search }}" aria-keyshortcuts="/ Control+K Meta+K">
-          {{ m::icon(name="search") }}<span class="lbl">{{ t.search }}</span><kbd aria-hidden="true">/</kbd>
+          {{ m::icon(name="search") }}<kbd aria-hidden="true">/</kbd>
         </button>
-        <details class="lang-menu">
-          <summary aria-label="{{ t.language }}">{{ m::icon(name="globe") }}<span>{{ lang | upper }}</span></summary>
-          <ul>
-            {%- for l in languages %}
-            <li><a href="{{ l.url }}" hreflang="{{ l.code }}" lang="{{ l.code }}"
-                   {%- if l.active %} aria-current="true"{% endif %}
-                   {%- if not l.exists %} class="missing"{% endif %}>{{ l.name }}</a></li>
-            {%- endfor %}
-          </ul>
-        </details>
+        <nav class="lang-switch" aria-label="{{ t.language }}">
+          {%- for l in languages %}
+          <a href="{{ l.url }}" hreflang="{{ l.code }}" lang="{{ l.code }}" title="{{ l.name }}"
+             {%- if l.active %} aria-current="true"{% endif %}
+             {%- if not l.exists %} class="missing"{% endif %}>{{ l.code | upper }}</a>
+          {%- endfor %}
+        </nav>
         <button class="theme-toggle" type="button" aria-label="{{ t.toggle_theme }}" title="{{ t.toggle_theme }}">
           {{ m::icon(name="sun") }}{{ m::icon(name="moon") }}
         </button>
@@ -105,7 +111,6 @@
     <div class="read-progress" aria-hidden="true"></div>
     {%- endif %}
   </header>
-  {%- endblock site_header %}
 
   {%- block main %}
   <main id="main" class="container">
@@ -119,23 +124,31 @@
   </button>
   {%- endif %}
 
-  {%- block site_footer %}
   <footer class="site-footer">
-    <div class="container footer-inner">
-      <p><span class="ok" aria-hidden="true">●</span>© {{ year }} {{ site.author.name }}</p>
-      <p class="footer-links">
-        <a href="{{ feed_url }}">{{ m::icon(name="rss") }} {{ t.feed }}</a>
+    <div class="container wide footer-inner">
+      <div class="footer-status">
+        <span class="stat-line"><span class="ok" aria-hidden="true">&#9679;</span><span id="fx-stat" class="stat">&hellip;</span></span>
+        <span class="fx-switch" role="group" aria-label="{{ t.background }}">
+          <span class="lbl" aria-hidden="true">bg:</span>
+          <button type="button" data-key="ripple" aria-pressed="false">ripple</button>
+          <button type="button" data-key="life" aria-pressed="false">life</button>
+          <button type="button" data-key="field" aria-pressed="false">field</button>
+          <button type="button" data-key="off" aria-pressed="false">off</button>
+        </span>
+      </div>
+      <div class="footer-meta">
+        <span>&copy; {{ year }} {{ site.author.name }}</span>
+        <a href="{{ feed_url }}">rss</a>
         {%- if site.author.github %}
-        <a href="https://github.com/{{ site.author.github }}" rel="me noopener">{{ m::icon(name="github") }} GitHub</a>
+        <a href="https://github.com/{{ site.author.github }}" rel="me noopener">github <span class="s" aria-hidden="true">&#8599;</span></a>
         {%- endif %}
         {%- if site.author.linkedin %}
-        <a href="{{ site.author.linkedin }}" rel="me noopener">{{ m::icon(name="linkedin") }} LinkedIn</a>
+        <a href="{{ site.author.linkedin }}" rel="me noopener">linkedin <span class="s" aria-hidden="true">&#8599;</span></a>
         {%- endif %}
-        <span class="built-with">Built with 🦀 Rust</span>
-      </p>
+        <span class="built-with">built with rust</span>
+      </div>
     </div>
   </footer>
-  {%- endblock site_footer %}
   <dialog class="search-dialog" data-index="{{ search_url }}" data-empty="{{ t.search_empty }}" aria-label="{{ t.search }}">
     <div class="search-field">
       {{ m::icon(name="search") }}

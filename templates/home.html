@@ -1,56 +1,22 @@
 {% extends "base.html" %}
-{% import "macros.html" as m %}
 {% block body_attrs %} class="landing"{% endblock body_attrs %}
-{% block site_header %}{% endblock site_header %}
-{% block site_footer %}{% endblock site_footer %}
 {% block main %}
-<pre id="hero-screen" class="ld-screen" aria-hidden="true"></pre>
-<div class="ld-veil" aria-hidden="true"></div>
-
-<div id="hero-fx" class="ld">
-  <div class="ld-top">
-    <span class="ld-where">{{ site.base_url | replace(from="https://", to="") }}</span>
-    <div class="ld-tools">
-      <nav class="ld-langs" aria-label="{{ t.language }}">
-        {%- for l in languages %}
-        <a href="{{ l.url }}" hreflang="{{ l.code }}" lang="{{ l.code }}"{% if l.active %} aria-current="true"{% endif %}>{{ l.code | upper }}</a>
-        {%- endfor %}
-      </nav>
-      <button class="theme-toggle" type="button" aria-label="{{ t.toggle_theme }}" title="{{ t.toggle_theme }}">
-        {{ m::icon(name="sun") }}{{ m::icon(name="moon") }}
-      </button>
-    </div>
-  </div>
-
-  <main id="main" class="ld-main">
-    <p class="prompt"><span class="sig">$</span>whoami</p>
-    <h1>{{ site.author.name }}</h1>
-    <div class="ld-bio">{{ bio | safe }}</div>
-    <nav class="ld-nav" aria-label="Main">
-      {%- for item in nav %}
-      {%- if item.key != "home" %}
-      <a href="{{ item.url }}"><span class="s">./</span>{{ item.key }}</a>
-      {%- endif %}
-      {%- endfor %}
-      <button type="button" class="search-toggle">search <span class="s">/</span></button>
-      {%- if site.author.github %}
-      <a href="https://github.com/{{ site.author.github }}" rel="me noopener">github <span class="s">&#8599;</span></a>
-      {%- endif %}
-      {%- if site.author.linkedin %}
-      <a href="{{ site.author.linkedin }}" rel="me noopener">linkedin <span class="s">&#8599;</span></a>
-      {%- endif %}
-    </nav>
-  </main>
-
-  <div class="ld-status">
-    <span class="ld-stat-line"><span class="ok" aria-hidden="true">&#9679;</span><span id="hero-stat" class="ld-stat">&hellip;</span></span>
-    <span class="fx-switch" role="group" aria-label="background">
-      <span class="lbl">bg:</span>
-      <button type="button" data-key="ripple" aria-pressed="true">ripple</button>
-      <button type="button" data-key="life" aria-pressed="false">life</button>
-      <button type="button" data-key="field" aria-pressed="false">field</button>
-    </span>
-  </div>
-</div>
-<script src="/js/hero.js" defer></script>
+<main id="main" class="container wide ld-main">
+  <p class="prompt"><span class="sig">$</span>whoami</p>
+  <h1>{{ site.author.name }}</h1>
+  <div class="ld-bio">{{ bio | safe }}</div>
+  <nav class="ld-nav" aria-label="{{ t.nav_home }}">
+    {%- for item in nav %}
+    {%- if item.key != "home" %}
+    <a href="{{ item.url }}" title="{{ item.title }}"><span class="s">./</span>{{ item.key }}</a>
+    {%- endif %}
+    {%- endfor %}
+    {%- if site.author.github %}
+    <a href="https://github.com/{{ site.author.github }}" rel="me noopener">github <span class="s">&#8599;</span></a>
+    {%- endif %}
+    {%- if site.author.linkedin %}
+    <a href="{{ site.author.linkedin }}" rel="me noopener">linkedin <span class="s">&#8599;</span></a>
+    {%- endif %}
+  </nav>
+</main>
 {% endblock main %}
