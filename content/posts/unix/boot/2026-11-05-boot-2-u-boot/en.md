@@ -105,9 +105,12 @@ BOOT_ORDER=A B
 BOOT_A_LEFT=3
 ```
 
-This is how an update agent on Linux (RAUC and others) changes the bootloader's state in A/B updates. Note
-that on QEMU's flash emulation this U-Boot's `saveenv` fails with `Flash buffer write timeout`, so in these
+This is how an update agent on Linux (RAUC and others) changes the bootloader's state in A/B updates.
+
+:::note
+On QEMU's flash emulation, this U-Boot's `saveenv` fails with `Flash buffer write timeout`, so in these
 experiments the environment was always written with the Linux-side tools.
+:::
 
 ## bootcmd and standard boot
 
@@ -299,11 +302,13 @@ Bad Data Hash
 ERROR -2: can't get kernel image!
 ```
 
+:::warning Hashes vs signatures
 Hashes only catch accidental corruption; an attacker just recomputes them. Against forgery, the FIT gets a
 **signature**: `mkimage -k keydir -K u-boot.dtb -r` signs it and embeds the public key into U-Boot's DTB as a
 *required* key, and U-Boot refuses to boot any configuration it can't verify with that key. U-Boot itself,
 public key included, is protected by the boot ROM's signature check from part 1. That makes a chain of trust
 from the boot ROM to the kernel.
+:::
 
 ## Picking an A/B slot in a boot script
 
@@ -376,10 +381,12 @@ with no attempts left the script falls back to A. Linux's job is the same as wit
 | Activate B after writing a new image to it | `fw_setenv BOOT_ORDER "B A"` and `fw_setenv BOOT_B_LEFT 3` |
 | Confirm the booted slot is healthy | `fw_setenv BOOT_B_LEFT 3` (refill its attempts) |
 
-One hush quirk is worth knowing. RAUC's documentation, and the script in the RAUC post, quote the variable:
+:::note Quotes in hush
+RAUC's documentation, and the script in the RAUC post, quote the variable:
 `for BOOT_SLOT in "${BOOT_ORDER}"`. POSIX sh would loop once over the single word `"A B"`, but this U-Boot's
 (2025.10) hush still split it into words: running both scenarios above with that script gave the same results.
 An empty `then` branch holding only a comment worked fine in this hush too.
+:::
 
 ### U-Boot's built-in bootcount
 

@@ -11,9 +11,11 @@ machine ([source](https://github.com/PfClaKr/Ecole42Paris_ft_shield)). The repos
 warning, ships a `reset.sh` to remove the program, and this write-up stays on the defender's side: what
 to look for and where.
 
-> ⚠️ A program that opens a remote shell is dangerous by definition. ft_shield belongs in an isolated,
-> throwaway VM and nowhere else. Everything below is framed as detection, because that's the transferable
-> skill.
+:::danger
+A program that opens a remote shell is dangerous by definition. ft_shield belongs in an isolated,
+throwaway VM and nowhere else. Everything below is framed as detection, because that's the transferable
+skill.
+:::
 
 ## What any persistent backdoor must do
 

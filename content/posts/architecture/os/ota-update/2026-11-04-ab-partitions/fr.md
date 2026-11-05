@@ -117,9 +117,11 @@ Tout ce qui change à l'exécution vit ailleurs :
   ([article sur OverlayFS](/fr/posts/architecture/os/ota-update/overlayfs/)) ;
 - `/var` et `/tmp` sur la partition de données ou en RAM.
 
-Le piège, c'est le retour arrière. Si la version N+1 migre un schéma de base de données au premier
+:::warning Retour arrière et migrations de données
+Si la version N+1 migre un schéma de base de données au premier
 démarrage puis échoue à sa vérification, la version N redémarre et trouve des données qu'elle ne
 comprend pas. Les migrations doivent être rétrocompatibles, versionnées, ou repoussées après le « mark good ».
+:::
 
 ## Variantes
 

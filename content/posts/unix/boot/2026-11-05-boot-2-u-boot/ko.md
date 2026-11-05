@@ -102,9 +102,12 @@ BOOT_ORDER=A B
 BOOT_A_LEFT=3
 ```
 
-A/B 업데이트에서 리눅스의 업데이트 에이전트(RAUC 등)가 부트로더 상태를 바꾸는 방법이 바로 이것입니다. 참고로
+A/B 업데이트에서 리눅스의 업데이트 에이전트(RAUC 등)가 부트로더 상태를 바꾸는 방법이 바로 이것입니다.
+
+:::note
 QEMU의 플래시 에뮬레이션에서는 이 U-Boot의 `saveenv`가 `Flash buffer write timeout`으로 실패해서, 이 글의
 실험에서는 환경을 항상 리눅스 쪽 도구로 만들었습니다.
+:::
 
 ## bootcmd와 standard boot
 
@@ -296,10 +299,12 @@ Bad Data Hash
 ERROR -2: can't get kernel image!
 ```
 
+:::warning 해시와 서명
 해시는 우발적인 손상만 막습니다. 공격자는 해시까지 다시 계산하면 되기 때문입니다. 위조를 막으려면 FIT에
 **서명**을 넣습니다. `mkimage -k 키디렉터리 -K u-boot.dtb -r`로 서명하면서 공개키를 U-Boot의 DTB에 "필수 키"로
 심고, U-Boot는 그 키로 서명을 확인하지 못한 configuration은 부팅하지 않습니다. 공개키가 든 U-Boot 자체는
 1편의 부트 ROM 서명 검사가 보호합니다. 이렇게 부트 ROM에서 커널까지 이어지는 신뢰 사슬이 만들어집니다.
+:::
 
 ## 부트 스크립트로 A/B 슬롯 고르기
 
@@ -371,10 +376,12 @@ init: cmdline = console=ttyAMA0 root=PARTLABEL=rootfs_A rauc.slot=A
 | B에 새 이미지를 쓴 뒤 활성화 | `fw_setenv BOOT_ORDER "B A"` 와 `fw_setenv BOOT_B_LEFT 3` |
 | 부팅한 슬롯이 정상임을 확인 | `fw_setenv BOOT_B_LEFT 3` (시도 횟수를 다시 채움) |
 
-hush 문법에서 알아 둘 점이 하나 있습니다. RAUC 문서와 RAUC 글의 스크립트는 `for BOOT_SLOT in "${BOOT_ORDER}"`처럼
+:::note hush의 따옴표
+RAUC 문서와 RAUC 글의 스크립트는 `for BOOT_SLOT in "${BOOT_ORDER}"`처럼
 변수를 따옴표로 감쌉니다. POSIX sh라면 `"A B"` 한 덩어리로 한 번만 돌겠지만, 이 U-Boot(2025.10)의 hush에서는
 따옴표가 있어도 단어마다 나뉘어 돌았습니다. 위 두 시나리오를 그 스크립트로 돌려도 결과가 같았습니다. 반대로
 `then` 다음에 주석만 있는 빈 분기도 이 hush에서는 문제없이 동작했습니다.
+:::
 
 ### U-Boot에 내장된 bootcount
 

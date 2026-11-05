@@ -35,8 +35,10 @@ $ head -c 6 initrd.img-6.8.0-147-generic
 - 풀린 결과에 `/init`이 **없으면** 커널은 예전 방식대로 `root=`의 장치를 직접 마운트하고 `/sbin/init`(또는
   `init=`)을 실행합니다.
 
+:::info
 예전에는 initramfs 대신 **initrd**라는 블록 장치 이미지(램디스크)를 썼습니다. 파일 이름 `initrd.img`나 부트로더
 명령 `initrd`는 그 시절의 이름이 남은 것이고, 지금은 거의 모두 cpio 방식입니다.
+:::
 
 ## initramfs 없이도 되는 경우
 

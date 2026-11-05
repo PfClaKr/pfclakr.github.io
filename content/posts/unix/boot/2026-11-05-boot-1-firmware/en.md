@@ -114,8 +114,10 @@ post's QEMU disk image:
 0000510 55 aa
 ```
 
+:::info
 A single partition of type `ee` covers the whole disk. This "protective MBR" keeps old tools that don't know
 GPT from mistaking the disk for an empty one and overwriting it.
+:::
 
 ## ARM SoCs: boot ROM and SRAM
 

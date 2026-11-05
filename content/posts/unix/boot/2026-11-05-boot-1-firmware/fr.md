@@ -117,8 +117,10 @@ du premier secteur de l'image disque QEMU de cet article :
 0000510 55 aa
 ```
 
+:::info
 Une seule partition de type `ee` couvre tout le disque. Ce « MBR protecteur » empêche les vieux outils qui
 ignorent GPT de prendre le disque pour un disque vide et de l'écraser.
+:::
 
 ## SoC ARM : ROM de démarrage et SRAM
 

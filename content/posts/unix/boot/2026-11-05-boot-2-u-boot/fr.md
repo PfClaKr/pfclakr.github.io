@@ -107,8 +107,12 @@ BOOT_A_LEFT=3
 ```
 
 C'est ainsi qu'un agent de mise à jour sous Linux (RAUC ou autre) modifie l'état du chargeur dans les mises à
-jour A/B. À noter : avec l'émulation de flash de QEMU, le `saveenv` de cet U-Boot échoue sur `Flash buffer
+jour A/B.
+
+:::note
+Avec l'émulation de flash de QEMU, le `saveenv` de cet U-Boot échoue sur `Flash buffer
 write timeout` ; dans ces expériences, l'environnement a donc toujours été écrit avec les outils côté Linux.
+:::
 
 ## bootcmd et le standard boot
 
@@ -305,12 +309,14 @@ Bad Data Hash
 ERROR -2: can't get kernel image!
 ```
 
+:::warning Hachages et signatures
 Les hachages ne protègent que contre la corruption accidentelle : un attaquant n'a qu'à les recalculer. Contre
 la falsification, le FIT reçoit une **signature** : `mkimage -k répertoire_clés -K u-boot.dtb -r` le signe et
 intègre la clé publique dans le DTB d'U-Boot comme clé *obligatoire*, et U-Boot refuse de démarrer toute
 configuration qu'il ne peut pas vérifier avec cette clé. U-Boot lui-même, clé publique comprise, est protégé
 par la vérification de signature de la ROM de démarrage vue en partie 1. On obtient ainsi une chaîne de
 confiance de la ROM de démarrage jusqu'au noyau.
+:::
 
 ## Choisir un slot A/B dans un script de démarrage
 
@@ -384,11 +390,13 @@ premier, mais sans tentative restante, le script revient à A. Le travail de Lin
 | Activer B après y avoir écrit une nouvelle image | `fw_setenv BOOT_ORDER "B A"` et `fw_setenv BOOT_B_LEFT 3` |
 | Confirmer que le slot démarré est sain | `fw_setenv BOOT_B_LEFT 3` (recharger ses tentatives) |
 
-Une particularité de hush mérite d'être connue. La documentation de RAUC, et le script de l'article sur RAUC,
+:::note Les guillemets dans hush
+La documentation de RAUC, et le script de l'article sur RAUC,
 mettent la variable entre guillemets : `for BOOT_SLOT in "${BOOT_ORDER}"`. Un sh POSIX ne ferait qu'un tour,
 sur le mot unique `"A B"`, mais le hush de cet U-Boot (2025.10) l'a quand même découpée en mots : les deux
 scénarios ci-dessus donnent le même résultat avec ce script. Une branche `then` vide qui ne contient qu'un
 commentaire a aussi fonctionné sans problème dans ce hush.
+:::
 
 ### Le bootcount intégré à U-Boot
 
