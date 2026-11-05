@@ -13,8 +13,8 @@ J’ai reconstruit from scratch l’OS embarqué des robots, migré le boot lega
 un build OS automatisé et reproductible là où aucune procédure n’existait. Cette base fait aujourd’hui tourner
 un pipeline de maintenance de sécurité : build, correctifs et déploiement automatisés.
 
-En dehors du travail, j’aime descendre bas niveau : un [noyau x86 32 bits en Rust](/fr/posts/kfs-rust-kernel/)
-et des [fonctions de la libc en assembleur x86-64](/fr/posts/libasm/).
+En dehors du travail, j’aime descendre bas niveau : un [noyau x86 32 bits en Rust](/fr/posts/42/kfs-rust-kernel/)
+et des [fonctions de la libc en assembleur x86-64](/fr/posts/42/libasm/).
 
 Avant la tech, j’ai dirigé un restaurant sur les Champs-Élysées pendant près de sept ans : équipe, comptabilité, exploitation.
 J’y ai appris le sens des responsabilités et le travail sous contraintes de production.

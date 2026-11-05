@@ -13,8 +13,8 @@ I rebuilt the robots' embedded OS from scratch, migrating legacy boot to UEFI, a
 automated OS build where no procedure existed. That foundation now powers a security maintenance pipeline:
 automated build, patching and deployment.
 
-Outside work I like going low-level: a [32-bit x86 kernel in Rust](/posts/kfs-rust-kernel/)
-and [libc functions in x86-64 assembly](/posts/libasm/).
+Outside work I like going low-level: a [32-bit x86 kernel in Rust](/posts/42/kfs-rust-kernel/)
+and [libc functions in x86-64 assembly](/posts/42/libasm/).
 
 Before tech, I ran a restaurant on the Champs-Élysées for almost seven years — team, accounting, operations.
 It taught me ownership and how to work under production constraints.

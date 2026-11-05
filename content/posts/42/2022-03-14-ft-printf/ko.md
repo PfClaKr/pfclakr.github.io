@@ -53,7 +53,7 @@ else if (format == 'x' || format == 'X')
   `va_arg(ap, char)`는 정의되지 않은 동작입니다.
 - **아무것도 검사하지 않습니다.** 형식은 `%s`인데 `int`를 넘기면 `va_arg`는 그걸 그대로 포인터로
   해석합니다. 컴파일러가 형식 문자열을 경고하는 이유이고, `printf(user_input)`이 보안 취약점인
-  이유입니다([RainFall](/ko/posts/rainfall/) 참고).
+  이유입니다([RainFall](/ko/posts/42/rainfall/) 참고).
 
 ## 숫자 출력
 

@@ -4,7 +4,7 @@ description = "RainFall의 속편: 지름길이 막힌 열 단계. ptrace 안티
 tags = ["42", "security", "reverse-engineering"]
 +++
 
-**OverRide**는 [RainFall](/ko/posts/rainfall/)의 후속 과제입니다. 같은 set-uid 사다리인 `level00`부터
+**OverRide**는 [RainFall](/ko/posts/42/rainfall/)의 후속 과제입니다. 같은 set-uid 사다리인 `level00`부터
 `level09`까지지만, 이번엔 바이너리가 맞섭니다. RainFall이 반환 주소를 덮고 셸코드로 바로 점프하게 해 줬다면,
 OverRide는 방어 기능을 켜서 현대 타깃에서 실제로 필요한 기법을 쓰게 만듭니다
 ([소스](https://github.com/PfClaKr/Ecole42Paris_Override)).

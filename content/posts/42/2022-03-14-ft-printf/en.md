@@ -53,7 +53,7 @@ Two details hide in there:
   `double`. `va_arg(ap, char)` is undefined behaviour.
 - **Nothing is checked.** If the format says `%s` and the caller passed an `int`, `va_arg` happily
   reinterprets it as a pointer. That's why compilers warn about format strings and why
-  `printf(user_input)` is a security bug (see [RainFall](/posts/rainfall/)).
+  `printf(user_input)` is a security bug (see [RainFall](/posts/42/rainfall/)).
 
 ## Printing numbers
 

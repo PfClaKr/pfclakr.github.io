@@ -160,4 +160,4 @@ lock while iterating.
 Most of little-penguin is learning where things live: logs in `dmesg`, devices in `/dev` managed by
 udev, debug knobs in debugfs, process views in procfs. Once you know that map, kernel code becomes much
 less intimidating, which is exactly what made writing a kernel from scratch in
-[KFS](/posts/kfs-rust-kernel/) feel approachable afterwards.
+[KFS](/posts/42/kfs-rust-kernel/) feel approachable afterwards.
