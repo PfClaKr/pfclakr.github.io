@@ -282,10 +282,15 @@ export DEBIAN_FRONTEND=noninteractive
 
 apt-get update
 apt-get install -y --no-install-recommends \
-    rauc gdisk efibootmgr grub-efi-amd64-bin systemd-resolved
+    rauc rauc-service gdisk efibootmgr grub-efi-amd64-bin systemd-resolved
 ```
 
-@@PACKAGES@@
+- Debian은 RAUC를 둘로 나눠 패키징합니다. `rauc`는 명령줄 도구이고, `rauc-service`에 D-Bus로 활성화되는
+  `rauc.service`가 들어 있습니다. Debian의 `rauc` 명령은 이 서비스에 요청을 보내는 방식으로 동작하므로
+  `rauc install`과 `rauc status`를 쓰려면 둘 다 있어야 합니다.
+- `gdisk`는 파티션 이름을 붙이는 `sgdisk`, `grub-efi-amd64-bin`은 ESP용 GRUB을 만들 모듈입니다.
+  `systemd-resolved`는 정리 단계에서 네트워크 설정을 바꿀 때 씁니다. 그 단계에서는 네트워크를 다시 쓰지 않도록
+  패키지 설치를 여기서 전부 끝냅니다.
 
 ## 20-ab-layout.sh: 일반 설치를 A/B로
 
@@ -321,7 +326,7 @@ for n in $(efibootmgr | sed -n 's/^Boot\([0-9A-F]\{4\}\)\*\{0,1\} debian.*/\1/p'
     efibootmgr -q -b "$n" -B
 done
 apt-mark manual grub-common grub2-common grub-efi-amd64-bin
-apt-get purge -y grub-efi-amd64 grub-efi-amd64-signed shim-signed
+apt-get purge -y --allow-remove-essential grub-efi-amd64 grub-efi-amd64-signed shim-signed
 apt-get autoremove -y --purge
 rm -rf /boot/efi/EFI/debian /boot/efi/EFI/BOOT
 ```
@@ -333,6 +338,16 @@ rm -rf /boot/efi/EFI/debian /boot/efi/EFI/BOOT
   업데이트로 받은 rootfs가 ESP를 덮어쓸 수 있어서 지웁니다. 모듈만 있는 `grub-efi-amd64-bin`은 남깁니다.
   `grub-mkimage`가 그 모듈로 ESP용 GRUB을 만듭니다.
 - 먼저 `apt-mark manual`을 해 두지 않으면 `autoremove`가 의존성으로만 설치된 `grub-common`까지 지웁니다.
+- **`--allow-remove-essential`이 필요합니다.** Debian은 `grub-efi-amd64-signed`를 `Protected: yes`로 표시해 두어서,
+  apt가 이것을 필수 패키지로 취급하고 `-y`만으로는 지우지 않습니다. 실수로 지워 부팅이 안 되는 일을 막는
+  장치인데, 여기서는 바로 그 부트로더를 우리 것으로 바꾸려는 것이라 명시적으로 허락합니다.
+
+  ```text
+  WARNING: The following essential packages will be removed.
+  This should NOT be done unless you know exactly what you are doing!
+    grub-efi-amd64-signed
+  E: Essential packages were removed and -y was used without --allow-remove-essential.
+  ```
 
 ```sh
 # 3. 슬롯 쪽: update-grub이 root=PARTLABEL=rootfs_$SLOT으로 부팅하는 엔트리 하나를 만든다.
@@ -360,6 +375,7 @@ GRUB A/B 글과 같은 내용이고, 모듈에 `efi_gop`만 더했습니다. 이
 install -d /etc/rauc /data/rauc
 sed "s/@COMPATIBLE@/$COMPATIBLE/" $F/system.conf > /etc/rauc/system.conf
 install -m 0644 $F/ca.cert.pem /etc/rauc/ca.cert.pem
+install -m 0644 $F/rauc-mark-good.service /etc/systemd/system/rauc-mark-good.service
 systemctl enable rauc-mark-good.service
 
 printf 'IMAGE_VERSION=%s\n' "$IMAGE_VERSION" > /etc/os-image-release
@@ -398,9 +414,30 @@ resize=true
   사라집니다.
 - **`resize=true`**: 번들의 ext4 이미지는 뒤에서 최소 크기로 줄여서 만듭니다. RAUC가 슬롯에 쓴 뒤
   `resize2fs`로 파티션 크기(3GB)까지 늘립니다. 이게 없으면 새 슬롯의 루트가 거의 꽉 찬 상태로 부팅합니다.
-- `rauc-mark-good.service`는 RAUC 패키지에 들어 있는 유닛으로, 부팅이 끝나면 `rauc status mark-good`을
-  실행합니다. [RAUC 글](/ko/posts/architecture/os/ota-update/rauc/)에서처럼 헬스 체크 뒤에 실행하도록 순서를
-  바꾸는 것이 실제 제품에서 할 일입니다.
+- RAUC 소스에는 `rauc-mark-good.service`가 있지만 Debian 패키지에는 들어 있지 않아서 직접 둡니다.
+
+  ```ini
+  [Unit]
+  Description=Mark the booted RAUC slot as good
+  ConditionKernelCommandLine=rauc.slot
+  Requires=boot-complete.target
+  After=boot-complete.target
+  RequiresMountsFor=/boot/efi
+
+  [Service]
+  Type=oneshot
+  RemainAfterExit=yes
+  ExecStart=/usr/bin/rauc status mark-good
+
+  [Install]
+  WantedBy=multi-user.target
+  ```
+
+  `boot-complete.target`은 systemd가 "부팅이 성공했다"를 표현하는 지점입니다. 헬스 체크 유닛을
+  `Before=boot-complete.target`, `RequiredBy=boot-complete.target`으로 걸어 두면, 체크가 실패했을 때
+  이 target에 도달하지 못하고 mark-good도 실행되지 않습니다. 그러면 grubenv의 `X_TRY=1`이 그대로 남아
+  다음 부팅에서 이전 슬롯으로 돌아갑니다. [RAUC 글](/ko/posts/architecture/os/ota-update/rauc/)의 헬스
+  체크가 들어갈 자리입니다.
 - `/etc/os-image-release`는 지금 부팅한 슬롯이 어느 빌드인지 확인하는 용도입니다.
 
 ## 90-cleanup.sh: 빌드 VM에만 해당하는 것 지우기
@@ -420,7 +457,7 @@ RAUC로 받는 rootfs가 이 값을 그대로 물려받습니다.
 ```sh
 install -m 0644 $F/20-wired.network /etc/systemd/network/20-wired.network
 systemctl enable systemd-networkd systemd-resolved
-apt-get purge -y ifupdown isc-dhcp-client
+apt-get purge -y ifupdown dhcpcd-base
 rm -f /etc/network/interfaces
 
 sed -i '/Acquire::http::Proxy/d' /etc/apt/apt.conf 2>/dev/null || true
