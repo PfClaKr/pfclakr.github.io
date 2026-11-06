@@ -2,8 +2,7 @@
 title = "Construction d'images OS 3 : builder dans GitLab CI et publier un bundle RAUC"
 description = "Le build Packer en pipeline GitLab CI : un runner shell avec VirtualBox, une version tirée du tag, la signature du bundle RAUC avec des variables File protégées, le Generic Package Registry et les releases. Création des clés de signature, puis installation du bundle sur un appareil jusqu'au changement de slot."
 tags = ["linux", "gitlab", "ci", "packer", "rauc", "ota"]
-draft = true
-date = 2026-11-05T15:00:00
+date = 2026-11-06T15:00:00
 +++
 
 Un seul `packer build` de la [partie 2](/fr/posts/architecture/os/image-build/image-2-packer/) produit un OVA
@@ -13,11 +12,12 @@ et un `rootfs.ext4`. Cet article passe le tout dans GitLab CI, avec ces objectif
 - Chaque commit sur la branche par défaut est vraiment construit, bundle compris.
 - **Pousser un tag** construit un OVA et un bundle RAUC signé avec cette version, et les publie en release.
 
-```text
-validate ──► build ──► bundle ──► release
- (MR, main)   (main, tags)          (tags seulement)
- docker       shell+VirtualBox      docker
-```
+| Job | Quand | Où |
+|---|---|---|
+| `validate` | MR, branche par défaut | Docker |
+| `build` | branche par défaut, tags | runner shell + VirtualBox |
+| `bundle` | branche par défaut, tags | Docker |
+| `release` | tags seulement | Docker |
 
 ## Le runner : pourquoi un executor shell
 
@@ -256,7 +256,73 @@ rauc status
 cat /etc/os-image-release
 ```
 
-@@DEVICE@@
+Le disque de la partie 2 a été démarré dans QEMU. Le bundle 1.1.0 vient du `rootfs.ext4` du même build, où
+seul `/etc/os-image-release` est passé à 1.1.0, avec les mêmes commandes que le job `bundle` ci-dessus et une CA de
+test. L'image ext4 de 1,0 Go est devenue un bundle de 446 Mo.
+
+```text
+# rauc install /data/debian-ab-1.1.0.raucb
+installing
+ 10% Checking bundle
+ 20% Verifying signature done.
+ 30% Checking manifest contents done.
+ 40% Determining target install group done.
+ 46% Checking slot rootfs.1 (B) done.
+ 99% Copying image to rootfs.1 done.
+100% Installing done.
+Installing `/data/debian-ab-1.1.0.raucb` succeeded
+
+# grub-editenv /boot/efi/EFI/BOOT/grubenv list
+ORDER=B A
+A_OK=1
+A_TRY=0
+B_OK=1
+B_TRY=0
+```
+
+RAUC a écrit l'image dans le slot B, agrandi le système de fichiers comme le demande `resize=true` dans
+`system.conf`, puis placé B en tête dans grubenv avec `B_OK=1`. L'installation a pris 41 secondes. Au redémarrage, le
+sélecteur choisit B.
+
+```text
+ab: ORDER=B A A=1/0 B=1/1 -> slot B
+
+# cat /etc/os-image-release
+IMAGE_VERSION=1.1.0
+# df -h /
+/dev/sda3       2.8G  726M  2.0G  27% /
+# rauc status
+Booted from: rootfs.1 (B)
+Activated: rootfs.1 (B)
+⏺ [rootfs.1] (/dev/disk/by-partlabel/rootfs_B, ext4, booted)
+      boot status: good
+○ [rootfs.0] (/dev/disk/by-partlabel/rootfs_A, ext4, inactive)
+      boot status: good
+```
+
+- L'image de 1,0 Go occupe maintenant toute la partition de 2,8 Go, grâce à `resize=true`.
+- Le sélecteur a enregistré `B_TRY=1` avant de démarrer, et `rauc-mark-good.service` l'a remis à 0.
+
+Le **retour arrière** a aussi été vérifié. Sur le slot B, `rauc-mark-good.service` a été désactivé pour simuler un
+contrôle de santé raté, puis deux redémarrages.
+
+```text
+ab: ORDER=B A A=1/0 B=1/1 -> slot B     # redémarrage 1 : B, pas de mark-good → B_TRY=1 reste
+ab: ORDER=B A A=1/1 B=1/1 -> slot A     # redémarrage 2 : B déjà essayé → A
+
+# cat /etc/os-image-release
+IMAGE_VERSION=1.0.0
+# rauc status
+Booted from: rootfs.0 (A)
+Activated: rootfs.0 (A)
+○ [rootfs.1] (/dev/disk/by-partlabel/rootfs_B, ext4, inactive)
+      boot status: bad
+⏺ [rootfs.0] (/dev/disk/by-partlabel/rootfs_A, ext4, booted)
+      boot status: good
+```
+
+Un slot qui n'exécute jamais mark-good garde `B_TRY=1`, et le sélecteur le saute au démarrage suivant. L'appareil est
+revenu sur le slot A avec la 1.0.0, et RAUC signale B comme bad. Personne n'a eu à intervenir.
 
 ## Bilan
 

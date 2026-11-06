@@ -2,8 +2,7 @@
 title = "OS 이미지 빌드 3: GitLab CI로 빌드하고 RAUC 번들로 릴리스하기"
 description = "Packer 빌드를 GitLab CI 파이프라인으로: VirtualBox가 있는 셸 러너, 태그에서 정해지는 버전, 보호된 File 변수로 하는 RAUC 번들 서명, Generic Package Registry와 릴리스. 서명 키를 만들고 장비에서 번들을 설치해 슬롯이 바뀌는 것까지."
 tags = ["linux", "gitlab", "ci", "packer", "rauc", "ota"]
-draft = true
-date = 2026-11-05T15:00:00
+date = 2026-11-06T15:00:00
 +++
 
 [2편](/ko/posts/architecture/os/image-build/image-2-packer/)의 `packer build` 한 번으로 OVA와 `rootfs.ext4`가
@@ -13,11 +12,12 @@ date = 2026-11-05T15:00:00
 - 기본 브랜치에 들어간 커밋은 실제로 빌드하고 번들까지 만들어 봅니다.
 - **태그를 달면** 그 버전으로 OVA와 서명된 RAUC 번들을 만들어 릴리스로 올립니다.
 
-```text
-validate ──► build ──► bundle ──► release
- (MR, main)   (main, 태그)          (태그만)
- docker       shell+VirtualBox      docker
-```
+| 잡 | 언제 | 어디서 |
+|---|---|---|
+| `validate` | MR, 기본 브랜치 | Docker |
+| `build` | 기본 브랜치, 태그 | 셸 러너 + VirtualBox |
+| `bundle` | 기본 브랜치, 태그 | Docker |
+| `release` | 태그만 | Docker |
 
 ## 러너: 왜 셸 executor인가
 
@@ -250,7 +250,71 @@ rauc status
 cat /etc/os-image-release
 ```
 
-@@DEVICE@@
+2편에서 만든 디스크를 QEMU로 부팅해 확인했습니다. 1.1.0 번들은 같은 빌드의 `rootfs.ext4`에서
+`/etc/os-image-release`만 1.1.0으로 바꾼 뒤, 위의 `bundle` 잡과 같은 명령과 테스트용 CA로 만들었습니다. 1.0GB
+ext4 이미지가 446MB 번들이 됐습니다.
+
+```text
+# rauc install /data/debian-ab-1.1.0.raucb
+installing
+ 10% Checking bundle
+ 20% Verifying signature done.
+ 30% Checking manifest contents done.
+ 40% Determining target install group done.
+ 46% Checking slot rootfs.1 (B) done.
+ 99% Copying image to rootfs.1 done.
+100% Installing done.
+Installing `/data/debian-ab-1.1.0.raucb` succeeded
+
+# grub-editenv /boot/efi/EFI/BOOT/grubenv list
+ORDER=B A
+A_OK=1
+A_TRY=0
+B_OK=1
+B_TRY=0
+```
+
+RAUC가 슬롯 B에 이미지를 쓰고 `system.conf`의 `resize=true`대로 파일시스템을 늘린 뒤, grubenv에서 B를 앞에 두고
+`B_OK=1`로 표시했습니다. 설치는 41초 걸렸습니다. 재부팅하면 선택기가 B를 고릅니다.
+
+```text
+ab: ORDER=B A A=1/0 B=1/1 -> slot B
+
+# cat /etc/os-image-release
+IMAGE_VERSION=1.1.0
+# df -h /
+/dev/sda3       2.8G  726M  2.0G  27% /
+# rauc status
+Booted from: rootfs.1 (B)
+Activated: rootfs.1 (B)
+⏺ [rootfs.1] (/dev/disk/by-partlabel/rootfs_B, ext4, booted)
+      boot status: good
+○ [rootfs.0] (/dev/disk/by-partlabel/rootfs_A, ext4, inactive)
+      boot status: good
+```
+
+- 1.0GB였던 이미지가 2.8GB 파티션을 다 쓰고 있습니다. `resize=true` 덕분입니다.
+- 선택기가 부팅 전에 `B_TRY=1`을 저장했고, `rauc-mark-good.service`가 0으로 돌려놓았습니다.
+
+**롤백**도 확인했습니다. 슬롯 B에서 `rauc-mark-good.service`를 꺼서 헬스 체크가 실패한 상황을 만들고 두 번 재부팅했습니다.
+
+```text
+ab: ORDER=B A A=1/0 B=1/1 -> slot B     # 재부팅 1: B로 부팅, mark-good 없음 → B_TRY=1이 남음
+ab: ORDER=B A A=1/1 B=1/1 -> slot A     # 재부팅 2: B는 이미 시도함 → A
+
+# cat /etc/os-image-release
+IMAGE_VERSION=1.0.0
+# rauc status
+Booted from: rootfs.0 (A)
+Activated: rootfs.0 (A)
+○ [rootfs.1] (/dev/disk/by-partlabel/rootfs_B, ext4, inactive)
+      boot status: bad
+⏺ [rootfs.0] (/dev/disk/by-partlabel/rootfs_A, ext4, booted)
+      boot status: good
+```
+
+mark-good이 실행되지 않은 슬롯은 `B_TRY=1`인 채로 남고, 다음 부팅에서 선택기가 건너뜁니다. 1.0.0이 든 슬롯 A로
+돌아왔고, RAUC는 B를 bad로 보고합니다. 사람이 아무것도 하지 않아도 일어나는 일입니다.
 
 ## 정리
 

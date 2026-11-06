@@ -2,8 +2,7 @@
 title = "Construction d'images OS 1 : installer Debian sans intervention avec preseed"
 description = "Comment l'installateur Debian (d-i) pose ses questions et comment preseed y répond à l'avance : la ligne de commande de démarrage, chaque partie de preseed.cfg, une recette partman pour une disposition A/B, late_command, et où regarder quand l'installation s'arrête. Vérifié par une installation dans QEMU."
 tags = ["linux", "debian", "preseed", "packer", "ota"]
-draft = true
-date = 2026-11-05T13:00:00
+date = 2026-11-06T13:00:00
 +++
 
 Les articles sur les [partitions A/B](/fr/posts/architecture/os/ota-update/ab-partitions/),
@@ -301,7 +300,36 @@ cloud-init). preseed ne fonctionne pas sur les Ubuntu récentes.
 
 ## Essai dans QEMU
 
-@@RESULTS@@
+Cet environnement n'a ni VirtualBox ni KVM : l'installation a donc tourné avec le modèle de l'article
+suivant, en remplaçant seulement le builder par le builder QEMU de Packer, avec le même preseed. UEFI (OVMF), un
+disque SATA et une carte e1000 la rapprochent de VirtualBox. L'ISO est la mini.iso du miroir Debian au lieu de
+netinst ; la seule différence est que son GRUB place le noyau sous `/linux` et `/initrd.gz`.
+
+Ce que Packer a tapé dans l'invite GRUB (le port est celui choisi par Packer) :
+
+```text
+grub> linux /linux auto=true priority=critical preseed/url=http://10.0.2.2:8498/preseed.cfg hostname=debian domain=
+grub> initrd /initrd.gz
+```
+
+- L'installation s'est terminée sans aucun écran de question, et Packer s'est connecté en root par SSH après le
+  redémarrage. Sans accélération matérielle, il a fallu 51 minutes ; sur KVM ou VirtualBox, l'essentiel de ce
+  temps est le téléchargement des paquets.
+- L'écran `method_only` vu plus haut a été la seule question rencontrée.
+
+Les partitions du disque installé. `PARTLABEL` est encore vide ; l'article suivant l'ajoute.
+
+```text
+NAME    SIZE FSTYPE MOUNTPOINTS
+sda      10G
+├─sda1  243M vfat   /boot/efi
+├─sda2  2.9G ext4   /
+├─sda3  2.9G
+└─sda4    4G ext4   /data
+```
+
+Les Mo de la recette valent 10⁶ octets : 3072 Mo apparaissent comme 2.9G (Gio) dans `lsblk`. Le slot B (`sda3`)
+n'a pas de système de fichiers, et l'ordre est exactement celui de la recette.
 
 L'article suivant place ce preseed dans un modèle Packer, transforme le système installé en disposition A/B, et
 exporte un OVA et une image rootfs.

@@ -2,8 +2,7 @@
 title = "OS 이미지 빌드 2: Packer로 OVA와 RAUC용 rootfs 만들기"
 description = "Packer virtualbox-iso 템플릿으로 Debian netinst를 설치하고, A/B 레이아웃과 RAUC를 넣고, 빌드 VM에만 해당하는 것들을 지운 뒤 OVA와 rootfs.ext4를 함께 내보내는 과정. 템플릿과 프로비저닝 스크립트를 한 줄씩."
 tags = ["linux", "debian", "packer", "virtualbox", "rauc", "ota"]
-draft = true
-date = 2026-11-05T14:00:00
+date = 2026-11-06T14:00:00
 +++
 
 [1편](/ko/posts/architecture/os/image-build/image-1-preseed/)의 preseed는 "사람 없이 설치되는 Debian"까지만
@@ -29,6 +28,7 @@ os-image/
 │   ├── system.conf           RAUC 슬롯 정의
 │   ├── ca.cert.pem           번들 서명을 확인할 CA 인증서
 │   ├── authorized_keys       완성된 이미지에 들어갈 SSH 공개 키
+│   ├── rauc-mark-good.service
 │   ├── 20-wired.network
 │   └── ssh-hostkeys.service
 ├── scripts/
@@ -298,6 +298,8 @@ apt-get install -y --no-install-recommends \
 구조로 바꿉니다. 각 부분이 왜 그런지는 그 글에 있고, 여기서는 이미지 빌드에서 달라지는 점만 봅니다.
 
 ```sh
+F=/tmp/files   # file 프로비저너가 올린 곳
+
 # 1. 파티션 이름. 아래는 전부 UUID가 아니라 이름으로 가리킨다.
 disk=/dev/$(lsblk -no PKNAME "$(findmnt -no SOURCE /)")
 sgdisk -c 1:esp -c 2:rootfs_A -c 3:rootfs_B -c 4:data "$disk"
@@ -337,6 +339,8 @@ rm -rf /boot/efi/EFI/debian /boot/efi/EFI/BOOT
 - `grub-efi-amd64`, `-signed`, `shim-signed`는 설치·업그레이드 때 `grub-install`을 실행합니다. 슬롯 안에 있으면
   업데이트로 받은 rootfs가 ESP를 덮어쓸 수 있어서 지웁니다. 모듈만 있는 `grub-efi-amd64-bin`은 남깁니다.
   `grub-mkimage`가 그 모듈로 ESP용 GRUB을 만듭니다.
+- 디렉터리는 purge **뒤에** 지웁니다. purge하는 동안 `shim-signed`와 `grub-efi-amd64`의 유지 관리 스크립트가
+  `grub-install`을 다시 실행해서(로그의 "Installing for x86_64-efi platform") ESP에 파일을 또 씁니다.
 - 먼저 `apt-mark manual`을 해 두지 않으면 `autoremove`가 의존성으로만 설치된 `grub-common`까지 지웁니다.
 - **`--allow-remove-essential`이 필요합니다.** Debian은 `grub-efi-amd64-signed`를 `Protected: yes`로 표시해 두어서,
   apt가 이것을 필수 패키지로 취급하고 `-y`만으로는 지우지 않습니다. 실수로 지워 부팅이 안 되는 일을 막는
@@ -457,6 +461,8 @@ RAUC로 받는 rootfs가 이 값을 그대로 물려받습니다.
 | 설치 로그, 셸 기록 | 빌드 환경 정보 노출, 이미지 크기 | 비움 |
 
 ```sh
+F=/tmp/files
+
 install -m 0644 $F/20-wired.network /etc/systemd/network/20-wired.network
 systemctl enable systemd-networkd systemd-resolved
 apt-get purge -y ifupdown dhcpcd-base
@@ -480,13 +486,19 @@ find /var/log -type f -exec truncate -s 0 {} +
 rm -rf /var/log/installer /root/.bash_history
 ```
 
-@@CLEANUP@@
-
 - `machine-id`는 지우지 않고 **빈 파일로** 둡니다. systemd는 빈 `/etc/machine-id`를 보면 첫 부팅으로
   판단하고 새 ID를 만들어 그 파일에 씁니다.
 - SSH 호스트 키를 만드는 유닛은 키가 없을 때만 돕니다(`ConditionPathExists=!/etc/ssh/ssh_host_ed25519_key`).
 - **스크립트가 root 비밀번호를 잠그고 sshd 설정을 지워도 빌드는 계속됩니다.** Packer는 처음 맺은 SSH 연결
   하나로 나머지 단계를 진행하고, sshd 설정 변경은 다음 접속부터 적용되기 때문입니다.
+
+:::warning 업데이트할 때도 새로 만들어진다
+rootfs 이미지에도 빈 `machine-id`와 호스트 키 없는 `/etc/ssh`가 들어갑니다. 그래서 RAUC로 다른 슬롯에 업데이트하면
+그 슬롯의 첫 부팅에서 **machine-id와 SSH 호스트 키가 다시 만들어집니다.** 3편의 테스트에서 슬롯 A의 machine-id는
+`f5c02aef…`, 업데이트 후 슬롯 B는 `fc311b22…`였습니다. 장비 ID를 machine-id에 묶어 두었거나 SSH 클라이언트가 호스트
+키를 고정해 두었다면 업데이트마다 바뀌는 셈입니다. 유지해야 한다면 이 값들을 업데이트가 건드리지 않는 `/data`에
+두고 부팅 때 가져오도록 해야 합니다. 이 시리즈의 이미지는 거기까지 하지 않습니다.
+:::
 
 ## 95-export-rootfs.sh: RAUC용 이미지 꺼내기
 
@@ -516,7 +528,73 @@ resize2fs -M /data/rootfs.ext4
 
 ## 결과
 
-@@RESULTS@@
+이 환경에는 VirtualBox가 없어서, 실제 템플릿은 `packer init`, `packer fmt -check`, `packer validate`까지 확인하고
+빌드는 QEMU 빌더로 돌렸습니다. 1편의 설치를 끝낸 디스크에서 시작하도록 `source`만 바꾸고, `build` 블록은 이 글의
+것을 그대로 썼습니다. VirtualBox에만 있는 부분, 즉 `vboxmanage`와 OVA 내보내기는 실행해 보지 못했습니다.
+
+```text
+==> qemu.debian: Uploading ./files/ => /tmp/files
+==> qemu.debian: Provisioning with shell script: ./scripts/10-packages.sh
+==> qemu.debian: Provisioning with shell script: ./scripts/20-ab-layout.sh
+==> qemu.debian: Provisioning with shell script: ./scripts/90-cleanup.sh
+==> qemu.debian: Provisioning with shell script: ./scripts/95-export-rootfs.sh
+==> qemu.debian: Resizing the filesystem on /data/rootfs.ext4 to 264975 (4k) blocks.
+==> qemu.debian: Downloading /data/rootfs.ext4 => output/debian-ab-1.0.0/rootfs.ext4
+==> qemu.debian: /data: 3.2 GiB (3388547072 bytes) trimmed on /dev/sda4
+==> qemu.debian: /boot/efi: 238.6 MiB (250190848 bytes) trimmed on /dev/sda1
+==> qemu.debian: /: 2 GiB (2177200128 bytes) trimmed on /dev/sda2
+==> Wait completed after 5 minutes 45 seconds
+```
+
+- 프로비저닝은 6분 정도입니다. `rootfs.ext4`는 `resize2fs -M` 뒤 1.0GB(264975블록)입니다.
+- 정리 스크립트가 root 비밀번호를 잠근 **뒤에** 내려받기와 `fstrim`이 같은 SSH 연결로 진행됐습니다.
+- 처음부터 통과하지는 않았습니다. `grub-efi-amd64-signed`의 `Protected: yes`, purge가 지운 `/etc/default/grub`,
+  Debian에 없는 `rauc-mark-good.service`가 각각 빌드를 한 번씩 멈췄고, 위의 스크립트는 그것을 고친 버전입니다.
+
+만든 디스크를 **빈 NVRAM**으로 부팅했습니다. OVA를 새 VM으로 가져온 상황과 같습니다. 펌웨어가 `\EFI\BOOT\BOOTX64.EFI`를
+찾아 선택기가 슬롯 A를 고릅니다.
+
+```text
+ab: ORDER=A B A=1/1 B=0/0 -> slot A
+[    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-6.12.115+deb13.1-amd64 root=PARTLABEL=rootfs_A ro rauc.slot=A console=tty0 console=ttyS0,115200
+```
+
+```text
+# lsblk -o NAME,SIZE,FSTYPE,PARTLABEL,MOUNTPOINTS /dev/sda
+NAME    SIZE FSTYPE PARTLABEL MOUNTPOINTS
+sda      10G
+├─sda1  243M vfat   esp       /boot/efi
+├─sda2  2.9G ext4   rootfs_A  /
+├─sda3  2.9G        rootfs_B
+└─sda4    4G ext4   data      /data
+
+# find /boot/efi -type f
+/boot/efi/EFI/BOOT/BOOTX64.EFI
+/boot/efi/EFI/BOOT/grub.cfg
+/boot/efi/EFI/BOOT/grubenv
+
+# networkctl --no-legend list
+  1 lo     loopback carrier  unmanaged
+  2 enp0s2 ether    routable configured
+
+# passwd -S root
+root L 2026-11-06 0 99999 7 -1
+
+# rauc status
+Compatible:  pfclakr-debian-amd64
+Booted from: rootfs.0 (A)
+Activated: rootfs.0 (A)
+○ [rootfs.1] (/dev/disk/by-partlabel/rootfs_B, ext4, inactive)
+      boot status: bad
+⏺ [rootfs.0] (/dev/disk/by-partlabel/rootfs_A, ext4, booted)
+      boot status: good
+```
+
+- GPT 이름이 붙어 있고, ESP에는 선택기에 필요한 파일 세 개만 남았습니다.
+- NIC 이름은 빌드 때와 상관없이 networkd가 DHCP로 잡았습니다. 첫 부팅에 machine-id와 SSH 호스트 키가 새로
+  만들어졌고, root는 잠긴 상태(`L`)라 키로만 들어갈 수 있습니다.
+- `rauc-mark-good.service`가 `boot-complete.target` 뒤에 실행돼 grubenv의 `A_TRY`를 0으로 돌려놓았습니다. 슬롯 B는
+  아직 비어 있어서(`B_OK=0`) bad로 보입니다. `systemctl --failed`는 비어 있었습니다.
 
 다음 글에서는 이 빌드를 GitLab CI에서 돌리고, `rootfs.ext4`를 RAUC 번들로 서명해 OVA와 함께 릴리스로
 올립니다.

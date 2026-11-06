@@ -2,8 +2,7 @@
 title = "OS image build 1: unattended Debian installs with preseed"
 description = "How the Debian installer (d-i) asks its questions and how preseed answers them ahead of time: the boot command line, each part of preseed.cfg, a partman recipe for an A/B layout, late_command, and where to look when the install stops. Tested by installing in QEMU."
 tags = ["linux", "debian", "preseed", "packer", "ota"]
-draft = true
-date = 2026-11-05T13:00:00
+date = 2026-11-06T13:00:00
 +++
 
 The [A/B partitions](/posts/architecture/os/ota-update/ab-partitions/), [GRUB A/B](/posts/unix/boot/grub-ab/)
@@ -289,7 +288,36 @@ current Ubuntu.
 
 ## Running it in QEMU
 
-@@RESULTS@@
+There is no VirtualBox or KVM in this environment, so the install ran with the next post's template, with only
+the builder swapped for Packer's QEMU builder and the same preseed. UEFI (OVMF), a SATA disk and an e1000 NIC keep
+it close to VirtualBox. The ISO is the mini.iso from the Debian mirror instead of netinst; the only difference is
+that its GRUB has the kernel at `/linux` and `/initrd.gz`.
+
+What Packer typed at the GRUB prompt (the port is the one Packer picked):
+
+```text
+grub> linux /linux auto=true priority=critical preseed/url=http://10.0.2.2:8498/preseed.cfg hostname=debian domain=
+grub> initrd /initrd.gz
+```
+
+- The install finished without a single question screen, and Packer logged in as root over SSH after the
+  reboot. With no hardware acceleration it took 51 minutes; on KVM or VirtualBox most of that time is package
+  downloads.
+- The `method_only` screen shown above was the only question that came up along the way.
+
+The installed disk's partitions. `PARTLABEL` is still empty; the next post adds it.
+
+```text
+NAME    SIZE FSTYPE MOUNTPOINTS
+sda      10G
+├─sda1  243M vfat   /boot/efi
+├─sda2  2.9G ext4   /
+├─sda3  2.9G
+└─sda4    4G ext4   /data
+```
+
+The recipe's MB are 10⁶ bytes, so 3072 MB shows as 2.9G (GiB) in `lsblk`. Slot B (`sda3`) has no filesystem,
+and the order is exactly as written in the recipe.
 
 The next post puts this preseed into a Packer template, turns the installed system into the A/B layout, and
 exports an OVA and a rootfs image.

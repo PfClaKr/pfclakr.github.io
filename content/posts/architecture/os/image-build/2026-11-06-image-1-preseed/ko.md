@@ -2,8 +2,7 @@
 title = "OS 이미지 빌드 1: preseed로 Debian 무인 설치하기"
 description = "Debian 설치 프로그램(d-i)이 질문하는 방식과 preseed로 미리 답하는 방법: 부팅 명령줄, preseed.cfg의 각 부분, A/B 파티션을 만드는 partman 레시피, late_command, 그리고 설치가 멈췄을 때 찾아보는 곳. QEMU에서 실제로 설치해 확인."
 tags = ["linux", "debian", "preseed", "packer", "ota"]
-draft = true
-date = 2026-11-05T13:00:00
+date = 2026-11-06T13:00:00
 +++
 
 [A/B 파티션](/ko/posts/architecture/os/ota-update/ab-partitions/), [GRUB A/B](/ko/posts/unix/boot/grub-ab/),
@@ -276,7 +275,34 @@ Ubuntu도 Debian 계열이지만 Server는 20.04부터, 데스크톱은 23.04부
 
 ## QEMU에서 돌려 본 결과
 
-@@RESULTS@@
+이 환경에는 VirtualBox도 KVM도 없어서, 다음 글의 템플릿에서 빌더만 Packer의 QEMU 빌더로 바꿔 같은 preseed로
+설치했습니다. UEFI(OVMF), SATA 디스크, e1000 NIC로 VirtualBox와 비슷하게 맞췄습니다. ISO는 netinst 대신 Debian
+미러에 있는 mini.iso를 썼는데, 그 GRUB에서는 커널 경로가 `/linux`, `/initrd.gz`라는 점만 다릅니다.
+
+Packer가 GRUB 명령줄에 친 내용입니다. 포트는 Packer가 고른 값입니다.
+
+```text
+grub> linux /linux auto=true priority=critical preseed/url=http://10.0.2.2:8498/preseed.cfg hostname=debian domain=
+grub> initrd /initrd.gz
+```
+
+- 질문 화면 없이 설치가 끝나고, 재부팅된 시스템에 Packer가 root로 SSH 접속했습니다. 하드웨어 가속 없는 에뮬레이션이라
+  51분 걸렸습니다. KVM이나 VirtualBox에서는 대부분 패키지 다운로드 시간입니다.
+- 위에서 본 `method_only` 화면이 이 과정에서 나온 유일한 질문이었습니다.
+
+설치된 디스크의 파티션입니다. `PARTLABEL`은 아직 비어 있고, 다음 글에서 붙입니다.
+
+```text
+NAME    SIZE FSTYPE MOUNTPOINTS
+sda      10G
+├─sda1  243M vfat   /boot/efi
+├─sda2  2.9G ext4   /
+├─sda3  2.9G
+└─sda4    4G ext4   /data
+```
+
+레시피의 단위 MB는 10⁶바이트라서 3072MB가 `lsblk`에서는 2.9G(GiB)로 보입니다. 슬롯 B(`sda3`)에는 파일시스템이
+없고, 순서는 레시피에 적은 그대로입니다.
 
 다음 글에서는 이 preseed를 Packer 템플릿에 넣고, 설치된 시스템을 A/B 레이아웃으로 바꾼 뒤 OVA와 rootfs
 이미지로 내보냅니다.
