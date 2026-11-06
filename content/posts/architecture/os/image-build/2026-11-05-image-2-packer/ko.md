@@ -355,20 +355,22 @@ for s in 00_header 10_linux 20_linux_xen 25_bli 30_os-prober 30_uefi-firmware; d
     [ -e /etc/grub.d/$s ] && chmod -x /etc/grub.d/$s
 done
 install -m 0755 $F/10_ab /etc/grub.d/10_ab
-sed -i 's/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX="console=tty0 console=ttyS0,115200"/' /etc/default/grub
+echo 'GRUB_CMDLINE_LINUX="console=tty0 console=ttyS0,115200"' > /etc/default/grub
 update-grub
 
 # 4. ESP 쪽: 직접 만든 GRUB, 선택기, grubenv.
 install -d /boot/efi/EFI/BOOT
 grub-mkimage -O x86_64-efi -p /EFI/BOOT -o /boot/efi/EFI/BOOT/BOOTX64.EFI \
-    part_gpt fat ext2 normal configfile loadenv test echo linux gzio sleep halt efi_gop
+    part_gpt fat ext2 normal configfile loadenv test echo linux gzio sleep halt
 install -m 0644 $F/esp-grub.cfg /boot/efi/EFI/BOOT/grub.cfg
 grub-editenv /boot/efi/EFI/BOOT/grubenv create
 grub-editenv /boot/efi/EFI/BOOT/grubenv set ORDER="A B" A_OK=1 A_TRY=0 B_OK=0 B_TRY=0
 ```
 
-GRUB A/B 글과 같은 내용이고, 모듈에 `efi_gop`만 더했습니다. 이 모듈이 없으면 GRUB이 커널에 프레임버퍼
-정보를 넘기지 못해, VirtualBox 화면에 커널 메시지가 나오지 않고 한참 검은 화면으로 있습니다.
+GRUB A/B 글과 같은 내용입니다. 이미지 빌드에서 달라진 점은 **`/etc/default/grub`을 새로 쓴다**는 것
+하나입니다. 이 파일은 `grub-efi-amd64` 패키지가 관리하던 설정 파일이라, 앞에서 그 패키지를 purge할 때 함께
+지워집니다. 처음에는 `sed`로 한 줄만 고치려다 "can't read /etc/default/grub"으로 빌드가 멈췄습니다.
+`10_ab`가 읽는 값은 `GRUB_CMDLINE_LINUX` 하나뿐이라 그 한 줄로 파일을 만듭니다.
 
 ```sh
 # 5. RAUC: 슬롯, 신뢰할 CA, 부팅 성공 후 mark-good.
