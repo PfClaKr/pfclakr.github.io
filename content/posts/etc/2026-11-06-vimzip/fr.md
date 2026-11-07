@@ -56,7 +56,7 @@ Un binaire portable, c'est la moitié ; l'autre moitié, c'est qu'il se comporte
 
 **Complétion depuis tout le projet.** `Ctrl+n` propose des mots collectés par ripgrep sur tout le dépôt git dans une tâche de fond — pas cher, sans indexeur, et ça couvre les fichiers pas encore ouverts.
 
-Il y a même un panneau d'agent IA (`Space a`) qui lance le premier trouvé parmi `claude`/`codex`/`gemini`/`aider`/`opencode`. [Les raccourcis complets, avec captures d'écran, font l'objet d'un autre article](/fr/posts/vimzip-keymap/).
+Il y a même un panneau d'agent IA (`Space a`) qui lance le premier trouvé parmi `claude`/`codex`/`gemini`/`aider`/`opencode`. [Les raccourcis complets, avec captures d'écran, font l'objet d'un autre article](/fr/posts/etc/vimzip-keymap/).
 
 ## Le garder à jour sans y toucher
 

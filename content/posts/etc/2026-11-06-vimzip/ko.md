@@ -56,7 +56,7 @@ Vim 8+에는 네이티브 패키지 레이아웃이 있어서 vimzip에는 vim-p
 
 **프로젝트 전체에서 자동완성.** `Ctrl+n`은 백그라운드 작업으로 ripgrep이 git 저장소 전체에서 모은 단어를 제안합니다. 가볍고, 인덱서도 없고, 아직 열지 않은 파일까지 커버합니다.
 
-오른쪽에 AI 에이전트 패널(`Space a`)도 있어서 `claude`/`codex`/`gemini`/`aider`/`opencode` 중 먼저 찾은 것을 띄웁니다. [단축키 전체는 스크린샷과 함께 별도 글](/ko/posts/vimzip-keymap/)로 정리했습니다.
+오른쪽에 AI 에이전트 패널(`Space a`)도 있어서 `claude`/`codex`/`gemini`/`aider`/`opencode` 중 먼저 찾은 것을 띄웁니다. [단축키 전체는 스크린샷과 함께 별도 글](/ko/posts/etc/vimzip-keymap/)로 정리했습니다.
 
 ## 손 안 대고 최신 유지하기
 

@@ -56,7 +56,7 @@ A portable binary is half of it; the other half is that it behaves like an edito
 
 **Completion from the whole project.** `Ctrl+n` offers words collected by ripgrep across the git repo in a background job — cheap, no indexer, and it covers files you haven't opened.
 
-There's even an AI-agent panel (`Space a`) that launches whichever of `claude`/`codex`/`gemini`/`aider`/`opencode` it finds. The [full keymap, with screenshots, is its own post](/posts/vimzip-keymap/).
+There's even an AI-agent panel (`Space a`) that launches whichever of `claude`/`codex`/`gemini`/`aider`/`opencode` it finds. The [full keymap, with screenshots, is its own post](/posts/etc/vimzip-keymap/).
 
 ## Keeping it fresh without touching it
 

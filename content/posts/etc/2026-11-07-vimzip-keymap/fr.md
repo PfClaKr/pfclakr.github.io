@@ -4,7 +4,7 @@ description = "Tous les raccourcis de vimzip sur une page, groupés par tâche, 
 tags = ["vim", "linux", "tools", "cheatsheet"]
 +++
 
-Voici tous les raccourcis de [vimzip](/fr/posts/vimzip/), mon environnement Vim qu'il suffit de décompresser, sur une seule page. Deux règles couvrent l'essentiel : **`Space` est la touche leader**, et **tout ce qui commence par `Ctrl+w` marche aussi depuis une fenêtre terminal**.
+Voici tous les raccourcis de [vimzip](/fr/posts/etc/vimzip/), mon environnement Vim qu'il suffit de décompresser, sur une seule page. Deux règles couvrent l'essentiel : **`Space` est la touche leader**, et **tout ce qui commence par `Ctrl+w` marche aussi depuis une fenêtre terminal**.
 
 ![vim . — l'arbre à gauche, les onglets de buffers en haut, l'éditeur au centre](layout.png)
 

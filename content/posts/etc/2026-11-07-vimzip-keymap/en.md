@@ -4,7 +4,7 @@ description = "Every shortcut in vimzip on one page, grouped by task, with scree
 tags = ["vim", "linux", "tools", "cheatsheet"]
 +++
 
-This is the full keymap for [vimzip](/posts/vimzip/), my unzip-and-go Vim setup, on one page. Two rules cover most of it: **`Space` is the leader key**, and **anything starting with `Ctrl+w` also works from inside a terminal window**.
+This is the full keymap for [vimzip](/posts/etc/vimzip/), my unzip-and-go Vim setup, on one page. Two rules cover most of it: **`Space` is the leader key**, and **anything starting with `Ctrl+w` also works from inside a terminal window**.
 
 ![vim . — tree on the left, buffer tabs on top, editor in the middle](layout.png)
 

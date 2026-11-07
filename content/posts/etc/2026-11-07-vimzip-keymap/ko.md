@@ -4,7 +4,7 @@ description = "압축만 풀면 쓰는 vim 환경 vimzip의 모든 단축키를 
 tags = ["vim", "linux", "tools", "cheatsheet"]
 +++
 
-압축만 풀면 쓰는 제 vim 환경 [vimzip](/ko/posts/vimzip/)의 단축키 전체를 한 페이지에 모았습니다. 두 가지만 알면 대부분 끝납니다. **`Space`가 리더 키**이고, **`Ctrl+w`로 시작하는 키는 터미널 창 안에서도 동작**합니다.
+압축만 풀면 쓰는 제 vim 환경 [vimzip](/ko/posts/etc/vimzip/)의 단축키 전체를 한 페이지에 모았습니다. 두 가지만 알면 대부분 끝납니다. **`Space`가 리더 키**이고, **`Ctrl+w`로 시작하는 키는 터미널 창 안에서도 동작**합니다.
 
 ![vim . — 왼쪽 트리, 위쪽 버퍼 탭, 가운데 편집기](layout.png)
 
