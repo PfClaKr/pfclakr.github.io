@@ -15,6 +15,7 @@ Voici tous les raccourcis de [vimzip](/fr/posts/etc/vimzip/), mon environnement 
 | `Ctrl+p` | chercher des fichiers par nom |
 | `Ctrl+Shift+f` / `Space f` | chercher du texte dans tout le projet (seulement pendant la saisie) |
 | `Space b` | chercher parmi les fichiers ouverts |
+| `Space p` / `:Project chemin` | ouvrir un autre projet (choisir un projet récent ou taper un chemin ; ses onglets reviennent) |
 | `Space t` | chercher des symboles (fonctions, structs) |
 | dans le sélecteur : `Enter` / `Ctrl+v` / `Ctrl+x` | ouvrir / split vertical / split horizontal |
 | `/mot` → `n` / `N` | chercher dans ce fichier → suivant / précédent |
@@ -26,12 +27,14 @@ Voici tous les raccourcis de [vimzip](/fr/posts/etc/vimzip/), mon environnement 
 |---|---|
 | ![recherche de texte en direct](search.png) | ![recherche floue par nom](files.png) |
 
-## Buffers (fichiers ouverts)
+## Onglets (fichiers ouverts)
 
 | Touche | Action |
 |---|---|
-| `Tab` / `Shift+Tab` | fichier suivant / précédent |
-| `Space q` | fermer le fichier courant |
+| `Tab` / `Shift+Tab` | onglet suivant / précédent |
+| `:q` / `Space q` | fermer l'onglet courant (`:q` sur le dernier onglet quitte Vim) |
+| `:q!` | fermer l'onglet sans enregistrer |
+| `:qa` | quitter Vim |
 | `Ctrl+s` | enregistrer (la sauvegarde auto est active aussi) |
 
 ## Splits de fenêtres
@@ -77,7 +80,7 @@ Voici tous les raccourcis de [vimzip](/fr/posts/etc/vimzip/), mon environnement 
 
 ## Arbre de fichiers (`Ctrl+Shift+e` / `F2`)
 
-`Ctrl+Shift+e` se comporte comme VS Code : ouvre l'arbre s'il est fermé, y saute si on est ailleurs, le ferme si on y est déjà.
+`Ctrl+Shift+e` se comporte comme VS Code : ouvre l'arbre s'il est fermé, y saute si on est ailleurs, le ferme si on y est déjà. L'arbre se déplie aussi pour montrer le fichier qu'on édite.
 
 | Touche | Action |
 |---|---|
@@ -134,4 +137,9 @@ export VIMZIP_AI=codex    # arguments possibles aussi : VIMZIP_AI="aider --model
 
 - `Ctrl+Shift+f`, `Ctrl+Shift+e` et `Ctrl+Alt+i` échouent si le terminal les avale ou ne les distingue pas. Utilisez alors `Space f`, `F2`, `Space a`.
 - Si le serveur a `clangd`, l'aller-à-la-définition et les diagnostics l'utilisent.
+- Pour un projet CMake, générez `compile_commands.json` pour que le linting et `gd` utilisent les mêmes chemins d'include que le build :
+
+  ```sh
+  cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  ```
 - Mettez vos réglages personnels dans `~/.config/vimzip/vimrc` ; il est lu en dernier.

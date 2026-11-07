@@ -15,6 +15,7 @@ This is the full keymap for [vimzip](/posts/etc/vimzip/), my unzip-and-go Vim se
 | `Ctrl+p` | find files by name |
 | `Ctrl+Shift+f` / `Space f` | search text across the project (only while typing) |
 | `Space b` | search open files |
+| `Space p` / `:Project path` | open another project (pick a recent one or type a path; its tabs come back) |
 | `Space t` | search symbols (functions, structs) |
 | in the picker: `Enter` / `Ctrl+v` / `Ctrl+x` | open / vertical split / horizontal split |
 | `/word` → `n` / `N` | search in this file → next / previous |
@@ -26,12 +27,14 @@ This is the full keymap for [vimzip](/posts/etc/vimzip/), my unzip-and-go Vim se
 |---|---|
 | ![live project text search](search.png) | ![fuzzy file name search](files.png) |
 
-## Buffers (open files)
+## Tabs (open files)
 
 | Key | Action |
 |---|---|
-| `Tab` / `Shift+Tab` | next / previous file |
-| `Space q` | close the current file |
+| `Tab` / `Shift+Tab` | next / previous tab |
+| `:q` / `Space q` | close the current tab (`:q` on the last tab quits Vim) |
+| `:q!` | close the tab without saving |
+| `:qa` | quit Vim |
 | `Ctrl+s` | save (autosave is on too) |
 
 ## Window splits
@@ -77,7 +80,7 @@ This is the full keymap for [vimzip](/posts/etc/vimzip/), my unzip-and-go Vim se
 
 ## File tree (`Ctrl+Shift+e` / `F2`)
 
-`Ctrl+Shift+e` behaves like VS Code: opens the tree if closed, jumps to it if you're elsewhere, closes it if you're already in it.
+`Ctrl+Shift+e` behaves like VS Code: opens the tree if closed, jumps to it if you're elsewhere, closes it if you're already in it. The tree also expands to show whatever file you're editing.
 
 | Key | Action |
 |---|---|
@@ -134,4 +137,9 @@ export VIMZIP_AI=codex    # arguments allowed too: VIMZIP_AI="aider --model sonn
 
 - `Ctrl+Shift+f`, `Ctrl+Shift+e` and `Ctrl+Alt+i` fail if the terminal swallows them or can't tell them apart. Use `Space f`, `F2`, `Space a` instead.
 - If the server has `clangd`, go-to-definition and diagnostics use it.
+- For CMake projects, generate `compile_commands.json` so linting and `gd` use the same include paths as the build:
+
+  ```sh
+  cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  ```
 - Put personal settings in `~/.config/vimzip/vimrc`; it's sourced last.
