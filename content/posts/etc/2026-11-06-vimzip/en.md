@@ -2,6 +2,7 @@
 title = "vimzip: a Vim dev environment you just unzip"
 description = "A single statically-linked tarball that turns any x86-64 Linux box into my full Vim setup — no root, no package manager, no glibc surprises. How it's built and why each piece is there."
 tags = ["vim", "linux", "tools"]
+updated = 2026-11-07
 +++
 
 I spend a lot of time on machines that aren't mine: a fresh VM, a 42 cluster box, a customer's server over SSH. Every time, the same friction — the system Vim is old, there's no `clangd`, I can't `apt install` anything, and `pip`/`npm` are a minefield behind a proxy. **vimzip** is my answer: one tarball you unzip in your home directory, and you have my entire editor.
@@ -46,17 +47,37 @@ plus Vim's own built-ins that people forget are there: `comment`, `editorconfig`
 
 A portable binary is half of it; the other half is that it behaves like an editor you've already tuned.
 
-**`vim .` is a project, not a file.** Starting in a directory restores a per-folder session (open splits, the last file you touched) and opens the tree. The session and everything else — undo history, swap, tags — live in `~/.cache/vimzip`, never scattered inside your project.
+**`vim .` is a project, not a file.** Starting in a directory restores a per-folder session (open splits, the last file you touched) and opens the tree. `Space p` (or `:Project path`) switches to another project in place: it saves this one's tabs, closes its terminals and restores the other one's. The tree follows whatever file you're looking at, like VS Code's explorer, and `:q` closes the current tab, quitting only on the last one. The session and everything else — undo history, swap, tags — live in `~/.cache/vimzip`, never scattered inside your project.
 
-**Autosave, because I forget.** Leaving insert mode, any normal-mode change, losing focus, or switching buffers all trigger a silent `update`. Combined with persistent undo (`undofile`), it feels closer to a modern editor than to classic Vim.
+**Autosave, because I forget.** Leaving insert mode, losing focus or switching buffers triggers a silent `update`, and a burst of normal-mode edits is saved once, a second after the last one. Combined with persistent undo (`undofile`), it feels closer to a modern editor than to classic Vim.
 
 **Clipboard over SSH.** Yanks are mirrored to the system clipboard via OSC 52 escape sequences, so `y` on a remote box lands in your *local* clipboard if the terminal supports it — no X forwarding, no `xclip`.
 
-**Jump-to-definition that degrades gracefully.** With `clangd` it's a real LSP jump; without it, vimzip falls back to project tags, and if even those miss, it generates tags on the fly for the *system headers the current file includes* (walking `cc -M`), so `gd` on `malloc` still lands in the libc header.
+**Jump-to-definition that degrades gracefully.** With `clangd` it's a real LSP jump; without it, vimzip falls back to project tags, and if even those miss, it generates tags on the fly for the *system headers the current file includes* (walking `cc -M` with the build's own include flags from `compile_commands.json` when there is one), so `gd` on `malloc` still lands in the libc header.
 
-**Completion from the whole project.** `Ctrl+n` offers words collected by ripgrep across the git repo in a background job — cheap, no indexer, and it covers files you haven't opened.
+**Completion from the whole project.** `Ctrl+n` also offers words from the repo's source files, including ones you haven't opened. ripgrep collects them into a sorted file in the background and each completion greps that file, so memory stays flat even on huge projects.
 
 There's even an AI-agent panel (`Space a`) that launches whichever of `claude`/`codex`/`gemini`/`aider`/`opencode` it finds. The [full keymap, with screenshots, is its own post](/posts/etc/vimzip-keymap/).
+
+## Small, and fast on big projects
+
+| | vimzip | VS Code + C/C++ extension |
+|---|---|---|
+| Download | 21 MB | 357 MB (215 + 142) |
+| Installed | 74 MB | 1,033 MB (632 + 401) |
+| Uploaded to an SSH server | the same 74 MB | VS Code Server 283 MB + extensions |
+| Server requirements | any x86-64 Linux | glibc 2.28 or newer |
+
+The VS Code column is VSCodium 1.143 and cpptools 1.35 built from the same sources. The release also drops what nobody uses here, the Vim tutor and the non-UTF-8 spell files, and is compressed with `gzip -9`.
+
+Opening a C file with the tree, linting and git markers all on takes about 70 ms and 30 MB of memory. The harder test is LLVM, about 190,000 files, where the first version didn't hold up. Every fix was about doing less work:
+
+- **Index only source files.** Tags come from `rg --files` limited to source languages, and past 30,000 files test directories are skipped. LLVM's tags went from 474 MB to 140 MB.
+- **Binary-search the tags.** With `tagcase=match`, Vim binary-searches the sorted tags file instead of scanning it: `gd` on LLVM went from 540 ms to 1 ms.
+- **Sort the tree on one key per entry.** NERDTree sorted folders with a Vimscript comparator, `N log N` calls, so a 5,500-file folder took 14 seconds. vimzip computes one key per entry and uses Vim's built-in sort, and renders the tree into a list instead of growing one string.
+- **Don't block startup.** gitgutter's first git calls run after the first screen is drawn, and the project word list is built entirely in the background.
+
+With all of that, `vim .` in LLVM opens in about 0.14 s and uses about 31 MB.
 
 ## Keeping it fresh without touching it
 

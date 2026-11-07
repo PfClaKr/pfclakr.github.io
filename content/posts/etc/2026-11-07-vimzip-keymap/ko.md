@@ -15,6 +15,7 @@ tags = ["vim", "linux", "tools", "cheatsheet"]
 | `Ctrl+p` | 파일 이름 검색 |
 | `Ctrl+Shift+f` / `Space f` | 프로젝트 전체 텍스트 검색 (입력하는 동안만 검색) |
 | `Space b` | 열린 파일 검색 |
+| `Space p` / `:Project 경로` | 다른 프로젝트 열기 (최근 목록에서 고르거나 경로 입력, 탭 복원) |
 | `Space t` | 심볼(함수, 구조체) 검색 |
 | 검색 창에서 `Enter` / `Ctrl+v` / `Ctrl+x` | 열기 / 세로 분할로 열기 / 가로 분할로 열기 |
 | `/단어` → `n` / `N` | 현재 파일에서 찾기 → 다음 / 이전 |
@@ -30,8 +31,10 @@ tags = ["vim", "linux", "tools", "cheatsheet"]
 
 | 키 | 기능 |
 |---|---|
-| `Tab` / `Shift+Tab` | 다음 / 이전 파일 |
-| `Space q` | 현재 파일 닫기 |
+| `Tab` / `Shift+Tab` | 다음 / 이전 탭 |
+| `:q` / `Space q` | 현재 탭 닫기 (마지막 탭의 `:q`는 vim 종료) |
+| `:q!` | 저장하지 않고 탭 닫기 |
+| `:qa` | vim 종료 |
 | `Ctrl+s` | 저장 (자동 저장도 켜져 있음) |
 
 ## 창 분할
@@ -77,7 +80,7 @@ tags = ["vim", "linux", "tools", "cheatsheet"]
 
 ## 파일 트리 (`Ctrl+Shift+e` / `F2`)
 
-`Ctrl+Shift+e`는 VSCode처럼 동작합니다. 닫혀 있으면 열고, 다른 창에 있으면 트리로 이동, 트리에 있으면 닫기.
+`Ctrl+Shift+e`는 VSCode처럼 동작합니다. 닫혀 있으면 열고, 다른 창에 있으면 트리로 이동, 트리에 있으면 닫기. 트리는 지금 보고 있는 파일을 자동으로 펼쳐 가리킵니다.
 
 | 키 | 기능 |
 |---|---|
@@ -134,4 +137,9 @@ export VIMZIP_AI=codex    # 인자도 가능: VIMZIP_AI="aider --model sonnet"
 
 - `Ctrl+Shift+f`, `Ctrl+Shift+e`, `Ctrl+Alt+i`는 터미널이 가로채거나 구분하지 못하면 동작하지 않습니다. 그때는 `Space f`, `F2`, `Space a`를 쓰세요.
 - 서버에 clangd가 있으면 정의 이동·에러 표시에 clangd를 씁니다.
+- CMake 프로젝트는 `compile_commands.json`을 만들어 두면 에러 검사와 `gd`가 빌드와 같은 include 경로를 씁니다:
+
+  ```sh
+  cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  ```
 - 개인 설정은 `~/.config/vimzip/vimrc`에 넣으면 마지막에 읽습니다.
