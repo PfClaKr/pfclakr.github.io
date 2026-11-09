@@ -2,6 +2,7 @@
 title = "vimzip : un environnement Vim qu'il suffit de décompresser"
 description = "Une seule archive liée statiquement qui transforme n'importe quelle machine Linux x86-64 en mon environnement Vim complet — sans root, sans gestionnaire de paquets, sans surprise de glibc. Comment c'est construit et pourquoi chaque pièce est là."
 tags = ["vim", "linux", "tools"]
+updated = 2026-11-07
 +++
 
 Je passe beaucoup de temps sur des machines qui ne sont pas les miennes : une VM fraîche, un poste du cluster 42, le serveur d'un client en SSH. À chaque fois, la même friction — le Vim système est vieux, il n'y a pas de `clangd`, je ne peux rien `apt install`, et `pip`/`npm` sont un champ de mines derrière un proxy. **vimzip** est ma réponse : une archive qu'on décompresse dans son dossier personnel, et on a tout mon éditeur.
@@ -46,17 +47,37 @@ plus les intégrés de Vim qu'on oublie : `comment`, `editorconfig`, `matchit`, 
 
 Un binaire portable, c'est la moitié ; l'autre moitié, c'est qu'il se comporte comme un éditeur déjà réglé.
 
-**`vim .` est un projet, pas un fichier.** Démarrer dans un dossier restaure une session par dossier (splits ouverts, dernier fichier touché) et ouvre l'arbre. La session et le reste — historique d'annulation, swap, tags — vivent dans `~/.cache/vimzip`, jamais éparpillés dans le projet.
+**`vim .` est un projet, pas un fichier.** Démarrer dans un dossier restaure une session par dossier (splits ouverts, dernier fichier touché) et ouvre l'arbre. `Space p` (ou `:Project chemin`) change de projet sur place : il enregistre les onglets de celui-ci, ferme ses terminaux et restaure ceux de l'autre. L'arbre suit le fichier affiché, comme l'explorateur de VS Code, et `:q` ferme l'onglet courant et ne quitte Vim que sur le dernier. La session et le reste — historique d'annulation, swap, tags — vivent dans `~/.cache/vimzip`, jamais éparpillés dans le projet.
 
-**Sauvegarde auto, parce que j'oublie.** Quitter le mode insertion, toute modification en mode normal, perdre le focus ou changer de buffer déclenchent un `update` silencieux. Avec l'annulation persistante (`undofile`), ça ressemble plus à un éditeur moderne qu'au Vim classique.
+**Sauvegarde auto, parce que j'oublie.** Quitter le mode insertion, perdre le focus ou changer de buffer déclenche un `update` silencieux, et une rafale de modifications en mode normal est enregistrée une seule fois, une seconde après la dernière. Avec l'annulation persistante (`undofile`), ça ressemble plus à un éditeur moderne qu'au Vim classique.
 
 **Presse-papiers par-dessus SSH.** Les copies (`y`) sont renvoyées au presse-papiers système via les séquences OSC 52, donc un `y` sur une machine distante atterrit dans votre presse-papiers *local* si le terminal le gère — sans forwarding X, sans `xclip`.
 
-**Aller à la définition, en douceur.** Avec `clangd`, c'est un vrai saut LSP ; sans lui, vimzip retombe sur les tags du projet, et si même ceux-là manquent, il génère à la volée les tags des *en-têtes système inclus par le fichier courant* (en lisant `cc -M`), pour que `gd` sur `malloc` atterrisse quand même dans l'en-tête de la libc.
+**Aller à la définition, en douceur.** Avec `clangd`, c'est un vrai saut LSP ; sans lui, vimzip retombe sur les tags du projet, et si même ceux-là manquent, il génère à la volée les tags des *en-têtes système inclus par le fichier courant* (en lisant `cc -M` avec les options d'include du build tirées de `compile_commands.json` s'il existe), pour que `gd` sur `malloc` atterrisse quand même dans l'en-tête de la libc.
 
-**Complétion depuis tout le projet.** `Ctrl+n` propose des mots collectés par ripgrep sur tout le dépôt git dans une tâche de fond — pas cher, sans indexeur, et ça couvre les fichiers pas encore ouverts.
+**Complétion depuis tout le projet.** `Ctrl+n` propose aussi les mots des fichiers sources du dépôt, y compris ceux qu'on n'a pas ouverts. ripgrep les rassemble dans un fichier trié en tâche de fond et chaque complétion fait un grep dessus, donc la mémoire reste stable même sur d'énormes projets.
 
 Il y a même un panneau d'agent IA (`Space a`) qui lance le premier trouvé parmi `claude`/`codex`/`gemini`/`aider`/`opencode`. [Les raccourcis complets, avec captures d'écran, font l'objet d'un autre article](/fr/posts/etc/vimzip-keymap/).
+
+## Petit, et rapide sur les gros projets
+
+| | vimzip | VS Code + extension C/C++ |
+|---|---|---|
+| Téléchargement | 21 Mo | 357 Mo (215 + 142) |
+| Installé | 74 Mo | 1 033 Mo (632 + 401) |
+| Envoyé sur un serveur SSH | les mêmes 74 Mo | VS Code Server 283 Mo + extensions |
+| Prérequis serveur | n'importe quel Linux x86-64 | glibc 2.28 ou plus |
+
+La colonne VS Code correspond à VSCodium 1.143 et cpptools 1.35 compilés à partir des mêmes sources. La release retire aussi ce qui ne sert pas ici, le tutoriel de Vim et les fichiers d'orthographe non UTF-8, et elle est compressée avec `gzip -9`.
+
+Ouvrir un fichier C avec l'arbre, le linting et les marques git actifs prend environ 70 ms et 30 Mo de mémoire. Le test plus dur, c'est LLVM, environ 190 000 fichiers, où la première version ne tenait pas. Chaque correction consistait à travailler moins :
+
+- **N'indexer que les fichiers sources.** Les tags viennent de `rg --files` limité aux langages sources, et au-delà de 30 000 fichiers les dossiers de tests sont ignorés. Les tags de LLVM sont passés de 474 Mo à 140 Mo.
+- **Recherche dichotomique dans les tags.** Avec `tagcase=match`, Vim fait une recherche dichotomique dans le fichier de tags trié au lieu de le parcourir : `gd` sur LLVM est passé de 540 ms à 1 ms.
+- **Trier l'arbre sur une clé par entrée.** NERDTree triait les dossiers avec un comparateur en Vimscript, `N log N` appels, donc un dossier de 5 500 fichiers prenait 14 secondes. vimzip calcule une clé par entrée et utilise le tri intégré de Vim, et construit l'affichage dans une liste au lieu d'allonger une chaîne.
+- **Ne pas bloquer le démarrage.** Les premiers appels git de gitgutter partent après le premier écran, et la liste de mots du projet se construit entièrement en tâche de fond.
+
+Avec tout ça, `vim .` dans LLVM s'ouvre en environ 0,14 s et utilise environ 31 Mo.
 
 ## Le garder à jour sans y toucher
 
