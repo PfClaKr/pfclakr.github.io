@@ -2,6 +2,7 @@
 title = "Tous les raccourcis de vimzip, en images"
 description = "Tous les raccourcis de vimzip sur une page, groupés par tâche, avec des captures de la recherche, des splits, de la liste des symboles et du débogueur. Space est la touche leader ; les touches Ctrl+w marchent aussi dans le terminal."
 tags = ["vim", "linux", "tools", "cheatsheet"]
+updated = 2026-11-09
 +++
 
 Voici tous les raccourcis de [vimzip](/fr/posts/etc/vimzip/), mon environnement Vim qu'il suffit de décompresser, sur une seule page. Deux règles couvrent l'essentiel : **`Space` est la touche leader**, et **tout ce qui commence par `Ctrl+w` marche aussi depuis une fenêtre terminal**.
@@ -80,7 +81,7 @@ Voici tous les raccourcis de [vimzip](/fr/posts/etc/vimzip/), mon environnement 
 
 ## Arbre de fichiers (`Ctrl+Shift+e` / `F2`)
 
-`Ctrl+Shift+e` se comporte comme VS Code : ouvre l'arbre s'il est fermé, y saute si on est ailleurs, le ferme si on y est déjà. L'arbre se déplie aussi pour montrer le fichier qu'on édite.
+`Ctrl+Shift+e` se comporte comme VS Code : ouvre l'arbre s'il est fermé, y saute si on est ailleurs, le ferme si on y est déjà. L'arbre se déplie aussi pour montrer le fichier qu'on édite, et les fichiers et dossiers ignorés par git sont grisés.
 
 | Touche | Action |
 |---|---|
@@ -114,14 +115,21 @@ Il lance le premier trouvé parmi `claude`, `codex`, `gemini`, `aider`, `opencod
 export VIMZIP_AI=codex    # arguments possibles aussi : VIMZIP_AI="aider --model sonnet"
 ```
 
-## Git
+## Git (comme GitLens)
+
+Laissez le curseur sur une ligne et son dernier commit (auteur, date, message) s'affiche en grisé après la fin de la ligne.
 
 | Touche | Action |
 |---|---|
+| `Space gb` | activer / désactiver l'info de commit en fin de ligne |
+| `Space gc` | détails du commit de cette ligne (popup) |
+| `Space gh` | historique du fichier courant (sur une sélection : historique de ces lignes) |
+| `Space gl` | graphe complet des commits (`Enter` pour voir, `q` pour fermer) |
+| `Space gB` | blame de tout le fichier |
+| `Space gs` | fenêtre de statut (`s` indexer, `u` désindexer, `=` diff, `cc` commit) |
 | `]c` / `[c` | hunk de modification suivant / précédent |
 | `Space hp` / `Space hs` / `Space hu` | prévisualiser / indexer / annuler un hunk |
-| `:Git` | fenêtre de statut (`s` indexer, `u` désindexer, `=` diff, `cc` commit) |
-| `:Git blame` / `:Gdiffsplit` | auteur par ligne / comparer les modifications |
+| `:Gdiffsplit` | comparer les modifications |
 
 ## Débogage (nécessite gdb)
 
