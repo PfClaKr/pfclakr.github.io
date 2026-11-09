@@ -2,7 +2,7 @@
 title = "vimzip : un environnement Vim qu'il suffit de décompresser"
 description = "Une seule archive liée statiquement qui transforme n'importe quelle machine Linux x86-64 en mon environnement Vim complet — sans root, sans gestionnaire de paquets, sans surprise de glibc. Comment c'est construit et pourquoi chaque pièce est là."
 tags = ["vim", "linux", "tools"]
-updated = 2026-11-07
+updated = 2026-11-09
 +++
 
 Je passe beaucoup de temps sur des machines qui ne sont pas les miennes : une VM fraîche, un poste du cluster 42, le serveur d'un client en SSH. À chaque fois, la même friction — le Vim système est vieux, il n'y a pas de `clangd`, je ne peux rien `apt install`, et `pip`/`npm` sont un champ de mines derrière un proxy. **vimzip** est ma réponse : une archive qu'on décompresse dans son dossier personnel, et on a tout mon éditeur.
@@ -39,7 +39,7 @@ Vim 8+ a une disposition de paquets native, donc vimzip n'a besoin ni de vim-plu
 
 - **ALE** — linting et client LSP (utilise `clangd` quand l'hôte l'a, sinon retombe sur le compilateur système)
 - **gutentags** + **tagbar** — ctags automatiques et plan des symboles
-- **fzf.vim**, **nerdtree** (+git), **gitgutter**, **fugitive**, **lightline** (+bufferline)
+- **fzf.vim**, **nerdtree** (+git), **gitgutter**, **fugitive**, **gv.vim**, **lightline** (+bufferline)
 
 plus les intégrés de Vim qu'on oublie : `comment`, `editorconfig`, `matchit`, `termdebug` et `osc52`.
 
@@ -47,13 +47,15 @@ plus les intégrés de Vim qu'on oublie : `comment`, `editorconfig`, `matchit`, 
 
 Un binaire portable, c'est la moitié ; l'autre moitié, c'est qu'il se comporte comme un éditeur déjà réglé.
 
-**`vim .` est un projet, pas un fichier.** Démarrer dans un dossier restaure une session par dossier (splits ouverts, dernier fichier touché) et ouvre l'arbre. `Space p` (ou `:Project chemin`) change de projet sur place : il enregistre les onglets de celui-ci, ferme ses terminaux et restaure ceux de l'autre. L'arbre suit le fichier affiché, comme l'explorateur de VS Code, et `:q` ferme l'onglet courant et ne quitte Vim que sur le dernier. La session et le reste — historique d'annulation, swap, tags — vivent dans `~/.cache/vimzip`, jamais éparpillés dans le projet.
+**`vim .` est un projet, pas un fichier.** Démarrer dans un dossier restaure une session par dossier (splits ouverts, dernier fichier touché) et ouvre l'arbre. `Space p` (ou `:Project chemin`) change de projet sur place : il enregistre les onglets de celui-ci, ferme ses terminaux et restaure ceux de l'autre. L'arbre suit le fichier affiché et grise les entrées ignorées par git, comme l'explorateur de VS Code, et `:q` ferme l'onglet courant et ne quitte Vim que sur le dernier. La session et le reste — historique d'annulation, swap, tags — vivent dans `~/.cache/vimzip`, jamais éparpillés dans le projet.
 
 **Sauvegarde auto, parce que j'oublie.** Quitter le mode insertion, perdre le focus ou changer de buffer déclenche un `update` silencieux, et une rafale de modifications en mode normal est enregistrée une seule fois, une seconde après la dernière. Avec l'annulation persistante (`undofile`), ça ressemble plus à un éditeur moderne qu'au Vim classique.
 
 **Presse-papiers par-dessus SSH.** Les copies (`y`) sont renvoyées au presse-papiers système via les séquences OSC 52, donc un `y` sur une machine distante atterrit dans votre presse-papiers *local* si le terminal le gère — sans forwarding X, sans `xclip`.
 
 **Aller à la définition, en douceur.** Avec `clangd`, c'est un vrai saut LSP ; sans lui, vimzip retombe sur les tags du projet, et si même ceux-là manquent, il génère à la volée les tags des *en-têtes système inclus par le fichier courant* (en lisant `cc -M` avec les options d'include du build tirées de `compile_commands.json` s'il existe), pour que `gd` sur `malloc` atterrisse quand même dans l'en-tête de la libc.
+
+**Le blame sur la ligne qu'on lit.** Laissez le curseur immobile et le dernier commit de la ligne (auteur, il y a combien de temps, résumé) s'affiche en grisé après la fin de la ligne, à la manière de GitLens. Un `git blame --porcelain -L n,n` tourne en tâche de fond sur `CursorHold` et le résultat est dessiné comme une propriété de texte Vim : ça ne bloque jamais la saisie et ça disparaît dès que le curseur bouge. `Space gc` ouvre le commit complet dans une popup, et `Space gh` / `Space gl` montrent l'historique du fichier ou tout le graphe des commits via gv.vim. Griser les fichiers ignorés dans l'arbre repose sur une petite astuce : le marqueur git « ignoré » est une espace insécable, qui s'affiche vide mais donne quand même à la règle de syntaxe quelque chose à repérer.
 
 **Complétion depuis tout le projet.** `Ctrl+n` propose aussi les mots des fichiers sources du dépôt, y compris ceux qu'on n'a pas ouverts. ripgrep les rassemble dans un fichier trié en tâche de fond et chaque complétion fait un grep dessus, donc la mémoire reste stable même sur d'énormes projets.
 

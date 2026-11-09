@@ -2,7 +2,7 @@
 title = "vimzip: a Vim dev environment you just unzip"
 description = "A single statically-linked tarball that turns any x86-64 Linux box into my full Vim setup — no root, no package manager, no glibc surprises. How it's built and why each piece is there."
 tags = ["vim", "linux", "tools"]
-updated = 2026-11-07
+updated = 2026-11-09
 +++
 
 I spend a lot of time on machines that aren't mine: a fresh VM, a 42 cluster box, a customer's server over SSH. Every time, the same friction — the system Vim is old, there's no `clangd`, I can't `apt install` anything, and `pip`/`npm` are a minefield behind a proxy. **vimzip** is my answer: one tarball you unzip in your home directory, and you have my entire editor.
@@ -39,7 +39,7 @@ Vim 8+ has a native package layout, so vimzip needs no vim-plug or Lazy. Plugins
 
 - **ALE** — linting and LSP client (uses `clangd` when the host has it, falls back to the system compiler otherwise)
 - **gutentags** + **tagbar** — automatic ctags and a symbol outline
-- **fzf.vim**, **nerdtree** (+git), **gitgutter**, **fugitive**, **lightline** (+bufferline)
+- **fzf.vim**, **nerdtree** (+git), **gitgutter**, **fugitive**, **gv.vim**, **lightline** (+bufferline)
 
 plus Vim's own built-ins that people forget are there: `comment`, `editorconfig`, `matchit`, `termdebug`, and `osc52`.
 
@@ -47,13 +47,15 @@ plus Vim's own built-ins that people forget are there: `comment`, `editorconfig`
 
 A portable binary is half of it; the other half is that it behaves like an editor you've already tuned.
 
-**`vim .` is a project, not a file.** Starting in a directory restores a per-folder session (open splits, the last file you touched) and opens the tree. `Space p` (or `:Project path`) switches to another project in place: it saves this one's tabs, closes its terminals and restores the other one's. The tree follows whatever file you're looking at, like VS Code's explorer, and `:q` closes the current tab, quitting only on the last one. The session and everything else — undo history, swap, tags — live in `~/.cache/vimzip`, never scattered inside your project.
+**`vim .` is a project, not a file.** Starting in a directory restores a per-folder session (open splits, the last file you touched) and opens the tree. `Space p` (or `:Project path`) switches to another project in place: it saves this one's tabs, closes its terminals and restores the other one's. The tree follows whatever file you're looking at and dims gitignored entries, like VS Code's explorer, and `:q` closes the current tab, quitting only on the last one. The session and everything else — undo history, swap, tags — live in `~/.cache/vimzip`, never scattered inside your project.
 
 **Autosave, because I forget.** Leaving insert mode, losing focus or switching buffers triggers a silent `update`, and a burst of normal-mode edits is saved once, a second after the last one. Combined with persistent undo (`undofile`), it feels closer to a modern editor than to classic Vim.
 
 **Clipboard over SSH.** Yanks are mirrored to the system clipboard via OSC 52 escape sequences, so `y` on a remote box lands in your *local* clipboard if the terminal supports it — no X forwarding, no `xclip`.
 
 **Jump-to-definition that degrades gracefully.** With `clangd` it's a real LSP jump; without it, vimzip falls back to project tags, and if even those miss, it generates tags on the fly for the *system headers the current file includes* (walking `cc -M` with the build's own include flags from `compile_commands.json` when there is one), so `gd` on `malloc` still lands in the libc header.
+
+**Blame on the line you're reading.** Rest the cursor and the last commit for that line (author, how long ago, summary) appears faintly after the end of the line, the way GitLens does it. A `git blame --porcelain -L n,n` runs as a background job on `CursorHold` and the result is drawn as a Vim text property, so it never blocks typing and disappears as soon as the cursor moves. `Space gc` opens the full commit in a popup, and `Space gh` / `Space gl` show the file's history or the whole commit graph through gv.vim. Dimming ignored files in the tree has a small trick behind it: the "ignored" git marker is set to a no-break space, which renders blank but still gives the syntax rule something to match.
 
 **Completion from the whole project.** `Ctrl+n` also offers words from the repo's source files, including ones you haven't opened. ripgrep collects them into a sorted file in the background and each completion greps that file, so memory stays flat even on huge projects.
 
