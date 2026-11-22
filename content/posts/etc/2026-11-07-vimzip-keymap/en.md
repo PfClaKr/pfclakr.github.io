@@ -2,6 +2,7 @@
 title = "The vimzip keymap, with screenshots"
 description = "Every shortcut in vimzip on one page, grouped by task, with screenshots of search, splits, the symbol list, and the debugger. Space is the leader; Ctrl+w keys also work inside the terminal."
 tags = ["vim", "linux", "tools", "cheatsheet"]
+updated = 2026-11-09
 +++
 
 This is the full keymap for [vimzip](/posts/etc/vimzip/), my unzip-and-go Vim setup, on one page. Two rules cover most of it: **`Space` is the leader key**, and **anything starting with `Ctrl+w` also works from inside a terminal window**.
@@ -80,7 +81,7 @@ This is the full keymap for [vimzip](/posts/etc/vimzip/), my unzip-and-go Vim se
 
 ## File tree (`Ctrl+Shift+e` / `F2`)
 
-`Ctrl+Shift+e` behaves like VS Code: opens the tree if closed, jumps to it if you're elsewhere, closes it if you're already in it. The tree also expands to show whatever file you're editing.
+`Ctrl+Shift+e` behaves like VS Code: opens the tree if closed, jumps to it if you're elsewhere, closes it if you're already in it. The tree also expands to show whatever file you're editing, and gitignored files and folders are dimmed.
 
 | Key | Action |
 |---|---|
@@ -114,14 +115,21 @@ It launches the first of `claude`, `codex`, `gemini`, `aider`, `opencode` it fin
 export VIMZIP_AI=codex    # arguments allowed too: VIMZIP_AI="aider --model sonnet"
 ```
 
-## Git
+## Git (like GitLens)
+
+Rest the cursor on a line and its last commit (author, time, message) shows faintly after the end of the line.
 
 | Key | Action |
 |---|---|
+| `Space gb` | toggle the end-of-line commit info |
+| `Space gc` | details of this line's commit (popup) |
+| `Space gh` | history of the current file (in a selection: history of those lines) |
+| `Space gl` | full commit graph (`Enter` to view, `q` to close) |
+| `Space gB` | blame for the whole file |
+| `Space gs` | status window (`s` stage, `u` unstage, `=` diff, `cc` commit) |
 | `]c` / `[c` | next / previous change hunk |
 | `Space hp` / `Space hs` / `Space hu` | preview / stage / undo a hunk |
-| `:Git` | status window (`s` stage, `u` unstage, `=` diff, `cc` commit) |
-| `:Git blame` / `:Gdiffsplit` | per-line author / compare changes |
+| `:Gdiffsplit` | compare changes |
 
 ## Debug (needs gdb)
 
